@@ -820,3 +820,37 @@ children with an arm around a shoulder is literally *"and whoever sits beside th
 **Checked and clean** — every one of the 595 audio files was re-measured with `ffprobe` against its
 stored duration: **zero files missing, zero durations wrong by more than 5 seconds**. The
 205-minute track is genuinely 205 minutes. No title/filename mismatches remain.
+
+
+## Version control — closed (4 Aug 2026)
+
+The project is under git for the first time. `server/production/` now holds the live API source,
+both nginx configs, the systemd unit, and the backup and stripe-mode scripts pulled off the VPS —
+so the payments and entitlement layer exists in two places instead of one.
+
+Excluded: `audio/` (1.4 GB locally, masters on Drive and `/srv/audio`), every env file, `.mcp.json`,
+and the database password stripped from the committed copy of `backup-db.sh`. `env.example` carries
+the shape without the values. Staged tree scanned for `sk_live_`, `whsec_`, `sb_secret_` and the DB
+password before committing — clean.
+
+Still needed from the owner: an empty private GitHub repo, then
+`git remote add origin … && git push -u origin main`.
+
+## One-off course purchases — designed, deliberately deferred
+
+Decision: keep membership as the model, add a small fixed-payment side channel later; not a
+priority. Agreed, and the timing argument is stronger than the design one — **no one has bought
+anything yet**, so a second purchase path optimises a funnel that has not run. Merchant Center
+approval for digital courses is also uncertain even with a valid feed, so the payoff is
+speculative while the work is not.
+
+When it is worth building, it is five steps:
+1. A one-off Stripe price per course (EUR, to match the Spain account).
+2. `/api/checkout` accepting a `course_id` as well as a `plan`.
+3. A `course_purchases` table; the webhook grants that single course.
+4. The audio gate honouring "active member **or** bought this course".
+5. `build/seo.py` generating `merchant-feed.xml` from those courses, in EUR, with a
+   `/courses/<id>` landing page that can actually take the payment.
+
+Until then the `Product`/`Offer` schema on `/membership` delivers price rich-results in normal
+search, which is the channel that matters for this category.
