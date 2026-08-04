@@ -101,8 +101,7 @@ function DanaScreen({ go, toast }) {
           </figure>))}
       </div>
       <p style={{textAlign:"center",margin:"6px 20px 0",fontSize:12,color:"var(--text-tertiary)"}}>
-        <a href="https://www.trustpilot.com/review/tounknown.com" target="_blank" rel="noopener"
-          style={{color:"var(--text-tertiary)"}}>more on Trustpilot ↗</a></p>
+        {TR("dana.reviews.note","From practitioners who sat these courses.")}</p>
     </section>}
 
     <Interlude quote="No one is turned away for money."

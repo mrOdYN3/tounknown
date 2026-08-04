@@ -264,7 +264,20 @@ function PathSheet({ path, onClose }) {
             action={(talk || state==="next") ? (isPlaying ? TR("sheet.pause","Pause") : talk ? TR("sheet.listen","Listen") : TR("sheet.sit","Sit")) : undefined}
             onAction={()=>sit(tr)}/>;
         });
-      })() : tracks ? <p style={{fontSize:13,color:"var(--text-tertiary)",textAlign:"center",margin:"14px 0"}}>No tracks in this course yet.</p>
+      })() : tracks === null ? (
+        // placeholder rows while the course loads — same height, so the sheet does not jump
+        <div aria-hidden="true" style={{opacity:0.5}}>
+          {[0,1,2,3,4].map((i)=>(
+            <div key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"15px 2px",minHeight:64,
+              borderBottom:"0.5px solid var(--hairline)"}}>
+              <span style={{width:38,height:38,borderRadius:"50%",flex:"0 0 auto",background:"rgba(25,24,19,0.06)"}}/>
+              <span style={{flex:1}}>
+                <span style={{display:"block",height:11,width:`${68-i*6}%`,borderRadius:4,background:"rgba(25,24,19,0.08)"}}/>
+                <span style={{display:"block",height:9,width:"34%",borderRadius:4,marginTop:8,background:"rgba(25,24,19,0.05)"}}/>
+              </span>
+            </div>))}
+        </div>
+      ) : tracks ? <p style={{fontSize:13,color:"var(--text-tertiary)",textAlign:"center",margin:"14px 0"}}>No tracks in this course yet.</p>
         : path.steps.map((s,i)=>{
         const prev = path.steps[i-1];
         const state = s.done ? "done" : s.next ? "next" : "locked";

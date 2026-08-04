@@ -78,8 +78,8 @@ function DHome({ openPath, go }) {
         <Button style={{marginTop:16}} onClick={()=>go("membership")}>See the tuition ladder</Button>
       </TierCard>
       <div style={{textAlign:"center",display:"flex",flexDirection:"column",justifyContent:"center",gap:10}}>
-        <p style={{margin:0,fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-tertiary)"}}>Trusted by practitioners</p>
-        <img src={T.trustpilot} alt="Trustpilot reviews" width="200" height="33" loading="lazy" style={{borderRadius:8,margin:"0 auto"}}/>
+        <p style={{margin:0,fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-tertiary)"}}>Sat with us? Tell others</p>
+        <img src={T.trustpilot} alt="Review toUnknown on Trustpilot" width="200" height="33" loading="lazy" style={{borderRadius:8,margin:"0 auto"}}/>
       </div>
     </div>
     <div style={{padding:"48px 20px 28px",textAlign:"center",color:"var(--text-tertiary)",fontSize:12}}><SocialLinks style={{marginBottom:10}}/>© 2026 toUnknown · <a href="/legal.html" style={{color:"var(--text-tertiary)"}}>Terms &amp; privacy</a></div>

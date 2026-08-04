@@ -64,7 +64,7 @@ function HomeScreen({ openPath, go }) {
   const byId = (id, fallbackIdx) => living.find((p) => p.id === id) || living[fallbackIdx] || all[fallbackIdx];
   return <div>
     <div className="tu-haze" style={{position:"relative",minHeight:560,display:"flex",flexDirection:"column",justifyContent:"flex-end",alignItems:"center",textAlign:"center",padding:"140px 22px 60px",overflow:"hidden"}}>
-      <div style={{position:"absolute",inset:0,background:`url('${T.hero}') 28% 50%/cover no-repeat`,backgroundColor:"#0B0B10"}}></div>
+      <div style={{position:"absolute",inset:0,background:`url('${T.hero}') center 28%/cover no-repeat`,backgroundColor:"#0B0B10"}}></div>
       <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 90% 70% at 50% 60%,rgba(11,11,16,0.6) 0%,rgba(11,11,16,0.35) 55%,rgba(11,11,16,0.7) 100%)"}}></div>
       <div style={{position:"relative",display:"flex",flexDirection:"column",alignItems:"center"}}>
         <img src="../../assets/wordmark-white.png" alt="toUnknown" style={{width:250,height:"auto",display:"block",marginBottom:18}}/>
@@ -145,23 +145,27 @@ function HomeScreen({ openPath, go }) {
         title={collection.name} essence={collection.essence} onClick={()=>openPath(collection)}/>
     </section>}
 
-    <section className="tu-haze" style={{position:"relative",minHeight:420,display:"flex",
-      flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",
-      padding:"64px 28px",overflow:"hidden",margin:"34px 0"}}>
-      <div style={{position:"absolute",inset:0,background:`url('${T.monksWindow}') 50% 42%/cover`,
-        backgroundColor:"#0B0B10"}}/>
-      <div style={{position:"absolute",inset:0,
-        background:"linear-gradient(180deg,rgba(11,11,16,0.52),rgba(11,11,16,0.28) 46%,rgba(11,11,16,0.66))"}}/>
-      <div style={{position:"relative"}}>
-        <div aria-hidden="true" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,marginBottom:20}}>
-          <span style={{height:0.5,width:34,background:"linear-gradient(90deg,transparent,rgba(240,206,135,0.6))"}}/>
-          <span style={{width:4,height:4,borderRadius:"50%",background:"var(--gold-bright)",opacity:0.85}}/>
-          <span style={{height:0.5,width:34,background:"linear-gradient(90deg,rgba(240,206,135,0.6),transparent)"}}/>
-        </div>
-        <p className="tu-inscribe" style={{margin:0,fontSize:20,color:"#fff",
-          textShadow:"0 1px 26px rgba(0,0,0,0.5)"}}>THEREFORE, DON'T TRY</p>
-        <p className="tu-eyebrow" style={{margin:"14px 0 0",color:"rgba(240,206,135,0.92)"}}>— on effortless effort</p>
+    {/* An arch cut from the page — the shape of a stupa niche — with the monk inside it and
+        the inscription beneath. A portrait deserves a frame, not a full-bleed wash. */}
+    <section style={{padding:"clamp(48px,7vw,88px) 20px",textAlign:"center"}}>
+      <div style={{position:"relative",width:"min(420px,78%)",margin:"0 auto",
+        aspectRatio:"4 / 5", borderRadius:"999px 999px 22px 22px", overflow:"hidden",
+        background:"#0B0B10", boxShadow:"var(--shadow-photo)"}}>
+        <img src={T.monkBowl} alt="A monk on his alms round, Burma" loading="lazy"
+          style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"24% 38%"}}/>
+        <div aria-hidden="true" style={{position:"absolute",inset:0,
+          background:"linear-gradient(180deg,rgba(11,11,16,0.10) 0%,rgba(11,11,16,0.05) 55%,rgba(11,11,16,0.55) 100%)"}}/>
+        <div aria-hidden="true" style={{position:"absolute",inset:0,borderRadius:"inherit",
+          border:"0.5px solid rgba(217,164,65,0.34)"}}/>
       </div>
+      <div aria-hidden="true" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,margin:"26px 0 18px"}}>
+        <span style={{height:0.5,width:44,background:"linear-gradient(90deg,transparent,rgba(168,120,31,0.55))"}}/>
+        <span style={{width:4,height:4,borderRadius:"50%",background:"var(--gold-deep)",opacity:0.8}}/>
+        <span style={{height:0.5,width:44,background:"linear-gradient(90deg,rgba(168,120,31,0.55),transparent)"}}/>
+      </div>
+      <p className="tu-inscribe" style={{margin:0,fontSize:"clamp(19px,2.4vw,26px)",color:"var(--ink)"}}>
+        THEREFORE, DON'T TRY</p>
+      <p className="tu-eyebrow" style={{margin:"14px 0 0",color:"var(--gold-deep)"}}>— on effortless effort</p>
     </section>
     {/* An emblem, not a photograph — so it wants air and an inscription, not a picture frame. */}
     <section style={{padding:"14px 20px 6px",textAlign:"center"}}>
@@ -190,8 +194,9 @@ function HomeScreen({ openPath, go }) {
       </TierCard>
     </section>
     <section style={{padding:"0 20px",marginTop:26,textAlign:"center"}}>
-      <p style={{margin:"0 0 10px",fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-tertiary)"}}>Trusted by practitioners</p>
-      <img src={T.trustpilot} alt="Trustpilot reviews" width="200" height="33" loading="lazy" style={{borderRadius:8}}/>
+      <p style={{margin:"0 0 10px",fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-tertiary)"}}>Sat with us? Tell others</p>
+      <a href="https://www.trustpilot.com/evaluate/tounknown.com" target="_blank" rel="noopener">
+        <img src={T.trustpilot} alt="Review toUnknown on Trustpilot" width="200" height="33" loading="lazy" style={{borderRadius:8}}/></a>
     </section>
     <div style={{padding:"36px 20px 20px",textAlign:"center",color:"var(--text-tertiary)",fontSize:12}}><SocialLinks style={{marginBottom:10}}/><a href="/paths/" style={{color:"var(--text-tertiary)"}}>All Paths</a> · <a href="/faq" style={{color:"var(--text-tertiary)"}}>FAQ</a> · <a href="/membership" style={{color:"var(--text-tertiary)"}}>Membership</a><br/>© 2026 toUnknown · <a href="/legal.html" style={{color:"var(--text-tertiary)"}}>Terms &amp; privacy</a></div>
   </div>;
