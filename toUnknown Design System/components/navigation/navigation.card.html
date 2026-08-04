@@ -1,0 +1,21 @@
+<!-- @dsCard group="Components" viewport="700x230" name="Navigation — AppHeader, TabBar" subtitle="Blurred chrome: sticky header + five-tab bar" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:linear-gradient(180deg,var(--paper-1),var(--paper-2));font-family:var(--font-sans)}</style></head>
+<body><div id="root"></div>
+<script type="text/babel">
+const { AppHeader, TabBar } = window.ToUnknownDesignSystem_9d38c1;
+const LOGO="../../assets/logo-black.png";
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <div style={{maxWidth:430,margin:"14px auto",boxShadow:"var(--shadow-frame)",borderRadius:14,overflow:"hidden"}}>
+    <AppHeader logo={LOGO} title="Mārga — the Paths" scrolled/>
+    <div style={{height:56,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12.5,color:"var(--text-tertiary)"}}>…content scrolls beneath the blur…</div>
+    <TabBar fixed={false} active="paths" tabs={[
+      {id:"home",label:"Home",icon:"home"},{id:"paths",label:"Mārga",icon:"path"},
+      {id:"community",label:"Sangha",icon:"sangha"},{id:"membership",label:"Dāna",icon:"dana"},
+      {id:"profile",label:"Sādhana",icon:"profile",dot:true}]}/>
+  </div>);
+</script></body></html>

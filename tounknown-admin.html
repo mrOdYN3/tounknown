@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>toUnknown · Admin Studio</title>
+<style>
+  :root{
+    --bg:#0B0B10; --bg2:#101018; --surface:rgba(255,255,255,0.04); --surface2:rgba(255,255,255,0.07);
+    --hairline:rgba(255,255,255,0.10); --gold:#D9A441; --gold-hover:#E8B95A;
+    --text:#F5F4F0; --text2:rgba(245,244,240,0.62); --text3:rgba(245,244,240,0.40);
+    --sage:#7FB069; --error:#E06C5A; --radius:20px; --radius-s:14px;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font); background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
+    color:var(--text); min-height:100vh; font-size:15px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:radial-gradient(60% 40% at 80% -10%, rgba(217,164,65,0.07), transparent 60%),
+               radial-gradient(50% 40% at 10% 110%, rgba(90,80,160,0.08), transparent 60%);}
+  .app{display:grid; grid-template-columns:232px 1fr; min-height:100vh; position:relative; z-index:1}
+  /* ---------- Sidebar ---------- */
+  aside{
+    border-right:0.5px solid var(--hairline); padding:28px 16px; position:sticky; top:0; height:100vh;
+    display:flex; flex-direction:column; gap:4px; backdrop-filter:blur(24px) saturate(1.6);
+    background:rgba(11,11,16,0.7);
+  }
+  .brand{display:flex; align-items:center; gap:10px; padding:0 10px 22px}
+  .brand .orb{width:30px;height:30px;border-radius:50%;flex:0 0 auto;
+    background:radial-gradient(circle at 35% 30%, #E8B95A, #8a6420 70%);
+    animation:breathe 6s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+  .brand b{font-size:16px; letter-spacing:-0.2px}
+  .brand span{display:block;font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.09em}
+  .nav-btn{
+    display:flex; align-items:center; gap:11px; width:100%; text-align:left; border:0; cursor:pointer;
+    background:transparent; color:var(--text2); font:inherit; font-size:14px; font-weight:500;
+    padding:11px 12px; border-radius:var(--radius-s); transition:all .28s cubic-bezier(0.32,0.72,0,1);
+  }
+  .nav-btn svg{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .nav-btn:hover{background:var(--surface);color:var(--text)}
+  .nav-btn.active{background:rgba(217,164,65,0.12); color:var(--gold)}
+  .side-foot{margin-top:auto; padding:12px 10px; font-size:11px; color:var(--text3); line-height:1.6}
+  /* ---------- Main ---------- */
+  main{padding:34px 40px 120px; max-width:1060px; width:100%}
+  .view{display:none; animation:fadeUp .38s cubic-bezier(0.32,0.72,0,1)}
+  .view.active{display:block}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  h1{font-size:30px; font-weight:700; letter-spacing:-0.4px; margin-bottom:6px}
+  .sub{color:var(--text2); margin-bottom:28px; max-width:60ch}
+  .label{display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text3); margin:0 0 7px 2px}
+  input[type=text],input[type=url],input[type=number],textarea,select{
+    width:100%; background:var(--surface); border:0.5px solid var(--hairline); border-radius:var(--radius-s);
+    color:var(--text); font:inherit; font-size:14.5px; padding:11px 14px; outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  textarea{resize:vertical; min-height:88px; line-height:1.55}
+  input:focus,textarea:focus,select:focus{border-color:var(--gold); box-shadow:0 0 0 3px rgba(217,164,65,0.18)}
+  select{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center}
+  .field{margin-bottom:18px}
+  .row{display:grid; gap:16px}
+  .row.c2{grid-template-columns:1fr 1fr}
+  .row.c3{grid-template-columns:1fr 1fr 1fr}
+  .card{
+    background:var(--surface); border:0.5px solid var(--hairline); border-radius:var(--radius);
+    padding:22px; margin-bottom:18px;
+  }
+  .card h3{font-size:17px; font-weight:600; margin-bottom:16px; letter-spacing:-0.2px}
+  /* buttons */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; cursor:pointer;
+    font:inherit; font-size:14.5px; font-weight:600; padding:12px 20px; border-radius:var(--radius-s);
+    transition:all .28s cubic-bezier(0.32,0.72,0,1); user-select:none;
+  }
+  .btn:active{transform:scale(0.97)}
+  .btn-gold{background:var(--gold); color:#181205}
+  .btn-gold:hover{background:var(--gold-hover)}
+  .btn-ghost{background:var(--surface2); color:var(--text); border:0.5px solid var(--hairline)}
+  .btn-ghost:hover{background:rgba(255,255,255,0.11)}
+  .btn-quiet{background:transparent; color:var(--text2); padding:8px 10px}
+  .btn-quiet:hover{color:var(--text)}
+  .btn-danger{background:transparent; color:var(--error); padding:8px 10px}
+  .btn-sm{padding:7px 12px; font-size:13px; border-radius:10px}
+  .chip{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600;
+    padding:4px 11px; border-radius:999px; background:var(--surface2); color:var(--text2);
+    border:0.5px solid var(--hairline);
+  }
+  .chip.gold{background:rgba(217,164,65,0.14); color:var(--gold); border-color:rgba(217,164,65,0.3)}
+  .chip.green{background:rgba(127,176,105,0.14); color:var(--sage); border-color:rgba(127,176,105,0.3)}
+  /* course list */
+  .course-item{
+    display:flex; gap:16px; align-items:center; background:var(--surface); border:0.5px solid var(--hairline);
+    border-radius:var(--radius); padding:14px 16px; margin-bottom:12px;
+    transition:transform .28s cubic-bezier(0.32,0.72,0,1), background .2s;
+  }
+  .course-item:hover{background:var(--surface2)}
+  .course-item img{width:64px;height:64px;border-radius:14px;object-fit:cover;background:linear-gradient(135deg,#1a1a2e,#2a2440);flex:0 0 auto}
+  .ci-body{flex:1; min-width:0}
+  .ci-body b{display:block; font-size:15px; letter-spacing:-0.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .ci-meta{display:flex; gap:6px; margin-top:6px; flex-wrap:wrap}
+  .ci-actions{display:flex; gap:2px; flex:0 0 auto}
+  .icon-btn{background:transparent;border:0;color:var(--text3);cursor:pointer;padding:8px;border-radius:10px;transition:all .2s; font-size:15px; line-height:1}
+  .icon-btn:hover{background:var(--surface2); color:var(--text)}
+  .icon-btn.danger:hover{color:var(--error)}
+  /* editor drawer */
+  .drawer-wrap{position:fixed; inset:0; z-index:50; display:none}
+  .drawer-wrap.open{display:block}
+  .scrim{position:absolute; inset:0; background:rgba(5,5,10,0.6); backdrop-filter:blur(6px); opacity:0; transition:opacity .3s}
+  .drawer-wrap.open .scrim{opacity:1}
+  .drawer{
+    position:absolute; top:0; right:0; height:100%; width:min(560px,94vw); overflow-y:auto;
+    background:rgba(16,16,24,0.92); backdrop-filter:blur(30px) saturate(1.6);
+    border-left:0.5px solid var(--hairline); padding:30px 30px 110px;
+    transform:translateX(30px); opacity:0; transition:all .38s cubic-bezier(0.32,0.72,0,1);
+  }
+  .drawer-wrap.open .drawer{transform:none; opacity:1}
+  .drawer h2{font-size:21px; letter-spacing:-0.3px; margin-bottom:22px}
+  .drawer-bar{
+    position:fixed; bottom:0; right:0; width:min(560px,94vw); padding:16px 30px calc(16px + env(safe-area-inset-bottom));
+    background:rgba(11,11,16,0.85); backdrop-filter:blur(24px); border-top:0.5px solid var(--hairline);
+    display:flex; gap:12px; justify-content:flex-end;
+  }
+  .cats{display:flex; flex-wrap:wrap; gap:8px}
+  .cat-toggle{cursor:pointer}
+  .cat-toggle input{display:none}
+  .cat-toggle span{display:inline-block; padding:7px 14px; border-radius:999px; font-size:13px; font-weight:600;
+    background:var(--surface2); color:var(--text2); border:0.5px solid var(--hairline); transition:all .2s}
+  .cat-toggle input:checked + span{background:rgba(217,164,65,0.16); color:var(--gold); border-color:rgba(217,164,65,0.4)}
+  .switch{display:flex; align-items:center; gap:12px; cursor:pointer; user-select:none}
+  .switch input{display:none}
+  .track{width:46px;height:28px;border-radius:999px;background:var(--surface2);border:0.5px solid var(--hairline);position:relative;transition:background .25s;flex:0 0 auto}
+  .track::after{content:"";position:absolute;top:2.5px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:transform .28s cubic-bezier(0.32,0.72,0,1)}
+  .switch input:checked + .track{background:var(--gold)}
+  .switch input:checked + .track::after{transform:translateX(18px)}
+  /* preview card */
+  .preview{
+    width:250px; border-radius:22px; overflow:hidden; background:var(--surface); border:0.5px solid var(--hairline);
+    box-shadow:0 20px 50px rgba(0,0,0,0.45);
+  }
+  .preview .pv-img{height:150px; background:linear-gradient(135deg,#1a1a2e,#2a2440); background-size:cover; background-position:center}
+  .preview .pv-body{padding:15px}
+  .preview .pv-body b{font-size:14.5px; letter-spacing:-0.2px; display:block; margin-bottom:4px}
+  .preview .pv-body p{font-size:12.5px; color:var(--text2); margin-bottom:10px}
+  .amounts{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .amounts input{width:84px; text-align:center}
+  .json-box{
+    width:100%; min-height:320px; font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;
+    background:rgba(0,0,0,0.35); border:0.5px solid var(--hairline); border-radius:var(--radius-s);
+    color:#cfe3b8; padding:16px; white-space:pre; overflow:auto;
+  }
+  .report{list-style:none; margin-top:14px}
+  .report li{display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-bottom:0.5px solid var(--hairline); font-size:13.5px}
+  .report li:last-child{border:none}
+  .dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:0 0 auto}
+  .dot.ok{background:var(--sage)} .dot.warn{background:var(--gold)} .dot.err{background:var(--error)}
+  /* toast */
+  #toast{
+    position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0; z-index:99;
+    background:rgba(20,20,30,0.85); backdrop-filter:blur(20px); border:0.5px solid rgba(217,164,65,0.4);
+    color:var(--text); padding:12px 22px; border-radius:999px; font-size:14px; font-weight:500;
+    transition:all .38s cubic-bezier(0.32,0.72,0,1); pointer-events:none; box-shadow:0 10px 40px rgba(0,0,0,0.5);
+  }
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+  .quote-item{display:flex; gap:10px; margin-bottom:10px}
+  .empty{color:var(--text3); text-align:center; padding:40px 0; font-size:14px}
+  .toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:14px; flex-wrap:wrap}
+  .hint{font-size:12.5px; color:var(--text3); margin-top:7px; line-height:1.5}
+  .video-thumb{width:96px;height:54px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#1a1a2e}
+  @media (max-width:860px){
+    .app{grid-template-columns:1fr}
+    aside{position:static;height:auto;flex-direction:row;overflow-x:auto;align-items:center;border-right:none;border-bottom:0.5px solid var(--hairline);padding:14px 16px}
+    .brand{padding:0 14px 0 4px} .brand span{display:none}
+    .nav-btn{white-space:nowrap} .side-foot{display:none}
+    main{padding:24px 18px 120px}
+    .row.c2,.row.c3{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">
+      <div class="orb" aria-hidden="true"></div>
+      <div><b>toUnknown</b><span>Admin Studio</span></div>
+    </div>
+    <button class="nav-btn active" data-view="courses">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="3"/><path d="M3 9h18"/></svg>Courses</button>
+    <button class="nav-btn" data-view="teachers">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.4-3.6 4.2-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg>Teachers</button>
+    <button class="nav-btn" data-view="content">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"/></svg>Content</button>
+    <button class="nav-btn" data-view="payments">
+      <svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="3"/><path d="M2.5 10h19"/></svg>Payments</button>
+    <button class="nav-btn" data-view="links">
+      <svg viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7L12.5 18.5"/></svg>Links &amp; Media</button>
+    <button class="nav-btn" data-view="export">
+      <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Export / Import</button>
+    <div class="side-foot">Edits live in memory.<br>Export before closing the tab.<br><br>Dāna · no pressure, only presence.</div>
+  </aside>
+
+  <main>
+    <!-- ============ COURSES ============ -->
+    <section class="view active" id="view-courses">
+      <h1>Courses</h1>
+      <p class="sub">The catalog the app renders. Reorder with the arrows — order here is order on screen.</p>
+      <div class="toolbar">
+        <span class="chip" id="course-count"></span>
+        <button class="btn btn-gold" onclick="openEditor(null)">＋ New course</button>
+      </div>
+      <div id="course-list"></div>
+    </section>
+
+    <!-- ============ TEACHERS ============ -->
+    <section class="view" id="view-teachers">
+      <h1>Teachers</h1>
+      <p class="sub">The Sangha Circle — teachers pay a $25/mo seat and earn revenue share. Approve here, then attach their courses via the Author field.</p>
+      <div id="teacher-list"></div>
+      <div class="card">
+        <h3>Add teacher</h3>
+        <div class="row c2">
+          <div class="field"><label class="label" for="t-name">Name</label><input type="text" id="t-name"></div>
+          <div class="field"><label class="label" for="t-lineage">Lineage / tradition</label><input type="text" id="t-lineage" placeholder="Vipassana · Goenka tradition"></div>
+        </div>
+        <div class="row c2">
+          <div class="field"><label class="label" for="t-avatar">Portrait URL</label><input type="url" id="t-avatar"></div>
+          <div class="field"><label class="label" for="t-url">Profile / website URL</label><input type="url" id="t-url"></div>
+        </div>
+        <div class="row c2">
+          <div class="field"><label class="label" for="t-dana">Personal dāna link (90/10 split)</label><input type="url" id="t-dana"></div>
+          <div class="field"><label class="label" for="t-bio">Short bio</label><input type="text" id="t-bio"></div>
+        </div>
+        <button class="btn btn-gold" onclick="addTeacher()">＋ Add teacher</button>
+      </div>
+    </section>
+
+    <!-- ============ CONTENT ============ -->
+    <section class="view" id="view-content">
+      <h1>Content</h1>
+      <p class="sub">The copy bank. These words are the product — edit with care.</p>
+      <div class="card">
+        <h3>Identity</h3>
+        <div class="row c2">
+          <div class="field"><label class="label" for="f-name">Brand name</label><input type="text" id="f-name"></div>
+          <div class="field"><label class="label" for="f-email">Contact email</label><input type="text" id="f-email"></div>
+        </div>
+        <div class="field"><label class="label" for="f-tagline">Tagline (hero, large title)</label><input type="text" id="f-tagline"></div>
+        <div class="field"><label class="label" for="f-subline">Subline</label><input type="text" id="f-subline"></div>
+        <div class="field"><label class="label" for="f-philosophy">Philosophy statement</label><textarea id="f-philosophy"></textarea></div>
+      </div>
+      <div class="card">
+        <h3>Serif interlude quotes</h3>
+        <div id="quote-list"></div>
+        <button class="btn btn-ghost btn-sm" onclick="addQuote('')">＋ Add quote</button>
+      </div>
+      <div class="card">
+        <h3>Dāna texts</h3>
+        <div class="field"><label class="label" for="f-dana-open">Opening line</label><input type="text" id="f-dana-open"></div>
+        <div class="field"><label class="label" for="f-dana-body">Explanation</label><textarea id="f-dana-body"></textarea></div>
+        <div class="field"><label class="label" for="f-thanks">Thank-you toast after giving</label><input type="text" id="f-thanks"></div>
+      </div>
+    </section>
+
+    <!-- ============ PAYMENTS ============ -->
+    <section class="view" id="view-payments">
+      <h1>Payments</h1>
+      <p class="sub">Any path to giving must be reachable in two taps. Placeholders are flagged until replaced.</p>
+      <div class="card">
+        <h3>Stripe <span class="chip gold" id="stripe-flag" style="display:none">placeholder — replace me</span></h3>
+        <div class="field">
+          <label class="label" for="f-stripe-don">Donation Payment Link (customer chooses amount)</label>
+          <input type="url" id="f-stripe-don" placeholder="https://buy.stripe.com/...">
+          <p class="hint">Stripe Dashboard → Payment Links → “Customers choose what to pay”.</p>
+        </div>
+        <div class="field">
+          <label class="label" for="f-stripe-course">Default course Payment Link (optional — falls back to donation link)</label>
+          <input type="url" id="f-stripe-course" placeholder="https://buy.stripe.com/...">
+        </div>
+      </div>
+      <div class="card">
+        <h3>toUnknown+ Membership (your own — no Patreon)</h3>
+        <div class="row c3">
+          <div class="field"><label class="label" for="f-mem-mo">Monthly $11 (Stripe subscription link)</label><input type="url" id="f-mem-mo" placeholder="https://buy.stripe.com/..."></div>
+          <div class="field"><label class="label" for="f-mem-yr">Yearly $88 (Stripe subscription link)</label><input type="url" id="f-mem-yr" placeholder="https://buy.stripe.com/..."></div>
+          <div class="field"><label class="label" for="f-mem-found">Founding $108 (one-time link)</label><input type="url" id="f-mem-found" placeholder="https://buy.stripe.com/..."></div>
+        </div>
+        <p class="hint">Create these in Stripe Dashboard → Payment Links (recurring for the first two). The "give more if it feels true" slider uses extra monthly links — add them as extra amounts in the app config later.</p>
+      </div>
+      <div class="card">
+        <h3>Dāna amount chips</h3>
+        <div class="amounts" id="amount-list"></div>
+        <p class="hint">Shown as suggestion chips on the Dāna tab; “Custom” is always appended.</p>
+      </div>
+      <div class="card">
+        <h3>Other channels</h3>
+        <div class="field"><label class="label" for="f-paypal">PayPal donate (quiet fallback)</label><input type="url" id="f-paypal"></div>
+        <p class="hint">Patreon has been retired — membership is owned via Stripe above.</p>
+      </div>
+    </section>
+
+    <!-- ============ LINKS & MEDIA ============ -->
+    <section class="view" id="view-links">
+      <h1>Links &amp; Media</h1>
+      <p class="sub">Community channels and the videos the app embeds (click-to-play facades).</p>
+      <div class="card">
+        <h3>Social &amp; site links</h3>
+        <div class="row c2" id="links-grid"></div>
+      </div>
+      <div class="card">
+        <h3>YouTube videos</h3>
+        <div id="video-list"></div>
+        <div class="row c2" style="margin-top:6px">
+          <input type="text" id="new-vid-id" placeholder="Video ID · e.g. 3ptXZbv3je8">
+          <input type="text" id="new-vid-title" placeholder="Title">
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="addVideo()">＋ Add video</button>
+      </div>
+    </section>
+
+    <!-- ============ EXPORT ============ -->
+    <section class="view" id="view-export">
+      <h1>Export / Import</h1>
+      <p class="sub">The app reads one JSON block: <code>&lt;script type="application/json" id="tu-config"&gt;</code>. Export here, paste there.</p>
+      <div class="card">
+        <h3>Validation</h3>
+        <button class="btn btn-ghost btn-sm" onclick="renderReport()">Re-run checks</button>
+        <ul class="report" id="report"></ul>
+      </div>
+      <div class="card">
+        <h3>Export</h3>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px">
+          <button class="btn btn-gold" onclick="downloadJSON()">⬇ Download tu-config.json</button>
+          <button class="btn btn-ghost" onclick="copyJSON()">Copy JSON</button>
+          <button class="btn btn-ghost" onclick="copyScriptBlock()">Copy &lt;script&gt; block</button>
+        </div>
+        <div class="json-box" id="json-view" aria-label="Current configuration JSON"></div>
+      </div>
+      <div class="card">
+        <h3>Import</h3>
+        <div class="field"><textarea id="import-box" placeholder='Paste tu-config JSON (or a full <script id="tu-config"> block) here…' style="min-height:120px"></textarea></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="importPasted()">Import pasted</button>
+          <label class="btn btn-ghost" style="cursor:pointer">Import file…<input type="file" accept=".json" style="display:none" onchange="importFile(event)"></label>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ COURSE EDITOR DRAWER ============ -->
+<div class="drawer-wrap" id="drawer-wrap" role="dialog" aria-modal="true" aria-label="Course editor">
+  <div class="scrim" onclick="closeEditor()"></div>
+  <div class="drawer">
+    <h2 id="drawer-title">Edit course</h2>
+    <div class="field"><label class="label" for="e-title">Title</label><input type="text" id="e-title" oninput="livePreview()"></div>
+    <div class="field"><label class="label" for="e-essence">One-line essence</label><input type="text" id="e-essence" oninput="livePreview()"></div>
+    <div class="field"><label class="label" for="e-desc">Full description</label><textarea id="e-desc"></textarea></div>
+    <div class="row c3">
+      <div class="field"><label class="label" for="e-duration">Duration (display)</label><input type="text" id="e-duration" placeholder="5 h 32 min" oninput="livePreview()"></div>
+      <div class="field"><label class="label" for="e-iso">ISO duration</label><input type="text" id="e-iso" placeholder="PT5H32M"></div>
+      <div class="field"><label class="label" for="e-level">Level</label>
+        <select id="e-level" onchange="livePreview()">
+          <option>Beginner</option><option>Beginner+</option><option>Intermediate</option>
+          <option>Intermediate+</option><option>Advanced</option><option>All levels</option><option>Free</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Categories</label>
+      <div class="cats" id="e-cats"></div>
+    </div>
+    <div class="row c2">
+      <div class="field"><label class="label" for="e-model">Pricing model (display)</label><input type="text" id="e-model" placeholder="Donation based"></div>
+      <div class="field"><label class="label" for="e-access">Access URL</label><input type="url" id="e-access"></div>
+    </div>
+    <div class="row c2">
+      <div class="field"><label class="label" for="e-stripe">Stripe link override (optional)</label><input type="url" id="e-stripe"></div>
+      <div class="field"><label class="label" for="e-video">YouTube video ID (optional)</label><input type="text" id="e-video"></div>
+    </div>
+    <div class="row c2">
+      <div class="field"><label class="label" for="e-author">Teacher / author</label>
+        <select id="e-author"></select>
+      </div>
+      <div class="field"><label class="label" for="e-media">Media type</label>
+        <select id="e-media"><option value="audio">Audio</option><option value="video">Video</option><option value="mixed">Audio + Video</option></select>
+      </div>
+    </div>
+    <div class="field"><label class="label" for="e-image">Cover image URL</label><input type="url" id="e-image" oninput="livePreview()"></div>
+    <div class="field"><label class="label" for="e-sc">SoundCloud URL (optional)</label><input type="url" id="e-sc"></div>
+    <div class="row c2" style="margin:6px 0 26px">
+      <label class="switch"><input type="checkbox" id="e-featured"><span class="track"></span>Featured on Home</label>
+      <label class="switch"><input type="checkbox" id="e-free"><span class="track"></span>Free taster</label>
+    </div>
+    <label class="label">Live preview</label>
+    <div class="preview">
+      <div class="pv-img" id="pv-img"></div>
+      <div class="pv-body">
+        <b id="pv-title">Course title</b>
+        <p id="pv-essence">One-line essence</p>
+        <span class="chip" id="pv-duration">—</span>
+        <span class="chip gold" id="pv-level">—</span>
+      </div>
+    </div>
+    <div class="drawer-bar">
+      <button class="btn btn-quiet" onclick="closeEditor()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveCourse()">Save course</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+/* ================================================================
+   toUnknown Admin Studio — client-side content studio.
+   No backend, no storage: edit in memory → Export → paste into app.
+   Config contract: TU_CONFIG (see build spec §7).
+   ================================================================ */
+const CATEGORIES = ["men","women","kids","beginner","intermediate","advanced"];
+const CAT_LABELS = {men:"For Men",women:"For Women",kids:"For Kids",beginner:"Beginners",intermediate:"Intermediate",advanced:"Advanced"};
+
+let CFG = {
+  brand:{
+    name:"toUnknown",
+    tagline:"KNOW THYSELF THROUGH SPIRITUAL STRENGTH",
+    subline:"this is not religion — this is inner universe",
+    philosophy:"WE DON'T GIVE ANSWERS. WE CREATE A SPACE WHERE YOU HEAR YOUR OWN",
+    quotes:["THEREFORE, DON'T TRY","You are your OWN masterpiece...","Generosity is the root of a connected life."],
+    email:"tounknown.com@gmail.com"
+  },
+  payments:{
+    stripeDonation:"YOUR_STRIPE_DONATION_LINK",
+    stripeCourseDefault:"YOUR_STRIPE_COURSE_LINK",
+    memberMonthly:"YOUR_STRIPE_MEMBER_MONTHLY_LINK",
+    memberYearly:"YOUR_STRIPE_MEMBER_YEARLY_LINK",
+    foundingOneOff:"YOUR_STRIPE_FOUNDING_LINK",
+    paypal:"https://www.paypal.com/donate?hosted_button_id=H5VQT3VLQBUBJ",
+    danaAmounts:[5,11,22,54]
+  },
+  teachers:[
+    {id:"dyn", name:"DYN", lineage:"Vipassana · S.N. Goenka & Pa-Auk traditions",
+     bio:"Founder. 20+ Vipassana courses, retreats in 15+ countries. Hatha Yoga since 2017, Ashtanga since 2020.",
+     avatar:"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,h=466,fit=crop/d95DMJoWQZi9KZO2/dyn-A3QlQeJvnpinw4Vv.jpg",
+     url:"https://insighttimer.com/dyn", danaUrl:""}
+  ],
+  danaTexts:{
+    opening:"These meditations are offered freely — in the spirit of generosity.",
+    body:"No fixed cost. No pressure. Only presence, and the freedom to give — if it feels true.",
+    thanks:"Thank you — may it serve you well."
+  },
+  links:{
+    telegram:"https://t.me/tounknowndotcom",
+    instagram:"https://www.instagram.com/tounknowndotcom",
+    x:"https://x.com/tounknowndotcom",
+    youtube:"https://www.youtube.com/@tounknowndotcom",
+    insightTimer:"https://insighttimer.com/dyn",
+    trustpilot:"https://trustpilot.com/review/tounknown.com",
+    blog:"https://tounknown.com/blog",
+    terms:"https://tounknown.com/terms-of-use",
+    nft:"https://nft.tounknown.com/"
+  },
+  videos:[
+    {id:"c31q7Ag5dlE", title:"toUnknown — introduction"},
+    {id:"Dg45kLzmhQU", title:"Whispers of God — sample"},
+    {id:"3ptXZbv3je8", title:"Super Power+ of REAL NOW"}
+  ],
+  courses:[
+    {id:"tantra-112", title:"112 Guided Meditations of Vigyan Bhairav Tantra by Shiva",
+     essence:"Precise inner methods guiding awareness back to its source.",
+     description:"112 techniques of the Vijñana Bhairava Tantra, each distilled into a ~15-minute guided audio session. Organized in 11 parts — 43 h 11 min of practice. Non-linear and exploratory: breath, sensory presence, sound and attention as gateways.",
+     durationText:"43 h 11 min · 112 sessions", isoDuration:"PT43H11M", level:"All levels",
+     categories:["beginner","intermediate","advanced"], model:"Donation / membership",
+     accessUrl:"https://tounknown.com/112-guided-meditations-of-vigyan-bhairav-tantra-vijnana-bhairava-tantra", stripeUrl:"",
+     image:"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/d95DMJoWQZi9KZO2/112-meditation-techniques-of-vigyan-bhairav-tantra-vijniana-bhairava-tantra-mv058VBbxxHle1ZR.jpg",
+     videoId:"", soundcloud:"https://soundcloud.com/tounknowndotcom", featured:true, free:false},
+    {id:"vipassana-1", title:"Vipassana Part 1 — Anapanasati Essentials",
+     essence:"A 5-day retreat-like experience at home. Start for $0.",
+     description:"Ancient technique rediscovered by Gautama Buddha over 2500 years ago: Sīla (moral conduct), Samādhi (concentration), Pañña (insight). Two daily 15-minute guided sessions, five moral precepts, journaling prompts and daily challenges. 5 h 32 min of audio; optional 25-day extension.",
+     durationText:"5 days · 5 h 32 min", isoDuration:"PT5H32M", level:"Beginner+",
+     categories:["beginner","men","women"], model:"$0 now — donate after",
+     accessUrl:"https://tounknown.com/vipassana-meditation-part-1-anapanasati-essentials", stripeUrl:"",
+     image:"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=768,fit=crop/d95DMJoWQZi9KZO2/vipassana-meditation-course-part-1---anapanasati-online-A1aw3ookEphPVrPR.jpg",
+     videoId:"", soundcloud:"https://soundcloud.com/tounknowndotcom", featured:true, free:false},
+    {id:"vipassana-detox", title:"Vipassana Part 1 — Food Detox Edition",
+     essence:"The same 5-day path, with food-detox guidance woven in.",
+     description:"The 5-day Anapanasati Essentials course paired with nutritional detox guidance — clearing body and mind together.",
+     durationText:"5 days · 5 h 32 min", isoDuration:"PT5H32M", level:"Beginner+",
+     categories:["beginner","men","women"], model:"$0 now — donate after",
+     accessUrl:"https://www.tounknown.com/vipassana-meditation-part-1-anapanasati-essentials1", stripeUrl:"",
+     image:"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=768,fit=crop/d95DMJoWQZi9KZO2/cover-food-detox-edition-dOqyPagbKlIjMrE0.jpg",
+     videoId:"", soundcloud:"", featured:false, free:false},
+    {id:"himalayan-silence", title:"Himalayan Silence: I Am Shiva – I Am Presence",
+     essence:"5 meditations for ego dissolution and awakening to your true nature.",
+     description:"Five sessions (23–35 min) exploring “I Am” consciousness, the silence beyond thought, witness and observed, and merging with cosmic awareness. Advaita Vedanta in practice. 3 h 05 min total.",
+     durationText:"5 sessions · 3 h 05 min", isoDuration:"PT3H5M", level:"Intermediate+",
+     categories:["intermediate","advanced"], model:"Donation — a gift",
+     accessUrl:"https://tounknown.com/himalayan-silence-i-am-shiva-i-am-presence", stripeUrl:"",
+     image:"https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/cdn-ecommerce/store_01HBM37W59YM602ZY1SMAMN37W%2Fassets%2F1750926107990-covercopy.jpg",
+     videoId:"", soundcloud:"https://soundcloud.com/tounknowndotcom", featured:true, free:false},
+    {id:"whispers-of-god", title:"Whispers of God: Bhakti Yoga & Anapanasati",
+     essence:"Devotion and mindful breathing — the heart-centered path.",
+     description:"Ten meditations (18–45 min) blending Anapanasati with Bhakti Yoga: unconditional divine love, surrender, prayer and compassion. 6 h 45 min of guided audio.",
+     durationText:"10 sessions · 6 h 45 min", isoDuration:"PT6H45M", level:"Beginner+",
+     categories:["beginner","intermediate","women","men"], model:"Donation / membership",
+     accessUrl:"https://tounknown.com/whispers-of-god-bhakti-yoga-and-anapanasati-vipassana", stripeUrl:"",
+     image:"https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/cdn-ecommerce/store_01HBM37W59YM602ZY1SMAMN37W%2Fassets%2F1751001777618-cover_copy_n6ztvgd.jpg",
+     videoId:"Dg45kLzmhQU", soundcloud:"", featured:false, free:false},
+    {id:"unconditional-love", title:"Unconditional Love. The YOGA of Liberation",
+     essence:"Meditations on love without conditions.",
+     description:"A guided audio collection on unconditional love as the path of liberation.",
+     durationText:"Audio collection", isoDuration:"", level:"All levels",
+     categories:["beginner","intermediate","women","men"], model:"Donation based",
+     accessUrl:"https://www.tounknown.com/unconditional-love-the-yoga-of-liberation", stripeUrl:"",
+     image:"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=768,fit=crop/d95DMJoWQZi9KZO2/true-meditation-AzGjpnnRKjCvn38p.jpg",
+     videoId:"", soundcloud:"", featured:false, free:false},
+    {id:"real-now", title:"Super Power+ of REAL NOW",
+     essence:"3 insider methods to be 100% in the present.",
+     description:"Three guided audio meditations for beginners — practical doorways into the present moment.",
+     durationText:"3 sessions", isoDuration:"", level:"Beginner",
+     categories:["beginner"], model:"Free on YouTube",
+     accessUrl:"https://www.youtube.com/watch?v=3ptXZbv3je8", stripeUrl:"",
+     image:"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=768,fit=crop/d95DMJoWQZi9KZO2/true-meditation-AzGjpnnRKjCvn38p.jpg",
+     videoId:"3ptXZbv3je8", soundcloud:"", featured:false, free:true},
+    {id:"anapanasati-taster", title:"Anapanasati — 15-minute taster",
+     essence:"Try mindful breathing. Free, always.",
+     description:"A single 15-minute Anapanasati session — the first breath of the whole path.",
+     durationText:"15 min", isoDuration:"PT15M", level:"Free",
+     categories:["beginner"], model:"Free",
+     accessUrl:"https://tounknown.com/vipassana-and-anapanasati-meditation-courses-ancient-wisdom-in-modern-practice", stripeUrl:"",
+     image:"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/d95DMJoWQZi9KZO2/vipassana-meditation-mjEPpWR2lWHvRnVz.jpg",
+     videoId:"", soundcloud:"https://soundcloud.com/tounknowndotcom", featured:false, free:true},
+    {id:"santa-kids", title:"Santa's Mindful Christmas",
+     essence:"Mindfulness for kids — playful, warm, seasonal.",
+     description:"A children's mindfulness program from the toUnknown catalog.",
+     durationText:"Kids program", isoDuration:"", level:"Beginner",
+     categories:["kids"], model:"Donation based",
+     accessUrl:"https://tounknown.com/guided-meditation-courses-online", stripeUrl:"",
+     image:"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=789,fit=crop/d95DMJoWQZi9KZO2/shiva-meditation-online-A85Vy47MEOF7lOJL.jpg",
+     videoId:"", soundcloud:"", featured:false, free:false}
+  ]
+};
+
+let editingIndex = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- navigation ---------- */
+document.querySelectorAll(".nav-btn").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    $("view-"+b.dataset.view).classList.add("active");
+    if(b.dataset.view==="export"){ renderJSON(); renderReport(); }
+  });
+});
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){
+  const t=$("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2400);
+}
+
+/* ---------- courses ---------- */
+function renderCourses(){
+  const list=$("course-list"); list.innerHTML="";
+  $("course-count").textContent = CFG.courses.length + " courses";
+  if(!CFG.courses.length){ list.innerHTML='<p class="empty">No courses yet — add the first one.</p>'; return; }
+  CFG.courses.forEach((c,i)=>{
+    const el=document.createElement("div"); el.className="course-item";
+    el.innerHTML = `
+      <img src="${esc(c.image)}" alt="" loading="lazy" onerror="this.style.opacity=0.25">
+      <div class="ci-body">
+        <b>${esc(c.title)}</b>
+        <div class="ci-meta">
+          <span class="chip gold">${esc(c.level)}</span>
+          <span class="chip">${esc(c.durationText)}</span>
+          ${c.author&&c.author.name?`<span class="chip">☸ ${esc(c.author.name)}</span>`:""}
+          ${c.media&&c.media.type==="video"?'<span class="chip">▶ video</span>':""}
+          ${c.featured?'<span class="chip green">featured</span>':""}
+          ${c.free?'<span class="chip green">free</span>':""}
+        </div>
+      </div>
+      <div class="ci-actions">
+        <button class="icon-btn" title="Move up" aria-label="Move up" onclick="moveCourse(${i},-1)">↑</button>
+        <button class="icon-btn" title="Move down" aria-label="Move down" onclick="moveCourse(${i},1)">↓</button>
+        <button class="icon-btn" title="Duplicate" aria-label="Duplicate" onclick="dupCourse(${i})">⧉</button>
+        <button class="icon-btn" title="Edit" aria-label="Edit" onclick="openEditor(${i})">✎</button>
+        <button class="icon-btn danger" title="Delete" aria-label="Delete" onclick="delCourse(${i})">✕</button>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+function moveCourse(i,d){
+  const j=i+d; if(j<0||j>=CFG.courses.length) return;
+  [CFG.courses[i],CFG.courses[j]]=[CFG.courses[j],CFG.courses[i]];
+  renderCourses();
+}
+function dupCourse(i){
+  const copy=JSON.parse(JSON.stringify(CFG.courses[i]));
+  copy.id=copy.id+"-copy"; copy.title=copy.title+" (copy)";
+  CFG.courses.splice(i+1,0,copy); renderCourses(); toast("Course duplicated");
+}
+function delCourse(i){
+  const c=CFG.courses[i];
+  if(!window.__armedDelete || window.__armedDelete!==c.id){
+    window.__armedDelete=c.id; toast("Tap ✕ again to delete “"+c.title.slice(0,32)+"…”");
+    setTimeout(()=>{window.__armedDelete=null},2600); return;
+  }
+  CFG.courses.splice(i,1); window.__armedDelete=null; renderCourses(); toast("Course deleted");
+}
+
+/* ---------- editor drawer ---------- */
+function buildCats(selected){
+  $("e-cats").innerHTML = CATEGORIES.map(c=>`
+    <label class="cat-toggle"><input type="checkbox" value="${c}" ${selected.includes(c)?"checked":""}>
+    <span>${CAT_LABELS[c]}</span></label>`).join("");
+}
+function fillAuthorSelect(sel){
+  $("e-author").innerHTML = '<option value="">— none —</option>' +
+    CFG.teachers.map(t=>`<option value="${esc(t.id)}" ${sel===t.id?"selected":""}>${esc(t.name)}</option>`).join("");
+}
+function openEditor(i){
+  editingIndex=i;
+  const c = i===null ? {title:"",essence:"",description:"",durationText:"",isoDuration:"",level:"Beginner",
+    categories:[],model:"Donation based",accessUrl:"",stripeUrl:"",image:"",videoId:"",soundcloud:"",featured:false,free:false}
+    : CFG.courses[i];
+  fillAuthorSelect(c.author ? c.author.id : (i===null ? "" : "dyn"));
+  $("e-media").value = (c.media && c.media.type) || "audio";
+  $("drawer-title").textContent = i===null ? "New course" : "Edit course";
+  $("e-title").value=c.title; $("e-essence").value=c.essence; $("e-desc").value=c.description;
+  $("e-duration").value=c.durationText; $("e-iso").value=c.isoDuration; $("e-level").value=c.level;
+  $("e-model").value=c.model; $("e-access").value=c.accessUrl; $("e-stripe").value=c.stripeUrl||"";
+  $("e-video").value=c.videoId||""; $("e-image").value=c.image; $("e-sc").value=c.soundcloud||"";
+  $("e-featured").checked=!!c.featured; $("e-free").checked=!!c.free;
+  buildCats(c.categories||[]);
+  livePreview();
+  $("drawer-wrap").classList.add("open");
+  document.body.style.overflow="hidden";
+  setTimeout(()=>$("e-title").focus(),350);
+}
+function closeEditor(){ $("drawer-wrap").classList.remove("open"); document.body.style.overflow=""; }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeEditor(); });
+function livePreview(){
+  $("pv-title").textContent=$("e-title").value||"Course title";
+  $("pv-essence").textContent=$("e-essence").value||"One-line essence";
+  $("pv-duration").textContent=$("e-duration").value||"—";
+  $("pv-level").textContent=$("e-level").value||"—";
+  const img=$("e-image").value.trim();
+  $("pv-img").style.backgroundImage = img ? `url("${img.replace(/"/g,'\\"')}")` : "none";
+}
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,48)||"course"; }
+function saveCourse(){
+  const title=$("e-title").value.trim();
+  if(!title){ toast("A course needs a title"); $("e-title").focus(); return; }
+  const cats=[...document.querySelectorAll("#e-cats input:checked")].map(x=>x.value);
+  const c={
+    id: editingIndex===null ? slug(title) : CFG.courses[editingIndex].id,
+    title, essence:$("e-essence").value.trim(), description:$("e-desc").value.trim(),
+    durationText:$("e-duration").value.trim(), isoDuration:$("e-iso").value.trim(),
+    level:$("e-level").value, categories:cats, model:$("e-model").value.trim(),
+    accessUrl:$("e-access").value.trim(), stripeUrl:$("e-stripe").value.trim(),
+    image:$("e-image").value.trim(), videoId:$("e-video").value.trim(),
+    soundcloud:$("e-sc").value.trim(), featured:$("e-featured").checked, free:$("e-free").checked
+  };
+  const tid=$("e-author").value;
+  if(tid){ const t=CFG.teachers.find(x=>x.id===tid);
+    if(t) c.author={id:t.id,name:t.name,avatar:t.avatar,url:t.url,lineage:t.lineage}; }
+  c.media={type:$("e-media").value};
+  if(editingIndex===null) CFG.courses.push(c); else CFG.courses[editingIndex]=c;
+  closeEditor(); renderCourses(); toast("Saved — export when you're done");
+}
+
+/* ---------- content ---------- */
+function bindContent(){
+  $("f-name").value=CFG.brand.name; $("f-email").value=CFG.brand.email;
+  $("f-tagline").value=CFG.brand.tagline; $("f-subline").value=CFG.brand.subline;
+  $("f-philosophy").value=CFG.brand.philosophy;
+  $("f-dana-open").value=CFG.danaTexts.opening; $("f-dana-body").value=CFG.danaTexts.body;
+  $("f-thanks").value=CFG.danaTexts.thanks;
+  const bind=(id,fn)=>$(id).addEventListener("input",e=>fn(e.target.value));
+  bind("f-name",v=>CFG.brand.name=v); bind("f-email",v=>CFG.brand.email=v);
+  bind("f-tagline",v=>CFG.brand.tagline=v); bind("f-subline",v=>CFG.brand.subline=v);
+  bind("f-philosophy",v=>CFG.brand.philosophy=v);
+  bind("f-dana-open",v=>CFG.danaTexts.opening=v); bind("f-dana-body",v=>CFG.danaTexts.body=v);
+  bind("f-thanks",v=>CFG.danaTexts.thanks=v);
+  renderQuotes();
+}
+function renderQuotes(){
+  const box=$("quote-list"); box.innerHTML="";
+  CFG.brand.quotes.forEach((q,i)=>{
+    const d=document.createElement("div"); d.className="quote-item";
+    d.innerHTML=`<input type="text" value="${esc(q)}">
+      <button class="icon-btn danger" aria-label="Remove quote" onclick="CFG.brand.quotes.splice(${i},1);renderQuotes()">✕</button>`;
+    d.querySelector("input").addEventListener("input",e=>CFG.brand.quotes[i]=e.target.value);
+    box.appendChild(d);
+  });
+}
+function addQuote(v){ CFG.brand.quotes.push(v); renderQuotes(); }
+
+/* ---------- payments ---------- */
+function bindPayments(){
+  $("f-stripe-don").value=CFG.payments.stripeDonation;
+  $("f-stripe-course").value=CFG.payments.stripeCourseDefault;
+  $("f-mem-mo").value=CFG.payments.memberMonthly||"";
+  $("f-mem-yr").value=CFG.payments.memberYearly||"";
+  $("f-mem-found").value=CFG.payments.foundingOneOff||"";
+  $("f-paypal").value=CFG.payments.paypal;
+  const flag=()=>{
+    const ph = /YOUR_STRIPE/.test(CFG.payments.stripeDonation+CFG.payments.stripeCourseDefault);
+    $("stripe-flag").style.display = ph ? "inline-flex" : "none";
+  };
+  $("f-stripe-don").addEventListener("input",e=>{CFG.payments.stripeDonation=e.target.value.trim();flag()});
+  $("f-stripe-course").addEventListener("input",e=>{CFG.payments.stripeCourseDefault=e.target.value.trim();flag()});
+  $("f-mem-mo").addEventListener("input",e=>CFG.payments.memberMonthly=e.target.value.trim());
+  $("f-mem-yr").addEventListener("input",e=>CFG.payments.memberYearly=e.target.value.trim());
+  $("f-mem-found").addEventListener("input",e=>CFG.payments.foundingOneOff=e.target.value.trim());
+  $("f-paypal").addEventListener("input",e=>CFG.payments.paypal=e.target.value.trim());
+  flag(); renderAmounts();
+}
+
+/* ---------- teachers ---------- */
+function renderTeachers(){
+  const box=$("teacher-list"); box.innerHTML="";
+  if(!CFG.teachers.length){ box.innerHTML='<p class="empty">No teachers yet.</p>'; return; }
+  CFG.teachers.forEach((t,i)=>{
+    const n=CFG.courses.filter(c=>c.author&&c.author.id===t.id).length;
+    const d=document.createElement("div"); d.className="course-item";
+    d.innerHTML=`<img src="${esc(t.avatar)}" alt="" loading="lazy" style="border-radius:50%" onerror="this.style.opacity=0.25">
+      <div class="ci-body"><b>${esc(t.name)}</b>
+        <div class="ci-meta"><span class="chip gold">${esc(t.lineage||"—")}</span>
+        <span class="chip">${n} course${n===1?"":"s"}</span>
+        <span class="chip green">Sangha $25/mo</span></div></div>
+      <div class="ci-actions">
+        <button class="icon-btn danger" aria-label="Remove teacher" onclick="delTeacher(${i})">✕</button>
+      </div>`;
+    box.appendChild(d);
+  });
+}
+function addTeacher(){
+  const name=$("t-name").value.trim();
+  if(!name){ toast("A teacher needs a name"); return; }
+  CFG.teachers.push({id:slug(name), name, lineage:$("t-lineage").value.trim(),
+    bio:$("t-bio").value.trim(), avatar:$("t-avatar").value.trim(),
+    url:$("t-url").value.trim(), danaUrl:$("t-dana").value.trim()});
+  ["t-name","t-lineage","t-bio","t-avatar","t-url","t-dana"].forEach(id=>$(id).value="");
+  renderTeachers(); toast("Teacher added to the Sangha Circle");
+}
+function delTeacher(i){
+  const t=CFG.teachers[i];
+  const used=CFG.courses.filter(c=>c.author&&c.author.id===t.id).length;
+  if(used){ toast("Reassign this teacher's "+used+" course(s) first"); return; }
+  CFG.teachers.splice(i,1); renderTeachers();
+}
+function renderAmounts(){
+  const box=$("amount-list"); box.innerHTML="";
+  CFG.payments.danaAmounts.forEach((a,i)=>{
+    const w=document.createElement("div"); w.style.cssText="display:flex;align-items:center;gap:4px";
+    w.innerHTML=`<input type="number" min="1" value="${a}" aria-label="Amount ${i+1}">
+      <button class="icon-btn danger" aria-label="Remove amount" onclick="CFG.payments.danaAmounts.splice(${i},1);renderAmounts()">✕</button>`;
+    w.querySelector("input").addEventListener("input",e=>CFG.payments.danaAmounts[i]=Number(e.target.value)||0);
+    box.appendChild(w);
+  });
+  const add=document.createElement("button"); add.className="btn btn-ghost btn-sm"; add.textContent="＋ Add";
+  add.onclick=()=>{CFG.payments.danaAmounts.push(0);renderAmounts()};
+  box.appendChild(add);
+}
+
+/* ---------- links & media ---------- */
+const LINK_LABELS={telegram:"Telegram",instagram:"Instagram",x:"X / Twitter",youtube:"YouTube channel",
+  insightTimer:"Insight Timer",trustpilot:"Trustpilot",blog:"Blog",terms:"Terms of use",nft:"NFT project"};
+function bindLinks(){
+  const grid=$("links-grid"); grid.innerHTML="";
+  Object.keys(LINK_LABELS).forEach(k=>{
+    const d=document.createElement("div"); d.className="field";
+    d.innerHTML=`<label class="label" for="lnk-${k}">${LINK_LABELS[k]}</label><input type="url" id="lnk-${k}" value="${esc(CFG.links[k]||"")}">`;
+    d.querySelector("input").addEventListener("input",e=>CFG.links[k]=e.target.value.trim());
+    grid.appendChild(d);
+  });
+  renderVideos();
+}
+function renderVideos(){
+  const box=$("video-list"); box.innerHTML="";
+  CFG.videos.forEach((v,i)=>{
+    const d=document.createElement("div"); d.className="course-item"; d.style.padding="10px 14px";
+    d.innerHTML=`<img class="video-thumb" src="https://i.ytimg.com/vi/${esc(v.id)}/hqdefault.jpg" alt="" loading="lazy">
+      <div class="ci-body"><b>${esc(v.title)}</b><div class="ci-meta"><span class="chip">${esc(v.id)}</span></div></div>
+      <div class="ci-actions"><button class="icon-btn danger" aria-label="Remove video" onclick="CFG.videos.splice(${i},1);renderVideos()">✕</button></div>`;
+    box.appendChild(d);
+  });
+}
+function addVideo(){
+  const id=$("new-vid-id").value.trim().replace(/^.*[?&]v=|^.*youtu\.be\//,"").split("&")[0];
+  if(!id){ toast("Paste a YouTube video ID or URL"); return; }
+  CFG.videos.push({id, title:$("new-vid-title").value.trim()||"Untitled video"});
+  $("new-vid-id").value=""; $("new-vid-title").value=""; renderVideos();
+}
+
+/* ---------- export / import ---------- */
+function exportObj(){ return CFG; }
+function renderJSON(){ $("json-view").textContent = JSON.stringify(exportObj(),null,2); }
+function downloadJSON(){
+  const blob=new Blob([JSON.stringify(exportObj(),null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tu-config.json";
+  a.click(); URL.revokeObjectURL(a.href); toast("tu-config.json downloaded");
+}
+async function copyText(t,msg){
+  try{ await navigator.clipboard.writeText(t); toast(msg); }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy"); ta.remove(); toast(msg); }
+}
+function copyJSON(){ copyText(JSON.stringify(exportObj(),null,2),"JSON copied"); }
+function copyScriptBlock(){
+  copyText('<script type="application/json" id="tu-config">\n'+JSON.stringify(exportObj(),null,2)+'\n<\/script>',
+    "Script block copied — paste over #tu-config in the app");
+}
+function applyImported(obj){
+  if(!obj || typeof obj!=="object" || !Array.isArray(obj.courses)) throw new Error("Not a tu-config object (missing courses array)");
+  CFG = Object.assign({}, CFG, obj);
+  if(!Array.isArray(CFG.teachers)) CFG.teachers=[];
+  renderCourses(); renderTeachers(); bindContent(); bindPayments(); bindLinks(); renderJSON(); renderReport();
+  toast("Config imported — "+CFG.courses.length+" courses");
+}
+function importPasted(){
+  let raw=$("import-box").value.trim();
+  const m=raw.match(/<script[^>]*id=["']tu-config["'][^>]*>([\s\S]*?)<\/script>/i);
+  if(m) raw=m[1];
+  try{ applyImported(JSON.parse(raw)); }catch(e){ toast("Import failed: "+e.message); }
+}
+function importFile(ev){
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ applyImported(JSON.parse(r.result)); }catch(e){ toast("Import failed: "+e.message); } };
+  r.readAsText(f); ev.target.value="";
+}
+
+/* ---------- validation ---------- */
+function renderReport(){
+  const items=[];
+  const push=(lvl,msg)=>items.push({lvl,msg});
+  if(/YOUR_STRIPE/.test(CFG.payments.stripeDonation)) push("warn","Stripe donation link is still a placeholder — create a “customers choose what to pay” Payment Link in Stripe.");
+  else if(!/^https:\/\//.test(CFG.payments.stripeDonation)) push("err","Stripe donation link is not an https URL.");
+  else push("ok","Stripe donation link set.");
+  if(/YOUR_STRIPE/.test(CFG.payments.stripeCourseDefault)) push("warn","Default course Stripe link is a placeholder (app will fall back to the donation link).");
+  if(/YOUR_STRIPE/.test((CFG.payments.memberMonthly||"")+(CFG.payments.memberYearly||""))) push("warn","toUnknown+ membership links are placeholders — create the $11/mo and $88/yr subscription Payment Links in Stripe.");
+  else push("ok","Own membership links set — Patreon-free.");
+  const pat = JSON.stringify(CFG).match(/patreon/gi);
+  if(pat) push("warn","Patreon link still present in config ("+pat.length+"×) — membership is now owned; remove it.");
+  else push("ok","No Patreon links — membership fully owned.");
+  const gum = JSON.stringify(CFG).match(/gumroad/gi);
+  if(gum) push("err","Gumroad link found in config ("+gum.length+"×) — remove it (excluded by owner).");
+  else push("ok","No Gumroad links — as required.");
+  CFG.courses.forEach(c=>{
+    if(!c.image) push("warn",`“${c.title}”: no cover image.`);
+    else if(!/^https:\/\//.test(c.image)) push("err",`“${c.title}”: image URL is not https.`);
+    if(!c.accessUrl && !c.stripeUrl) push("warn",`“${c.title}”: no access or payment URL — card will have no destination.`);
+    if(!c.categories || !c.categories.length) push("warn",`“${c.title}”: no categories — it will only appear under “All”.`);
+    if(!c.isoDuration) push("warn",`“${c.title}”: no ISO duration — Course schema (SEO) will omit timeRequired.`);
+  });
+  if(!CFG.courses.some(c=>c.featured)) push("warn","No course is marked Featured — the Home row will be empty.");
+  if(CFG.payments.danaAmounts.some(a=>!a||a<1)) push("warn","A Dāna amount is empty or zero.");
+  if(!items.some(i=>i.lvl!=="ok")) push("ok","Everything checks out. Export with a free heart.");
+  $("report").innerHTML = items.map(i=>`<li><span class="dot ${i.lvl}"></span><span>${esc(i.msg)}</span></li>`).join("");
+}
+
+/* ---------- init ---------- */
+renderCourses(); renderTeachers(); bindContent(); bindPayments(); bindLinks(); renderJSON(); renderReport();
+</script>
+</body>
+</html>

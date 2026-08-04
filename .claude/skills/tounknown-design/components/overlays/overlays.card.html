@@ -1,0 +1,31 @@
+<!-- @dsCard group="Components" viewport="700x300" name="Overlays — Sheet, Toast" subtitle="Grabber sheets and whispering toasts" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--stage);font-family:var(--font-sans)}</style></head>
+<body><div id="root"></div>
+<script type="text/babel">
+const { Toast, Button } = window.ToUnknownDesignSystem_9d38c1;
+/* Sheet shown statically (open in a clipped frame) */
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <div style={{display:"flex",gap:16,padding:16,alignItems:"stretch"}}>
+    <div style={{flex:1,position:"relative",height:268,overflow:"hidden",borderRadius:14,background:"rgba(30,28,20,0.32)"}}>
+      <div style={{position:"absolute",bottom:0,width:"100%",background:"var(--sheet-blur)",backdropFilter:"var(--blur-sheet)",
+        borderRadius:"28px 28px 0 0",border:"0.5px solid var(--hairline)",borderBottom:"none",padding:"10px 22px 20px",
+        boxShadow:"var(--shadow-sheet)",textAlign:"center"}}>
+        <div style={{width:38,height:5,borderRadius:99,background:"rgba(25,24,19,0.18)",margin:"6px auto 14px"}}></div>
+        <div style={{display:"flex",justifyContent:"center"}}><img src="../../assets/logo-gold.png" alt="" style={{width:52,height:"auto",animation:"breathe 6s ease-in-out infinite"}}/></div>
+        <h2 style={{margin:"12px 0 4px",fontSize:21,fontFamily:"var(--font-serif)",fontWeight:400,letterSpacing:"0.2px",color:"var(--ink)"}}>If this served you</h2>
+        <p style={{margin:"0 0 12px",fontFamily:"var(--font-serif)",fontSize:14,color:"var(--text-secondary)"}}>give what feels true — after practice, never before.</p>
+        <Button wide style={{padding:"11px 18px",fontSize:14}}>Give with a free heart</Button>
+      </div>
+    </div>
+    <div style={{flex:1,display:"flex",flexDirection:"column",gap:12,alignItems:"center",justifyContent:"center"}}>
+      <Toast message="Sādhaka seal received ☸"/>
+      <Toast message="The Gate has appeared on your Path ⛩"/>
+      <Toast message="15 min sat · the next track has opened"/>
+    </div>
+  </div>);
+</script></body></html>

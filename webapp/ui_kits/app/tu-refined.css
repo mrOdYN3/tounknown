@@ -1,0 +1,312 @@
+/* toUnknown — refinement layer.
+   Liquid-glass materials, optical typography, spring motion.
+   Loads after the token files; only adds, never fights the brand palette. */
+
+:root{
+  /* ---- glass materials ------------------------------------------------ */
+  --glass-thin:      rgba(255,255,255,0.44);
+  --glass-regular:   rgba(255,255,255,0.58);
+  --glass-thick:     rgba(255,255,255,0.74);
+  --glass-blur:      saturate(180%) blur(24px);
+  --glass-blur-deep: saturate(190%) blur(36px);
+  /* the specular edge: light catches the top rim, shadow settles at the base */
+  --glass-rim:  inset 0 1px 0 rgba(255,255,255,0.92), inset 0 -1px 0 rgba(24,22,16,0.045);
+  --glass-edge: 0.5px solid rgba(24,22,16,0.085);
+
+  /* ---- elevation: two shadows — a tight contact, a wide ambient -------- */
+  --lift-1: 0 1px 2px rgba(43,36,18,0.05),  0 4px 12px -4px rgba(43,36,18,0.08);
+  --lift-2: 0 1px 2px rgba(43,36,18,0.05),  0 10px 28px -10px rgba(43,36,18,0.14);
+  --lift-3: 0 2px 4px rgba(43,36,18,0.06),  0 22px 50px -18px rgba(43,36,18,0.20);
+  --lift-gold: 0 2px 4px rgba(120,84,16,0.08), 0 18px 44px -16px rgba(196,146,48,0.34);
+
+  /* ---- continuous (squircle-ish) corners ------------------------------ */
+  --r-xs:10px; --r-sm:14px; --r-md:20px; --r-lg:26px; --r-xl:32px; --r-full:999px;
+
+  /* ---- motion --------------------------------------------------------- */
+  --ease-spring: cubic-bezier(0.32,0.72,0,1);
+  --ease-out:    cubic-bezier(0.22,1,0.36,1);
+  --ease-press:  cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ---------------------------------------------------------------- base -- */
+html{ -webkit-text-size-adjust:100%; }
+body{
+  font-feature-settings:"kern" 1,"liga" 1,"calt" 1;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+::selection{ background:rgba(217,164,65,0.26); color:var(--ink); }
+:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(217,164,65,0.34); border-radius:var(--r-sm); }
+
+/* Marcellus sits optically large — rein in tracking at display sizes. */
+.tu-display{ font-family:var(--font-serif); font-weight:400; letter-spacing:-0.015em; line-height:1.14; }
+.tu-inscribe{ font-family:var(--font-serif); text-transform:uppercase; letter-spacing:0.18em; }
+.tu-eyebrow{
+  font:600 10.5px/1.3 var(--font-sans); text-transform:uppercase; letter-spacing:0.14em;
+  color:var(--gold-deep);
+}
+.tu-num{ font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
+
+/* ------------------------------------------------------------- surfaces -- */
+.tu-glass{
+  background:var(--glass-regular);
+  -webkit-backdrop-filter:var(--glass-blur); backdrop-filter:var(--glass-blur);
+  border:var(--glass-edge);
+  box-shadow:var(--glass-rim), var(--lift-2);
+}
+.tu-glass-thin{
+  background:var(--glass-thin);
+  -webkit-backdrop-filter:var(--glass-blur); backdrop-filter:var(--glass-blur);
+  border:var(--glass-edge);
+  box-shadow:var(--glass-rim), var(--lift-1);
+}
+
+/* the gold seal: reserved for meaning — membership, gates, dāna */
+.tu-gold-seal{
+  background:linear-gradient(180deg, rgba(255,250,240,0.86), rgba(253,243,224,0.72));
+  border:0.5px solid rgba(168,120,31,0.34);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.9), var(--lift-gold);
+}
+
+/* --------------------------------------------------------------- press -- */
+.tu-press{ transition:transform 180ms var(--ease-press), box-shadow 260ms var(--ease-spring), background-color 200ms ease; }
+.tu-press:active{ transform:scale(0.968); }
+
+.tu-lift{ transition:transform 420ms var(--ease-spring), box-shadow 420ms var(--ease-spring); }
+@media (hover:hover){ .tu-lift:hover{ transform:translateY(-3px); box-shadow:var(--glass-rim), var(--lift-3); } }
+
+/* --------------------------------------------------------------- entry -- */
+@keyframes tu-rise{ from{ opacity:0; transform:translate3d(0,22px,0) scale(0.994); } to{ opacity:1; transform:none; } }
+@keyframes tu-fade{ from{ opacity:0 } to{ opacity:1 } }
+/* These two animate elements that are centred with translateX(-50%). A keyframe
+   replaces the whole transform, so the -50% must be carried through every step —
+   otherwise the element animates from the right edge and snaps to centre at the end. */
+@keyframes tu-sheet-in{ from{ transform:translate(-50%,100%) } to{ transform:translate(-50%,0) } }
+@keyframes tu-rise-centred{ from{ opacity:0; transform:translate(-50%,22px) } to{ opacity:1; transform:translate(-50%,0) } }
+@keyframes tu-breathe{ 0%,100%{ transform:scale(1); opacity:.85 } 50%{ transform:scale(1.075); opacity:1 } }
+@keyframes tu-halo{ 0%,100%{ transform:scale(1); opacity:.28 } 50%{ transform:scale(1.5); opacity:0 } }
+@keyframes tu-shimmer{ 0%{ background-position:-160% 0 } 100%{ background-position:260% 0 } }
+
+main .rv{ opacity:0; transform:translate3d(0,22px,0); transition:opacity .62s var(--ease-spring), transform .62s var(--ease-spring); }
+main .rv.in{ opacity:1; transform:none; }
+
+/* skeletons while live content lands */
+.tu-skel{
+  border-radius:var(--r-sm);
+  background:linear-gradient(90deg, rgba(25,24,19,0.045) 25%, rgba(25,24,19,0.085) 37%, rgba(25,24,19,0.045) 63%);
+  background-size:260% 100%; animation:tu-shimmer 1.5s linear infinite;
+}
+
+/* ------------------------------------------------------------ scrollbar -- */
+.tu-scroll-x{ scrollbar-width:none; -ms-overflow-style:none; }
+.tu-scroll-x::-webkit-scrollbar{ display:none; }
+
+/* ---------------------------------------------------------------- frame -- */
+/* On a phone the app is the whole screen; on a desktop it floats as a device. */
+.tu-frame{
+  max-width:440px; margin:0 auto; min-height:100vh; min-height:100dvh; position:relative;
+  background:linear-gradient(180deg,var(--paper-1) 0%,var(--paper-2) 100%);
+}
+@media (min-width:520px){
+  .tu-frame{ box-shadow:var(--shadow-frame); border-radius:var(--r-xl); overflow:clip; margin:0 auto; }
+}
+
+/* ambient light — a warm dawn behind the glass, never noticed, always felt */
+.tu-ambient::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(60% 42% at 22% 4%,  rgba(217,164,65,0.13), transparent 62%),
+    radial-gradient(52% 40% at 84% 96%, rgba(140,120,190,0.09), transparent 64%);
+}
+
+/* --------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  main .rv{ opacity:1 !important; transform:none !important; }
+}
+
+/* ------------------------------------------------------------ range input */
+.tu-range{ --pct:0%; }
+.tu-range::-webkit-slider-runnable-track{
+  height:5px; border-radius:99px;
+  background:linear-gradient(90deg, var(--gold-deep) var(--pct), rgba(25,24,19,0.10) var(--pct));
+}
+.tu-range::-moz-range-track{ height:5px; border-radius:99px; background:rgba(25,24,19,0.10); }
+.tu-range::-moz-range-progress{ height:5px; border-radius:99px; background:var(--gold-deep); }
+.tu-range::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none; width:24px; height:24px; margin-top:-9.5px;
+  border-radius:50%; border:0.5px solid rgba(168,120,31,0.42); cursor:grab;
+  background:radial-gradient(circle at 34% 30%, #fff 0%, #FDF6E6 46%, #F3E2BD 100%);
+  box-shadow:0 1px 2px rgba(43,36,18,.16), 0 6px 16px -6px rgba(120,84,16,.42);
+  transition:transform 220ms var(--ease-spring);
+}
+.tu-range::-moz-range-thumb{
+  width:23px; height:23px; border-radius:50%; border:0.5px solid rgba(168,120,31,0.42); cursor:grab;
+  background:radial-gradient(circle at 34% 30%, #fff 0%, #FDF6E6 46%, #F3E2BD 100%);
+  box-shadow:0 1px 2px rgba(43,36,18,.16), 0 6px 16px -6px rgba(120,84,16,.42);
+}
+.tu-range:active::-webkit-slider-thumb{ transform:scale(1.14); cursor:grabbing; }
+
+/* ============================================================================
+   Atmosphere layer — clarity emerging from mist.
+   Text does not slide in; it resolves, the way the mind settles.
+   ========================================================================== */
+
+/* larger, calmer corners for feature surfaces */
+:root{ --r-2xl:40px; --blur-veil:10px; }
+
+/* the signature reveal: rise + de-blur together */
+main .rv{
+  opacity:0; transform:translate3d(0,26px,0); filter:blur(var(--blur-veil));
+  transition:opacity .78s var(--ease-out), transform .78s var(--ease-spring), filter .78s var(--ease-out);
+  will-change:opacity, transform, filter;
+}
+main .rv.in{ opacity:1; transform:none; filter:blur(0); }
+
+/* two-tone lede — the phrase that matters stays ink, the rest recedes.
+   <p class="tu-lede"><b>Only the roots.</b> From every ancient tradition.</p> */
+.tu-lede{
+  font-family:var(--font-serif); font-weight:400;
+  font-size:clamp(21px, 6.4vw, 27px); line-height:1.26; letter-spacing:-0.025em;
+  color:rgba(25,24,19,0.58); margin:0; text-wrap:balance;  /* 4.3:1 on paper — AA */
+}
+.tu-lede b, .tu-lede strong{ font-weight:400; color:var(--ink); }
+
+/* eyebrow gains a quiet marker */
+.tu-eyebrow-dot{ display:inline-flex; align-items:center; gap:7px; }
+.tu-eyebrow-dot::before{
+  content:""; width:5px; height:5px; border-radius:50%;
+  background:var(--gold-deep); opacity:.85; flex:0 0 auto;
+}
+
+/* haze — a breath of light over dark imagery, so type floats rather than sits */
+.tu-haze::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(70% 46% at 50% 78%, rgba(232,224,206,0.20), transparent 68%),
+    linear-gradient(180deg, transparent 52%, rgba(232,224,206,0.10) 100%);
+}
+
+/* display type: tighter at scale, the way large Marcellus wants to be set */
+.tu-display-xl{
+  font-family:var(--font-serif); font-weight:400;
+  font-size:clamp(30px, 9vw, 40px); line-height:1.08; letter-spacing:-0.032em;
+  text-wrap:balance;
+}
+
+@media (prefers-reduced-motion:reduce){
+  main .rv{ filter:none !important; }
+}
+
+/* ============================================================== desktop ==
+   Same design language, arranged for a screen instead of a hand: navigation down
+   the side, cards in a grid, no device frame. Nothing here applies below 1024px.
+
+   NOTE: never put a max-height on `.tu-frame > main > div` — each screen returns a
+   single root div, so that clips the entire page (it did, once). */
+
+:root{ --frame-w: 440px; --rail-w: 256px; --card-cap: none; }
+
+/* the in-between sizes: still the phone layout, just less cramped */
+@media (min-width: 720px) and (max-width: 1023.98px){
+  :root{ --frame-w: 620px; }
+  .tu-frame{ max-width: var(--frame-w); }
+}
+
+@media (min-width: 1024px){
+  .tu-frame{
+    max-width: none; width: 100%;
+    padding-left: var(--rail-w);
+    margin: 0; box-shadow: none; border-radius: 0; overflow: visible;
+    background: transparent;
+  }
+  .tu-frame > main{ padding-bottom: 88px !important; }
+  /* the phone chrome retires */
+  .tu-frame > header,
+  .tu-frame > nav[aria-label="Main"]:not(.tu-rail){ display: none !important; }
+
+  /* content column, centred inside the space left of the rail */
+  .tu-frame > main > div > section,
+  .tu-frame > main > div > div{ max-width: 1160px; margin-left: auto; margin-right: auto; }
+
+  /* ---- the rail ---- */
+  .tu-rail{
+    position: fixed; top: 0; left: 0; bottom: 0; width: var(--rail-w); z-index: 40;
+    display: flex; flex-direction: column; gap: 3px; padding: 28px 16px 22px;
+    background: rgba(251,250,247,0.74);
+    -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+    border-right: 0.5px solid var(--hairline);
+  }
+  .tu-rail-brand{
+    display: flex; align-items: center; gap: 10px; margin: 0 6px 24px; padding: 6px;
+    background: none; border: 0; cursor: pointer; color: var(--ink);
+    font: 600 16px/1 var(--font-sans); letter-spacing: -0.02em;
+  }
+  .tu-rail-brand img{ animation: breathe 6s ease-in-out infinite; }
+  .tu-rail-items{ display: flex; flex-direction: column; gap: 2px; }
+  .tu-rail-item, .tu-rail-start{
+    display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+    background: none; border: 0; cursor: pointer; font: inherit;
+    padding: 11px 12px; border-radius: 14px; color: var(--text-secondary);
+    transition: background-color .24s var(--ease-out), color .24s var(--ease-out);
+  }
+  .tu-rail-item:hover, .tu-rail-start:hover{ background: rgba(25,24,19,0.05); color: var(--ink); }
+  .tu-rail-item.on{ background: rgba(217,164,65,0.15); color: var(--gold-deep); }
+  .tu-rail-icon{ display: grid; place-items: center; width: 26px; flex: 0 0 auto; }
+  .tu-rail-label{ display: flex; flex-direction: column; min-width: 0; }
+  .tu-rail-item b, .tu-rail-start b{ font: 600 13.5px/1.3 var(--font-sans); letter-spacing: -0.01em; }
+  .tu-rail-item small, .tu-rail-start small{ font-size: 11px; color: var(--text-tertiary); }
+  .tu-rail-item.on small{ color: var(--gold-deep); opacity: .72; }
+  .tu-rail-start{
+    margin-top: 16px; border: 0.5px solid rgba(168,120,31,0.3);
+    background: rgba(217,164,65,0.08); color: var(--gold-deep);
+  }
+  .tu-rail-foot{
+    margin: auto 12px 0; font: 400 12.5px/1.6 var(--font-serif);
+    font-style: italic; color: var(--text-tertiary);
+  }
+
+  /* ---- cards become a grid ---- */
+  .tu-grid{
+    display: grid !important; gap: 20px !important;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+  .tu-rail-to-grid{
+    display: grid !important; grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 18px !important; overflow: visible !important; padding-left: 0 !important; padding-right: 0 !important;
+  }
+  .tu-rail-to-grid > *{ width: auto !important; min-width: 0 !important; scroll-snap-align: none; }
+  /* a grid needs no swipe cue */
+  .tu-rail-hint, .tu-rail-wrap::after{ display: none !important; }
+
+  /* long prose keeps a readable measure */
+  .tu-lede{ max-width: 68ch; }
+
+  /* a pill that spans 1300px is not a button — let it size to its words */
+  .tu-inline-cta{ width: auto !important; display: inline-flex !important; padding: 0 22px !important; }
+
+  /* A standalone picture that fills a phone becomes a poster on a desktop.
+     (This rule was lost once when the desktop block was rewritten — it belongs here.) */
+  .tu-media-cap{ max-width: 380px !important; margin-left: auto !important; margin-right: auto !important; }
+
+  /* A lone card stretched to 1160px becomes a letterbox and crops its subject out.
+     Standalone cards take the width of a grid cell instead. */
+  :root{ --card-cap: 420px; }
+
+  /* ---- the bottom sheet becomes a centred dialog ---- */
+  .tu-sheet-desktop{
+    top: 50% !important; bottom: auto !important; left: 50% !important; right: auto !important;
+    transform: translate(-50%,-50%) !important;
+    width: min(680px, 92vw) !important; max-height: 88vh !important;
+    border-radius: var(--r-xl) !important;
+  }
+
+  /* type has room to breathe */
+  .tu-display-xl{ font-size: clamp(44px, 4.4vw, 62px); }
+}
+
+@media (min-width: 1440px){
+  :root{ --rail-w: 276px; }
+  .tu-grid{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+}

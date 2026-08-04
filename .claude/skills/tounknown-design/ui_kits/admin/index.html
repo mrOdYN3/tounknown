@@ -1,0 +1,131 @@
+<!-- @dsCard group="Admin Studio" viewport="1100x640" name="Admin Studio" subtitle="Dark CMS — courses, teachers, payments" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>toUnknown · Admin Studio — UI kit</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-sans);background:linear-gradient(180deg,var(--night-1) 0%,var(--night-2) 100%);color:var(--night-text);min-height:100vh;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(60% 40% at 80% -10%,rgba(217,164,65,0.07),transparent 60%),radial-gradient(50% 40% at 10% 110%,rgba(90,80,160,0.08),transparent 60%)}
+a{color:var(--gold-bright);text-decoration:none}a:hover{color:var(--gold-pale)}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh;position:relative;z-index:1}
+aside{border-right:0.5px solid var(--night-hairline);padding:28px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px;backdrop-filter:blur(24px) saturate(1.6);background:rgba(11,11,16,0.7)}
+.brand{display:flex;align-items:center;gap:10px;padding:0 10px 22px}
+.orb{width:30px;height:auto;flex:0 0 auto;animation:breathe 6s ease-in-out infinite}
+.brand b{font-size:16px;letter-spacing:-0.2px}
+.brand span{display:block;font-size:10.5px;color:var(--night-text-3);text-transform:uppercase;letter-spacing:0.09em}
+.nav-btn{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;cursor:pointer;background:transparent;color:var(--night-text-2);font:inherit;font-size:14px;font-weight:500;padding:11px 12px;border-radius:14px;transition:all .28s var(--spring)}
+.nav-btn svg{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn:hover{background:var(--night-surface);color:var(--night-text)}
+.nav-btn.active{background:rgba(217,164,65,0.12);color:var(--gold-bright)}
+.side-foot{margin-top:auto;padding:12px 10px;font-size:11px;color:var(--night-text-3);line-height:1.6}
+main{padding:34px 40px 60px;max-width:1060px;width:100%}
+.view{display:none;animation:fadeUp .38s var(--spring)}
+.view.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h1{font-size:30px;font-weight:700;letter-spacing:-0.4px;margin-bottom:6px}
+.sub{color:var(--night-text-2);margin-bottom:28px;max-width:60ch}
+.label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--night-text-3);margin:0 0 7px 2px}
+input[type=text],input[type=url],textarea,select{width:100%;background:var(--night-surface);border:0.5px solid var(--night-hairline);border-radius:14px;color:var(--night-text);font:inherit;font-size:14.5px;padding:11px 14px;outline:none;transition:border-color .2s,box-shadow .2s}
+textarea{resize:vertical;min-height:88px;line-height:1.55}
+input:focus,textarea:focus,select:focus{border-color:var(--gold-bright);box-shadow:0 0 0 3px rgba(217,164,65,0.18)}
+.field{margin-bottom:18px}
+.row{display:grid;gap:16px}.row.c2{grid-template-columns:1fr 1fr}
+.card{background:var(--night-surface);border:0.5px solid var(--night-hairline);border-radius:20px;padding:22px;margin-bottom:18px}
+.card h3{font-size:17px;font-weight:600;margin-bottom:16px;letter-spacing:-0.2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;font:inherit;font-size:14.5px;font-weight:600;padding:12px 20px;border-radius:14px;transition:all .28s var(--spring);user-select:none}
+.btn:active{transform:scale(0.97)}
+.btn-gold{background:var(--gold-bright);color:#181205}.btn-gold:hover{background:var(--gold-pale)}
+.btn-ghost{background:var(--night-surface-2);color:var(--night-text);border:0.5px solid var(--night-hairline)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px;background:var(--night-surface-2);color:var(--night-text-2);border:0.5px solid var(--night-hairline)}
+.chip.gold{background:rgba(217,164,65,0.14);color:var(--gold-bright);border-color:rgba(217,164,65,0.3)}
+.chip.green{background:rgba(127,176,105,0.14);color:var(--night-sage);border-color:rgba(127,176,105,0.3)}
+.course-item{display:flex;gap:16px;align-items:center;background:var(--night-surface);border:0.5px solid var(--night-hairline);border-radius:20px;padding:14px 16px;margin-bottom:12px;transition:transform .28s var(--spring),background .2s}
+.course-item:hover{background:var(--night-surface-2)}
+.course-item img{width:64px;height:64px;border-radius:14px;object-fit:cover;background:linear-gradient(135deg,#1a1a2e,#2a2440);flex:0 0 auto}
+.ci-body{flex:1;min-width:0}
+.ci-body b{display:block;font-size:15px;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-meta{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.icon-btn{background:transparent;border:0;color:var(--night-text-3);cursor:pointer;padding:8px;border-radius:10px;transition:all .2s;font-size:15px;line-height:1}
+.icon-btn:hover{background:var(--night-surface-2);color:var(--night-text)}
+.switch{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;font-size:14px;color:var(--night-text-2)}
+.switch input{display:none}
+.track{width:46px;height:28px;border-radius:999px;background:var(--night-surface-2);border:0.5px solid var(--night-hairline);position:relative;transition:background .25s;flex:0 0 auto}
+.track::after{content:"";position:absolute;top:2.5px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:transform .28s var(--spring)}
+.switch input:checked + .track{background:var(--gold-bright)}
+.switch input:checked + .track::after{transform:translateX(18px)}
+.amounts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.amounts input{width:84px;text-align:center}
+.hint{font-size:12.5px;color:var(--night-text-3);margin-top:7px;line-height:1.5}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><img class="orb" src="../../assets/logo-white.png" alt="" aria-hidden="true"><div><b>toUnknown</b><span>Admin Studio</span></div></div>
+  <button class="nav-btn active" data-view="courses"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="3"></rect><path d="M3 9h18"></path></svg>Courses</button>
+  <button class="nav-btn" data-view="teachers"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M4.5 20c1.4-3.6 4.2-5.5 7.5-5.5s6.1 1.9 7.5 5.5"></path></svg>Teachers</button>
+  <button class="nav-btn" data-view="content"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"></path></svg>Content</button>
+  <button class="nav-btn" data-view="payments"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10h19"></path></svg>Payments</button>
+  <div class="side-foot">Edit → Export → paste the config block into the app. Nothing leaves this page.</div>
+</aside>
+<main>
+<div class="view active" id="v-courses" data-screen-label="Courses">
+  <h1>Courses</h1>
+  <p class="sub">The living Paths. Order here is the order seekers see.</p>
+  <div class="course-item"><img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=768,fit=crop/d95DMJoWQZi9KZO2/vipassana-meditation-course-part-1---anapanasati-online-A1aw3ookEphPVrPR.jpg" alt="Vipassana cover">
+    <div class="ci-body"><b>The Vipassana Path</b><div class="ci-meta"><span class="chip gold">donation based</span><span class="chip">6 tracks</span><span class="chip green">live</span></div></div>
+    <div style="display:flex;gap:2px;flex:0 0 auto"><button class="icon-btn" aria-label="Edit">✎</button><button class="icon-btn" aria-label="Duplicate">⧉</button><button class="icon-btn" aria-label="Delete">✕</button></div></div>
+  <div class="course-item"><img src="https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=scale-down/cdn-ecommerce/store_01HBM37W59YM602ZY1SMAMN37W%2Fassets%2F1749811476032-covercopy.jpg" alt="Tantra cover">
+    <div class="ci-body"><b>The Tantra Path — 112 doorways of Shiva</b><div class="ci-meta"><span class="chip gold">donation based</span><span class="chip">43h 11m</span><span class="chip green">live</span></div></div>
+    <div style="display:flex;gap:2px;flex:0 0 auto"><button class="icon-btn" aria-label="Edit">✎</button><button class="icon-btn" aria-label="Duplicate">⧉</button><button class="icon-btn" aria-label="Delete">✕</button></div></div>
+  <div class="course-item"><img src="https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/cdn-ecommerce/store_01HBM37W59YM602ZY1SMAMN37W%2Fassets%2F1750926107990-covercopy.jpg" alt="Vedanta cover">
+    <div class="ci-body"><b>The Vedanta Path — Himalayan Silence</b><div class="ci-meta"><span class="chip gold">donation based</span><span class="chip">5 tracks</span></div></div>
+    <div style="display:flex;gap:2px;flex:0 0 auto"><button class="icon-btn" aria-label="Edit">✎</button><button class="icon-btn" aria-label="Duplicate">⧉</button><button class="icon-btn" aria-label="Delete">✕</button></div></div>
+  <button class="btn btn-ghost">+ New course</button>
+</div>
+<div class="view" id="v-teachers" data-screen-label="Teachers">
+  <h1>Teachers</h1>
+  <p class="sub">Every ācārya names their paramparā.</p>
+  <div class="course-item"><img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,h=466,fit=crop/d95DMJoWQZi9KZO2/dyn-A3QlQeJvnpinw4Vv.jpg" alt="DYN portrait" style="border-radius:50%">
+    <div class="ci-body"><b>DYN</b><div class="ci-meta"><span class="chip gold">paramparā ☸</span><span class="chip">Vipassana · Goenka & Pa-Auk</span></div></div>
+    <button class="icon-btn" aria-label="Edit">✎</button></div>
+  <div class="card"><h3>Lineage line</h3>
+    <div class="field"><span class="label">Paramparā (→ separated)</span><input type="text" value="Gautama Buddha → Ledi Sayadaw → Saya Thetgyi → Sayagyi U Ba Khin → S.N. Goenka → DYN"></div>
+    <p class="hint">Shown in gold serif beside the teacher's courses.</p></div>
+</div>
+<div class="view" id="v-content" data-screen-label="Content">
+  <h1>Content</h1>
+  <p class="sub">Brand copy — the app whispers; it never shouts.</p>
+  <div class="card"><h3>Brand voice</h3>
+    <div class="row c2">
+      <div class="field"><span class="label">Tagline</span><input type="text" value="KNOW THYSELF THROUGH SPIRITUAL STRENGTH"></div>
+      <div class="field"><span class="label">Subline</span><input type="text" value="this is not religion — this is inner universe"></div>
+    </div>
+    <div class="field"><span class="label">Philosophy</span><textarea>WE DON'T GIVE ANSWERS. WE CREATE A SPACE WHERE YOU HEAR YOUR OWN</textarea></div>
+    <label class="switch"><input type="checkbox" checked><span class="track"></span>Show the breathing orb on Home</label>
+  </div>
+</div>
+<div class="view" id="v-payments" data-screen-label="Payments">
+  <h1>Payments</h1>
+  <p class="sub">Stripe Payment Links. Dāna appears after practice, never before.</p>
+  <div class="card"><h3>Dāna amounts</h3>
+    <div class="amounts"><input type="text" value="$5"><input type="text" value="$11"><input type="text" value="$22"><input type="text" value="$54"><span class="chip">+ Custom always shown</span></div>
+    <p class="hint">Gold selected state in the app; the slider only raises, never pressures.</p></div>
+  <div class="card"><h3>Links</h3>
+    <div class="row c2">
+      <div class="field"><span class="label">Stripe · donation</span><input type="url" value="YOUR_STRIPE_DONATION_LINK"></div>
+      <div class="field"><span class="label">Stripe · member monthly</span><input type="url" value="YOUR_STRIPE_MEMBER_MONTHLY_LINK"></div>
+      <div class="field"><span class="label">Stripe · sādhaka monthly</span><input type="url" value="YOUR_STRIPE_SADHAKA_MONTHLY_LINK"></div>
+      <div class="field"><span class="label">PayPal fallback</span><input type="url" value="https://www.paypal.com/donate?hosted_button_id=H5VQT3VLQBUBJ"></div>
+    </div>
+    <button class="btn btn-gold">Export config →</button></div>
+</div>
+</main>
+</div>
+<script>
+document.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".nav-btn").forEach(x=>x.classList.toggle("active",x===b));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="v-"+b.dataset.view));
+}));
+</script>
+</body></html>

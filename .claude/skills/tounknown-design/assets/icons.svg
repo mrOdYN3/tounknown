@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+
+<symbol id="tu-home" viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5"></path><path d="M6.5 10v9h11v-9"></path></symbol>
+<symbol id="tu-path" viewBox="0 0 24 24"><path d="M6 20c0-7 12-4 12-13"></path><circle cx="18" cy="5" r="1.8"></circle><circle cx="6" cy="20" r="1.8"></circle></symbol>
+<symbol id="tu-sangha" viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="2.6"></circle><circle cx="15.5" cy="9" r="2.6"></circle><path d="M3.5 19c.8-3.2 2.7-4.8 5-4.8s4.2 1.6 5 4.8M12.6 14.6c.9-.3 1.9-.4 2.9-.4 2.3 0 4.2 1.6 5 4.8"></path></symbol>
+<symbol id="tu-dana" viewBox="0 0 24 24"><path d="M12 3.5c2.5 3.2 6.5 4 6.5 8.4 0 3.9-2.9 6.6-6.5 6.6s-6.5-2.7-6.5-6.6c0-4.4 4-5.2 6.5-8.4Z"></path></symbol>
+<symbol id="tu-profile" viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.4"></circle><path d="M4.8 20c1.2-3.8 3.9-5.6 7.2-5.6s6 1.8 7.2 5.6"></path></symbol>
+</svg>

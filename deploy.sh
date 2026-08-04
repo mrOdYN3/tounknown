@@ -1,0 +1,107 @@
+#!/bin/sh
+# toUnknown — deploy webapp/ to the VPS and publish the site root.
+# Usage:  sh deploy.sh
+set -e
+VPS=root@72.60.170.97
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+SRC="$ROOT/webapp-dist"
+SITE="https://tounknown.com"
+
+echo "→ building (JSX precompiled, production React)"
+node "$ROOT/build/build.js"
+
+echo "→ syncing app files"
+rsync -az --delete "$SRC/" "$VPS:/var/www/tounknown/ds/"
+
+echo "→ generating the crawlable layer (paths, FAQ, sitemap, llms.txt)"
+rm -rf "$ROOT/seo-dist" && python3 "$ROOT/build/seo.py" "$ROOT/seo-dist"
+rsync -az "$ROOT/seo-dist/" "$VPS:/var/www/tounknown/"
+
+echo "→ publishing the legal page at /legal.html"
+ssh "$VPS" 'cp /var/www/tounknown/ds/legal.html /var/www/tounknown/legal.html \
+  && sed -i "s|href=\"styles.css\"|href=\"/ds/styles.css\"|; s|href=\"ui_kits/app/tu-refined.css\"|href=\"/ds/ui_kits/app/tu-refined.css\"|" /var/www/tounknown/legal.html'
+
+echo "→ building site root (clean URL + SEO)"
+ssh "$VPS" "SITE='$SITE' python3 - <<'PY'
+import os, re, html
+APP = '/var/www/tounknown/ds/ui_kits/app/index.html'
+OUT = '/var/www/tounknown/index.html'
+SITE = os.environ['SITE']
+s = open(APP, encoding='utf-8').read()
+
+TITLE = 'toUnknown — the ancient paths, guided | Vipassana, Tantra, Vedanta, Bhakti'
+DESC  = ('A digital Gurukula: guided meditation courses rooted in living traditions. '
+         'Every course names its lineage — tradition, source text, era. '
+         'Unlock by practice, not payment. No one is turned away for money.')
+OG    = SITE + '/ds/assets/monk-bowl.jpg'
+
+head = '''<base href=\"/ds/ui_kits/app/\">
+<meta name=\"description\" content=\"%s\">
+<meta name=\"theme-color\" content=\"#FBFAF7\">
+<link rel=\"canonical\" href=\"%s/\">
+<link rel=\"icon\" href=\"/ds/assets/logo-black.png\">
+<link rel=\"apple-touch-icon\" href=\"/ds/assets/logo-black.png\">
+<meta property=\"og:type\" content=\"website\">
+<meta property=\"og:title\" content=\"%s\">
+<meta property=\"og:description\" content=\"%s\">
+<meta property=\"og:image\" content=\"%s\">
+<meta property=\"og:url\" content=\"%s/\">
+<meta name=\"twitter:card\" content=\"summary_large_image\">
+<meta name=\"twitter:site\" content=\"@tounknowndotcom\">
+''' % (html.escape(DESC), SITE, html.escape(TITLE), html.escape(DESC), OG, SITE)
+
+JSONLD = '''<script type=\"application/ld+json\">
+{\"@context\":\"https://schema.org\",\"@graph\":[
+ {\"@type\":\"Organization\",\"@id\":\"%(site)s/#org\",\"name\":\"toUnknown\",
+  \"url\":\"%(site)s/\",\"logo\":\"%(site)s/ds/assets/logo-black.png\",
+  \"email\":\"tounknown.com@gmail.com\",
+  \"description\":\"%(desc)s\",
+  \"sameAs\":[\"https://t.me/tounknowndotcom\",\"https://instagram.com/tounknowndotcom\",
+             \"https://twitter.com/tounknowndotcom\",\"https://www.youtube.com/@tounknowndotcom\",
+             \"https://insighttimer.com/dyn\"]},
+ {\"@type\":\"Person\",\"@id\":\"%(site)s/#dyn\",\"name\":\"DYNN\",\"jobTitle\":\"Meditation guide\",
+  \"worksFor\":{\"@id\":\"%(site)s/#org\"},
+  \"knowsAbout\":[\"Vipassana\",\"Anapanasati\",\"Vigyan Bhairav Tantra\",\"Advaita Vedanta\",\"Bhakti Yoga\"]},
+ {\"@type\":\"WebSite\",\"@id\":\"%(site)s/#site\",\"url\":\"%(site)s/\",\"name\":\"toUnknown\",
+  \"publisher\":{\"@id\":\"%(site)s/#org\"}},
+ {\"@type\":\"FAQPage\",\"mainEntity\":[
+   {\"@type\":\"Question\",\"name\":\"Can I meditate here without paying?\",
+    \"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. The first course of every Path is free forever, and no one is turned away for money — write one honest paragraph to ask for a scholarship.\"}},
+   {\"@type\":\"Question\",\"name\":\"How do the Paths unlock?\",
+    \"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"By practice, not payment. Each track opens after you have sat the one before it — the way retreats and living lineages work.\"}},
+   {\"@type\":\"Question\",\"name\":\"Which traditions are taught?\",
+    \"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Vipassana (Theravada, Pali Canon), Tantra (Kashmir Shaivism, Vigyan Bhairav Tantra), Vedanta (Advaita), Bhakti Yoga, and the Stoic practice of Marcus Aurelius. Each course names its tradition, source text and era.\"}}
+ ]}
+]}
+</script>''' % {'site': SITE, 'desc': DESC.replace('\"', '')}
+
+s = s.replace('<title>toUnknown — app UI kit</title>', '<title>' + html.escape(TITLE) + '</title>' + head + JSONLD, 1)
+assert '<base href=' in s, 'SEO head was not injected — the title marker did not match. Refusing to ship a page whose scripts would 404.'
+
+# the crawlable summary, for readers (human or machine) without JavaScript
+try:
+    frag = open('/var/www/tounknown/_noscript.html', encoding='utf-8').read()
+    s = s.replace('<div id=\"root\"></div>', '<div id=\"root\"></div>\\n<noscript>' + frag + '</noscript>', 1)
+except FileNotFoundError:
+    pass
+open(OUT, 'w', encoding='utf-8').write(s)
+print('   root index.html:', len(s), 'bytes')
+
+# robots.txt, sitemap.xml and llms.txt are generated by build/seo.py — not written here
+print('   root index.html built')
+PY"
+
+echo "→ publishing /ru (same app, Russian metadata)"
+scp -q "$ROOT/build/make-ru.py" "$VPS:/tmp/make-ru.py"
+ssh "$VPS" 'python3 /tmp/make-ru.py && rm -f /tmp/make-ru.py'
+
+echo "→ reloading services"
+ssh "$VPS" 'systemctl restart tu-api && systemctl reload nginx && systemctl is-active tu-api'
+echo "→ smoke test"
+for u in "$SITE/" "$SITE/ru" "$SITE/faq" "$SITE/api/health"; do
+  code=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 25 "$u")
+  [ "$code" = "200" ] || { echo "  ✗ $u returned $code"; exit 1; }
+  echo "  ✓ $u"
+done
+curl -s "$SITE/" | grep -q '<base href=' || { echo "  ✗ homepage is missing its <base> tag"; exit 1; }
+echo "✓ deployed → $SITE/"

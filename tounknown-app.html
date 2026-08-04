@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- ============================================================
+     toUnknown — the digital Gurukula (Phase 1, static)
+     ▸ REPLACE the YOUR_STRIPE_* links in the #tu-config JSON below
+       (Stripe Dashboard → Payment Links; recurring for memberships).
+     ▸ Edit content with tounknown-admin.html → Export → paste the
+       <script id="tu-config"> block over the one below.
+     ▸ Practice progress is in-memory for this static phase; Phase 2
+       moves it to member accounts (Supabase) per the Coding Doc §8.
+     ▸ Recommended robots.txt:  User-agent: * / Allow: /  + Sitemap line
+     ▸ Recommended llms.txt: "toUnknown — donation-based school of
+       ancient meditation traditions (Vipassana, Vigyan Bhairav Tantra,
+       Advaita Vedanta, Bhakti). Paths unlock by practice. tounknown.com"
+     ============================================================ -->
+<title>toUnknown — The Ancient Paths, Guided | Vipassana, Tantra, Vedanta & Bhakti</title>
+<meta name="description" content="A school of the ancient meditation traditions. Donation-based Paths of Vipassana, Vigyan Bhairav Tantra, Advaita Vedanta and Bhakti Yoga — unlocked by practice, guided by lineage teachers.">
+<link rel="canonical" href="https://tounknown.com/">
+<meta name="theme-color" content="#FBFAF7">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="toUnknown">
+<meta property="og:title" content="toUnknown — The Ancient Paths, Guided">
+<meta property="og:description" content="Only the roots: Vipassana, Tantra, Vedanta, Bhakti. Paths that unlock by practice. No one is turned away for money.">
+<meta property="og:image" content="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/d95DMJoWQZi9KZO2/tounknowndotcom-mePvblBa96ugbge1.jpg">
+<meta property="og:url" content="https://tounknown.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tounknowndotcom">
+<link rel="preconnect" href="https://assets.zyrosite.com">
+<link rel="preconnect" href="https://cdn.zyrosite.com">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"toUnknown","url":"https://tounknown.com/",
+"logo":"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/d95DMJoWQZi9KZO2/dod1-2dud-d-d2dunnd1-2d3-4d1-4n-Aq2eB6DL6VSjnbXR.png",
+"sameAs":["https://www.instagram.com/tounknowndotcom","https://x.com/tounknowndotcom","https://www.youtube.com/@tounknowndotcom","https://t.me/tounknowndotcom","https://insighttimer.com/dyn","https://trustpilot.com/review/tounknown.com"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"DYN","jobTitle":"Meditation Instructor & Founder",
+"description":"20+ Vipassana courses in the S.N. Goenka and Pa-Auk Sayadaw traditions; retreats in 15+ countries; Hatha Yoga since 2017, Ashtanga since 2020.",
+"url":"https://tounknown.com/support-tounknown-donations-faq"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[
+{"@type":"Course","position":1,"name":"112 Guided Meditations of Vigyan Bhairav Tantra by Shiva","description":"112 techniques of the Vijñana Bhairava Tantra as 15-minute guided audio sessions in 11 parts — 43h11m.","provider":{"@type":"Organization","name":"toUnknown"},"timeRequired":"PT43H11M","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Donation-based"}},
+{"@type":"Course","position":2,"name":"Vipassana Part 1 — Anapanasati Essentials","description":"5-day introductory Vipassana course: Sīla, Samādhi, Pañña. Two daily 15-minute guided sessions.","provider":{"@type":"Organization","name":"toUnknown"},"timeRequired":"PT5H32M","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Donation-based"}},
+{"@type":"Course","position":3,"name":"Himalayan Silence: I Am Shiva – I Am Presence","description":"5 guided meditations for ego dissolution and non-dual awakening through Advaita Vedanta.","provider":{"@type":"Organization","name":"toUnknown"},"timeRequired":"PT3H5M","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Donation-based"}},
+{"@type":"Course","position":4,"name":"Whispers of God: Bhakti Yoga & Anapanasati","description":"10 meditations blending mindful breathing with devotion and surrender — 6h45m of guided audio.","provider":{"@type":"Organization","name":"toUnknown"},"timeRequired":"PT6H45M","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Donation-based"}}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is the Tounknown Family?","acceptedAnswer":{"@type":"Answer","text":"Generosity is the root of a connected life. The community exists through voluntary giving to create meditation experiences and personal growth resources — a digital Sangha supporting mindful living."}},
+{"@type":"Question","name":"Can I practice without paying?","acceptedAnswer":{"@type":"Answer","text":"Yes. The first gate of every Path is free, and no one is turned away for money — write one honest paragraph to apply for a scholarship."}},
+{"@type":"Question","name":"How do Paths unlock?","acceptedAnswer":{"@type":"Answer","text":"By practice, not payment. Each track opens after you have sat the one before it — the way real retreats and lineages work."}},
+{"@type":"Question","name":"How are donations used?","acceptedAnswer":{"@type":"Answer","text":"Funds support course development, teacher payouts, mindfulness programs for children, and operational infrastructure. The team accepts pay below standard rates."}}]}
+</script>
+
+<!-- ================= EDITABLE CONFIG (paste from Admin Studio) ================= -->
+<script type="application/json" id="tu-config">
+{
+  "brand":{
+    "name":"toUnknown",
+    "tagline":"KNOW THYSELF THROUGH SPIRITUAL STRENGTH",
+    "subline":"this is not religion — this is inner universe",
+    "philosophy":"WE DON'T GIVE ANSWERS. WE CREATE A SPACE WHERE YOU HEAR YOUR OWN",
+    "quotes":["THEREFORE, DON'T TRY","You are your OWN masterpiece...","Generosity is the root of a connected life."],
+    "email":"tounknown.com@gmail.com"
+  },
+  "payments":{
+    "stripeDonation":"YOUR_STRIPE_DONATION_LINK",
+    "memberMonthly":"YOUR_STRIPE_MEMBER_MONTHLY_LINK",
+    "memberYearly":"YOUR_STRIPE_MEMBER_YEARLY_LINK",
+    "sadhakaMonthly":"YOUR_STRIPE_SADHAKA_MONTHLY_LINK",
+    "foundingOneOff":"YOUR_STRIPE_FOUNDING_LINK",
+    "paypal":"https://www.paypal.com/donate?hosted_button_id=H5VQT3VLQBUBJ",
+    "danaAmounts":[5,11,22,54]
+  },
+  "links":{
+    "telegram":"https://t.me/tounknowndotcom",
+    "instagram":"https://www.instagram.com/tounknowndotcom",
+    "x":"https://x.com/tounknowndotcom",
+    "youtube":"https://www.youtube.com/@tounknowndotcom",
+    "insightTimer":"https://insighttimer.com/dyn",
+    "trustpilot":"https://trustpilot.com/review/tounknown.com",
+    "blog":"https://tounknown.com/blog",
+    "terms":"https://tounknown.com/terms-of-use"
+  },
+  "futurePaths":[
+    {"name":"The Zen Path","tradition":"Chan / Zen Buddhism","source":"Zazen · Shikantaza · ~6th c."},
+    {"name":"The Tibetan Path","tradition":"Vajrayāna · Dzogchen","source":"Rigpa & Mahāmudrā"},
+    {"name":"The Yoga Path","tradition":"Rāja Yoga","source":"Yoga Sūtras of Patañjali · ~2nd c. BCE"},
+    {"name":"The Sufi Path","tradition":"Islamic mysticism","source":"Dhikr & Muraqaba"},
+    {"name":"The Taoist Path","tradition":"Taoism","source":"Zuowang · Tao Te Ching · ~4th c. BCE"},
+    {"name":"The Stoic Path","tradition":"Greco-Roman philosophy","source":"Marcus Aurelius · Epictetus"},
+    {"name":"The Hesychast Path","tradition":"Christian mysticism","source":"Prayer of the Heart · Philokalia"},
+    {"name":"The Kabbalistic Path","tradition":"Jewish mysticism","source":"Hitbodedut & contemplation"}
+  ],
+  "teachers":[
+    {"id":"dyn","name":"DYN","lineage":"Vipassana · S.N. Goenka & Pa-Auk traditions",
+     "parampara":["Gautama Buddha","Ledi Sayadaw","Saya Thetgyi","Sayagyi U Ba Khin","S.N. Goenka","DYN"],
+     "bio":"Founder. 20+ Vipassana courses, retreats in 15+ countries. Hatha Yoga since 2017, Ashtanga since 2020. Engaged with Bhakti Yoga, Shivaism and Advaita philosophy.",
+     "avatar":"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,h=466,fit=crop/d95DMJoWQZi9KZO2/dyn-A3QlQeJvnpinw4Vv.jpg"}
+  ],
+  "paths":[
+    {"id":"vipassana","name":"The Vipassana Path","tradition":"Theravāda Buddhism","source":"Pali Canon · ~5th c. BCE",
+     "essence":"See things as they are. Sīla, Samādhi, Pañña.",
+     "image":"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=768,fit=crop/d95DMJoWQZi9KZO2/vipassana-meditation-course-part-1---anapanasati-online-A1aw3ookEphPVrPR.jpg",
+     "teacher":"dyn",
+     "url":"https://tounknown.com/vipassana-meditation-part-1-anapanasati-essentials",
+     "steps":[
+       {"t":"Anapanasati — the first breath","min":15,"free":true},
+       {"t":"Day 1 · Arriving in the body","min":15},
+       {"t":"Day 2 · The breath at the nostrils","min":15},
+       {"t":"Day 3 · Equanimity with sensation","min":15},
+       {"t":"Day 4 · The wandering mind returns","min":15},
+       {"t":"Day 5 · Sitting with what is","min":15},
+       {"t":"DĪKṢĀ GATE · reflection & seal","gate":true},
+       {"t":"Part 2 · deepening (opens beyond the gate)","min":20,"deep":true}
+     ]},
+    {"id":"tantra","name":"The Tantra Path","tradition":"Kashmir Shaivism","source":"Vigyan Bhairav Tantra · ~8th c.",
+     "essence":"112 doorways of Shiva — breath, sound, presence.",
+     "image":"https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/d95DMJoWQZi9KZO2/112-meditation-techniques-of-vigyan-bhairav-tantra-vijniana-bhairava-tantra-mv058VBbxxHle1ZR.jpg",
+     "teacher":"dyn",
+     "url":"https://tounknown.com/112-guided-meditations-of-vigyan-bhairav-tantra-vijnana-bhairava-tantra",
+     "steps":[
+       {"t":"Technique 6 · Breathing in the throat","min":15,"free":true},
+       {"t":"Technique 7 · Savoring the taste of existence","min":15},
+       {"t":"Technique 11 · Passage of breath through the nose","min":15},
+       {"t":"Technique 12 · Mindful breath while walking","min":15},
+       {"t":"DĪKṢĀ GATE · reflection & seal","gate":true},
+       {"t":"Parts I–XI · all 112 techniques (43 h 11 min)","min":15,"deep":true}
+     ]},
+    {"id":"vedanta","name":"The Vedanta Path","tradition":"Advaita Vedanta","source":"Upaniṣadic non-duality",
+     "essence":"I am — before every thought. Himalayan silence.",
+     "image":"https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/cdn-ecommerce/store_01HBM37W59YM602ZY1SMAMN37W%2Fassets%2F1750926107990-covercopy.jpg",
+     "teacher":"dyn",
+     "url":"https://tounknown.com/himalayan-silence-i-am-shiva-i-am-presence",
+     "steps":[
+       {"t":"I Am · resting as presence","min":23,"free":true},
+       {"t":"The witness and the witnessed","min":27},
+       {"t":"Silence beyond thought","min":30},
+       {"t":"Dissolving the I-thought","min":32},
+       {"t":"DĪKṢĀ GATE · reflection & seal","gate":true},
+       {"t":"Merging with cosmic awareness","min":35,"deep":true}
+     ]},
+    {"id":"bhakti","name":"The Bhakti Path","tradition":"Bhakti Yoga","source":"The way of devotion",
+     "essence":"Whispers of God — surrender, prayer, unconditional love.",
+     "image":"https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/cdn-ecommerce/store_01HBM37W59YM602ZY1SMAMN37W%2Fassets%2F1751001777618-cover_copy_n6ztvgd.jpg",
+     "teacher":"dyn",
+     "url":"https://tounknown.com/whispers-of-god-bhakti-yoga-and-anapanasati-vipassana",
+     "steps":[
+       {"t":"Opening the heart · breath as prayer","min":18,"free":true},
+       {"t":"Surrender · letting the Divine hold","min":25},
+       {"t":"Selfless service of the heart","min":30},
+       {"t":"Unconditional love · the yoga of liberation","min":35},
+       {"t":"DĪKṢĀ GATE · reflection & seal","gate":true},
+       {"t":"All ten whispers (6 h 45 min)","min":40,"deep":true}
+     ]}
+  ]
+}
+</script>
+
+<style>
+:root{
+  --bg:#FBFAF7; --bg2:#F5F3ED; --surface:#FFFFFF; --surface2:#F2EFE8;
+  --hairline:rgba(24,22,16,0.09); --gold:#A8781F; --gold2:#D9A441;
+  --text:#191813; --text2:rgba(25,24,19,0.60); --text3:rgba(25,24,19,0.38);
+  --sage:#5E8A4A; --r:20px; --rs:14px;
+  --spring:cubic-bezier(0.32,0.72,0,1);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,system-ui,sans-serif;
+  --serif:"New York",Georgia,"Times New Roman",serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:#ECE9E1;color:var(--text);-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.5}
+/* ambient desktop backdrop + phone frame */
+.stage{min-height:100vh;display:flex;justify-content:center;background:
+  radial-gradient(70% 50% at 20% 0%,rgba(217,164,65,0.10),transparent 60%),
+  radial-gradient(60% 50% at 85% 100%,rgba(140,120,190,0.08),transparent 60%),#ECE9E1}
+.frame{width:100%;max-width:430px;min-height:100vh;position:relative;
+  background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
+  box-shadow:0 0 0 0.5px var(--hairline),0 30px 90px rgba(60,50,20,0.18)}
+main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+.view{display:none;animation:vfade .34s var(--spring)}
+.view.on{display:block}
+@keyframes vfade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* header */
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  padding:calc(12px + env(safe-area-inset-top)) 20px 12px;
+  background:rgba(251,250,247,0.78);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);
+  border-bottom:0.5px solid transparent;transition:border-color .3s}
+header.scrolled{border-bottom-color:var(--hairline)}
+.h-title{font-size:17px;font-weight:600;letter-spacing:-0.2px;opacity:0;transform:translateY(4px);transition:all .3s var(--spring)}
+header.scrolled .h-title{opacity:1;transform:none}
+.h-mark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.orb{width:26px;height:26px;border-radius:50%;flex:0 0 auto;
+  background:radial-gradient(circle at 35% 30%,var(--gold2),#7a5a1c 72%);
+  animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+/* type */
+h1{font-size:34px;font-weight:700;letter-spacing:-0.4px;line-height:1.15}
+h2{font-size:22px;font-weight:600;letter-spacing:-0.3px}
+.label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3)}
+.serif{font-family:var(--serif);font-style:italic}
+.muted{color:var(--text2)}
+section{padding:0 20px}
+/* hero */
+.hero{position:relative;min-height:78vh;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 20px 36px;overflow:hidden}
+.hero-img{position:absolute;inset:0;background-size:cover;background-position:center 30%;z-index:0;
+  background-color:#E9E2D2;background-image:radial-gradient(80% 60% at 50% 30%,rgba(217,164,65,0.18),transparent 70%)}
+.hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(251,250,247,0.08) 0%,rgba(251,250,247,0.55) 55%,var(--bg) 96%)}
+.hero > *{position:relative;z-index:1}
+.hero .orb{width:56px;height:56px;margin-bottom:22px;box-shadow:0 0 60px rgba(217,164,65,0.35)}
+.hero h1{margin-bottom:10px}
+.hero .sub{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--text2);margin-bottom:26px}
+.cta-row{display:flex;gap:12px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;
+  font:inherit;font-weight:600;font-size:15.5px;padding:15px 22px;border-radius:16px;
+  transition:transform .28s var(--spring),background .2s;user-select:none;text-decoration:none;color:inherit;
+  min-height:44px}
+.btn:active{transform:scale(0.97)}
+.btn-gold{background:var(--text);color:#FBFAF7;box-shadow:0 6px 18px rgba(25,24,19,0.18)}
+.btn-gold:hover{background:#2A2820}
+.btn-ghost{background:rgba(255,255,255,0.72);backdrop-filter:blur(10px);border:0.5px solid var(--hairline);color:var(--text);box-shadow:0 2px 10px rgba(60,50,20,0.06)}
+.btn-quiet{background:transparent;color:var(--text2);font-weight:500}
+.btn-wide{width:100%}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#FBFAF7;border-radius:50%;animation:sp .7s linear infinite;display:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4.5px 11px;
+  border-radius:999px;background:var(--surface2);color:var(--text2);border:0.5px solid var(--hairline)}
+.chip.gold{background:rgba(217,164,65,0.16);color:var(--gold);border-color:rgba(168,120,31,0.3)}
+.chip.green{background:rgba(94,138,74,0.12);color:var(--sage);border-color:rgba(94,138,74,0.28)}
+/* interlude */
+.interlude{padding:52px 28px;text-align:center}
+.interlude p{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.45;color:var(--text)}
+.interlude .label{display:block;margin-top:14px}
+/* path cards */
+.path-card{position:relative;border-radius:24px;overflow:hidden;margin-bottom:16px;cursor:pointer;
+  border:0.5px solid var(--hairline);transition:transform .3s var(--spring);min-height:200px;
+  display:flex;flex-direction:column;justify-content:flex-end;box-shadow:0 14px 40px rgba(60,50,20,0.12)}
+.path-card:active{transform:scale(0.98)}
+.pc-img{position:absolute;inset:0;background-size:cover;background-position:center;
+  background-color:#181826}
+.pc-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,16,0.05) 20%,rgba(11,11,16,0.88) 100%)}
+.pc-body{position:relative;z-index:1;padding:18px;color:#F5F4F0}
+.pc-body .chip{background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.85);border-color:rgba(255,255,255,0.25)}
+.pc-body .chip.gold{background:rgba(217,164,65,0.25);color:#E8B95A;border-color:rgba(217,164,65,0.45)}
+.pc-body h3{font-size:19px;font-weight:700;letter-spacing:-0.3px;margin:6px 0 3px}
+.pc-lineage{font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--gold2)}
+.pc-essence{font-size:13.5px;color:rgba(255,255,255,0.75);margin-top:3px}
+.sheet .pc-lineage{color:var(--gold)}
+.pc-meta{display:flex;gap:8px;margin-top:12px;align-items:center}
+.ring{--p:0;width:34px;height:34px;border-radius:50%;flex:0 0 auto;position:relative;
+  background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,0.14) 0)}
+.ring{background:conic-gradient(var(--gold2) calc(var(--p)*1%),rgba(255,255,255,0.25) 0)}
+.ring::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:rgba(25,24,19,0.75)}
+.ring span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;z-index:1;color:rgba(255,255,255,0.85)}
+/* horizontal snap row */
+.hrow{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 20px 18px;scrollbar-width:none}
+.hrow::-webkit-scrollbar{display:none}
+.hcard{scroll-snap-align:start;flex:0 0 240px;border-radius:22px;overflow:hidden;position:relative;
+  min-height:300px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;
+  border:0.5px solid var(--hairline);transition:transform .3s var(--spring);box-shadow:0 14px 40px rgba(60,50,20,0.12)}
+.hcard:active{transform:scale(0.97)}
+/* steps */
+.step{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:0.5px solid var(--hairline)}
+.step:last-child{border:none}
+.step-ico{width:40px;height:40px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  background:var(--surface2);border:0.5px solid var(--hairline);font-size:15px}
+.step-ico.done{background:rgba(94,138,74,0.12);border-color:rgba(94,138,74,0.35);color:var(--sage)}
+.step-ico.next{background:rgba(217,164,65,0.18);border-color:rgba(168,120,31,0.5);color:var(--gold);
+  animation:pulseGold 3s ease-in-out infinite}
+@keyframes pulseGold{0%,100%{box-shadow:0 0 0 0 rgba(217,164,65,0.25)}50%{box-shadow:0 0 0 8px rgba(217,164,65,0)}}
+.step-body{flex:1;min-width:0}
+.step-body b{display:block;font-size:15px;letter-spacing:-0.2px}
+.step-body small{color:var(--text3);font-size:12.5px}
+.step.locked .step-body b{color:var(--text3)}
+.seal{font-family:var(--serif);font-style:italic;font-size:12px;color:var(--gold);opacity:0.85}
+/* sheets */
+.sheet-wrap{position:fixed;inset:0;z-index:60;display:none;justify-content:center}
+.sheet-wrap.open{display:flex}
+.sheet-scrim{position:absolute;inset:0;background:rgba(30,28,20,0.32);backdrop-filter:blur(4px);
+  opacity:0;transition:opacity .32s}
+.sheet-wrap.open .sheet-scrim{opacity:1}
+.sheet{position:absolute;bottom:0;width:100%;max-width:430px;max-height:92%;overflow-y:auto;
+  background:rgba(252,251,248,0.96);backdrop-filter:blur(30px) saturate(1.8);-webkit-backdrop-filter:blur(30px) saturate(1.8);
+  border-radius:28px 28px 0 0;border:0.5px solid var(--hairline);border-bottom:none;
+  transform:translateY(40px);opacity:0;transition:all .38s var(--spring);
+  padding:10px 22px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(60,50,20,0.15)}
+.sheet-wrap.open .sheet{transform:none;opacity:1}
+.grabber{width:38px;height:5px;border-radius:99px;background:rgba(25,24,19,0.18);margin:6px auto 18px}
+/* practice player */
+.practice{text-align:center;padding:10px 0 6px}
+.p-orb{width:150px;height:150px;margin:26px auto;border-radius:50%;position:relative;
+  background:radial-gradient(circle at 36% 30%,var(--gold2),#6d4f17 75%);
+  box-shadow:0 0 80px rgba(217,164,65,0.3);animation:breathe 8s ease-in-out infinite}
+.p-orb.still{animation:none}
+.p-time{font-size:40px;font-weight:200;letter-spacing:2px;font-variant-numeric:tabular-nums}
+.p-phase{font-family:var(--serif);font-style:italic;color:var(--text2);height:22px;margin:6px 0 20px}
+/* dana slider */
+.dana-amounts{display:flex;gap:10px;justify-content:center;margin:20px 0}
+.d-chip{padding:11px 18px;border-radius:999px;background:var(--surface2);border:0.5px solid var(--hairline);
+  font-weight:700;cursor:pointer;transition:all .25s var(--spring);min-height:44px;font-size:15px;color:var(--text2)}
+.d-chip.sel{background:rgba(217,164,65,0.18);border-color:var(--gold);color:var(--gold);transform:scale(1.05)}
+input[type=range]{width:100%;accent-color:var(--gold);height:44px}
+/* tier cards */
+.tier{border-radius:24px;border:0.5px solid var(--hairline);background:var(--surface);padding:22px;margin-bottom:16px;position:relative}
+.tier{box-shadow:0 6px 24px rgba(60,50,20,0.06)}
+.tier.hot{border-color:rgba(168,120,31,0.45);box-shadow:0 10px 40px rgba(217,164,65,0.16)}
+.tier h3{font-size:19px;letter-spacing:-0.3px}
+.tier .price{font-size:30px;font-weight:700;letter-spacing:-0.5px;margin:8px 0 2px}
+.tier .price small{font-size:14px;color:var(--text3);font-weight:500}
+.tier ul{list-style:none;margin:14px 0 18px}
+.tier li{padding:6px 0;color:var(--text2);font-size:14.5px;display:flex;gap:10px}
+.tier li::before{content:"·";color:var(--gold);font-weight:700}
+/* community */
+.circle-card{border-radius:20px;border:0.5px solid var(--hairline);background:var(--surface);padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
+.circle-card .locked-veil{position:absolute;inset:0;backdrop-filter:blur(5px);background:rgba(251,250,247,0.55);
+  display:flex;align-items:center;justify-content:center;z-index:2}
+.locked-veil span{font-family:var(--serif);font-style:italic;font-size:13.5px;color:var(--gold)}
+/* profile */
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:18px 0}
+.stat{background:var(--surface);border:0.5px solid var(--hairline);border-radius:18px;padding:16px 12px;text-align:center}
+.stat b{display:block;font-size:24px;font-weight:700;letter-spacing:-0.5px}
+.stat span{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em}
+details{border-bottom:0.5px solid var(--hairline);padding:14px 0}
+summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:28px}
+summary::after{content:"+";color:var(--gold);font-size:19px;transition:transform .3s var(--spring)}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding-top:10px;color:var(--text2);font-size:14.5px}
+/* teacher */
+.teacher{display:flex;gap:16px;align-items:center;background:var(--surface);border:0.5px solid var(--hairline);
+  border-radius:22px;padding:18px;margin:14px 0}
+.teacher img{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:top;flex:0 0 auto;background:#181826}
+/* tab bar */
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:40;
+  display:flex;background:rgba(251,250,247,0.82);backdrop-filter:blur(26px) saturate(1.8);-webkit-backdrop-filter:blur(26px) saturate(1.8);
+  border-top:0.5px solid var(--hairline);padding:8px 6px calc(10px + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;cursor:pointer;
+  color:var(--text3);font:inherit;font-size:10.5px;font-weight:600;padding:6px 0;min-height:48px;
+  transition:color .25s;position:relative}
+.tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .3s var(--spring)}
+.tab.on{color:var(--gold)}
+.tab.on svg{transform:translateY(-1px)}
+.tab .dot{position:absolute;top:4px;right:calc(50% - 16px);width:6px;height:6px;border-radius:50%;background:var(--gold);display:none}
+.tab .dot.show{display:block}
+/* toast */
+#toast{position:fixed;bottom:calc(100px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(16px);
+  opacity:0;z-index:99;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);color:var(--text);
+  border:0.5px solid rgba(168,120,31,0.35);padding:12px 22px;border-radius:999px;font-size:14px;font-weight:500;
+  transition:all .38s var(--spring);pointer-events:none;box-shadow:0 12px 40px rgba(60,50,20,0.18);max-width:88%;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* misc */
+.reveal{opacity:0;transform:translateY(22px);transition:all .5s var(--spring)}
+.reveal.in{opacity:1;transform:none}
+img{max-width:100%}
+textarea{width:100%;background:var(--surface);border:0.5px solid var(--hairline);border-radius:var(--rs);
+  color:var(--text);font:inherit;font-size:15px;padding:13px;outline:none;min-height:110px;resize:vertical}
+textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,164,65,0.18)}
+a{color:var(--gold);text-decoration:none}
+.foot{padding:36px 20px 20px;text-align:center;color:var(--text3);font-size:12.5px;line-height:2}
+.foot a{color:var(--text3);margin:0 7px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="stage"><div class="frame">
+
+<header id="hdr">
+  <div class="h-mark"><img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/d95DMJoWQZi9KZO2/dod1-2dud-d-d2dunnd1-2d3-4d1-4n-Aq2eB6DL6VSjnbXR.png" alt="toUnknown logo" style="height:28px;width:auto;border-radius:7px" onerror="this.style.display='none'"> toUnknown</div>
+  <div class="h-title" id="h-title">Home</div>
+  <div style="width:26px"></div>
+</header>
+
+<main>
+<!-- ================= HOME ================= -->
+<div class="view on" id="v-home">
+  <div class="hero">
+    <div class="hero-img" style="background-image:url('https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/d95DMJoWQZi9KZO2/vipassana-meditation-mjEPpWR2lWHvRnVz.jpg')" role="img" aria-label="Meditator at dawn"></div>
+    <div class="orb" aria-hidden="true"></div>
+    <p class="label" style="margin-bottom:10px">Sādhana · the ancient paths, guided</p>
+    <h1 id="hero-tagline">KNOW THYSELF THROUGH SPIRITUAL STRENGTH</h1>
+    <p class="sub" id="hero-subline">this is not religion — this is inner universe</p>
+    <div class="cta-row">
+      <button class="btn btn-gold" onclick="go('paths')">Begin a Path</button>
+      <button class="btn btn-ghost" onclick="startFreeTaster()">Sit 15 min free</button>
+    </div>
+  </div>
+
+  <div class="interlude reveal">
+    <p id="philosophy">WE DON'T GIVE ANSWERS. WE CREATE A SPACE WHERE YOU HEAR YOUR OWN</p>
+    <span class="label">— the toUnknown way</span>
+  </div>
+
+  <section class="reveal">
+    <h2 style="margin-bottom:4px">The four Paths</h2>
+    <p class="muted" style="font-size:14px;margin-bottom:14px">Only the roots — from every ancient tradition. One Path at a time, walked, not browsed. Four Paths are alive; eight more await their lineage teachers.</p>
+  </section>
+  <div class="hrow reveal" id="home-paths"></div>
+
+  <div class="interlude reveal">
+    <p>THEREFORE, DON'T TRY</p>
+    <span class="label">— on effortless effort</span>
+  </div>
+
+  <section class="reveal" style="margin-bottom:6px">
+    <div style="border-radius:24px;overflow:hidden;border:0.5px solid var(--hairline);box-shadow:0 14px 40px rgba(60,50,20,0.12)">
+      <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=583,fit=crop/d95DMJoWQZi9KZO2/tounknown.com-YX41rpojaNUDwELy.png" alt="You are your own masterpiece — toUnknown" width="768" height="583" loading="lazy" style="display:block;width:100%;height:auto">
+    </div>
+    <p class="serif muted" style="text-align:center;font-size:14px;margin-top:12px;font-style:italic">You are your OWN masterpiece...</p>
+  </section>
+
+  <section class="reveal">
+    <h2 style="margin-bottom:14px">How it works</h2>
+    <div class="step"><div class="step-ico next">1</div><div class="step-body"><b>Choose a lineage Path</b><small>Vipassana · Tantra · Vedanta · Bhakti — each cites its root text and era</small></div></div>
+    <div class="step"><div class="step-ico">2</div><div class="step-body"><b>Unlock by abhyāsa — steady practice</b><small>Each track opens only after you have sat the one before. Never by payment</small></div></div>
+    <div class="step"><div class="step-ico">3</div><div class="step-body"><b>Pass the Dīkṣā Gate</b><small>Practice hours + a written reflection — the sādhaka seal</small></div></div>
+    <div class="step"><div class="step-ico">☸</div><div class="step-body"><b>Give by gratitude</b><small>Dāna appears after practice, never before. No one is turned away for money</small></div></div>
+  </section>
+
+  <section class="reveal" style="margin-top:34px">
+    <div class="tier hot">
+      <span class="chip gold">membership</span>
+      <h3 style="margin-top:10px">One membership. Every Path.</h3>
+      <p class="muted" style="font-size:14.5px;margin-top:6px">$11/month or $88/year — and the guided Sādhaka circle for those who go deep.</p>
+      <button class="btn btn-gold btn-wide" style="margin-top:16px" onclick="go('membership')">See the tuition ladder</button>
+    </div>
+  </section>
+
+  <section class="reveal" style="margin-top:26px;text-align:center">
+    <p class="label" style="margin-bottom:10px">Trusted by practitioners</p>
+    <a id="trust-link" href="https://trustpilot.com/review/tounknown.com" target="_blank" rel="noopener" aria-label="Review toUnknown on Trustpilot">
+      <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,h=61,fit=crop/d95DMJoWQZi9KZO2/trustpilot-vipassana.life-95flksHt92UTTjoa.png" alt="Trustpilot reviews" width="200" height="33" loading="lazy" style="border-radius:8px">
+    </a>
+  </section>
+  <div class="foot">© 2026 toUnknown · <a id="f-terms" href="https://tounknown.com/terms-of-use" target="_blank" rel="noopener">Terms</a></div>
+</div>
+
+<!-- ================= PATHS ================= -->
+<div class="view" id="v-paths">
+  <section style="padding-top:22px">
+    <h1>Mārga</h1>
+    <p class="muted serif" style="margin:8px 0 20px">The Paths — a living library of humanity's contemplative roots.</p>
+  </section>
+  <section id="paths-list"></section>
+  <section style="margin-top:30px">
+    <h2 style="margin-bottom:4px">Paths awaiting their teachers</h2>
+    <p class="muted" style="font-size:13.5px;margin-bottom:14px">Every ancient tradition belongs here. Each Path opens when its authorized lineage teacher joins the Sangha Circle.</p>
+    <div id="future-paths"></div>
+  </section>
+  <section style="margin-top:8px">
+    <div class="tier">
+      <span class="chip">for teachers</span>
+      <h3 style="margin-top:10px">Teach with us — the Sangha Circle</h3>
+      <p class="muted" style="font-size:14px;margin-top:6px">Authentic lineage teachers only. Name your paramparā — who taught your teacher? Which tradition, which source texts? A seat is $25/mo — and one cohort of 25 students pays $3,000 at our 80/20 split.</p>
+      <a class="btn btn-ghost btn-wide" style="margin-top:14px" id="teach-mail" href="mailto:tounknown.com@gmail.com?subject=Sangha%20Circle%20application">Apply · state your lineage</a>
+    </div>
+  </section>
+</div>
+
+<!-- ================= COMMUNITY ================= -->
+<div class="view" id="v-community">
+  <section style="padding-top:22px">
+    <h1>Sangha</h1>
+    <p class="muted serif" style="margin:8px 0 20px">Not a feed. A circle of practitioners.</p>
+    <div class="tier hot" style="padding:0;overflow:hidden">
+      <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=768,fit=crop/d95DMJoWQZi9KZO2/true-meditation-AzGjpnnRKjCvn38p.jpg" alt="True meditation — live satsang" width="768" height="400" loading="lazy" style="display:block;width:100%;height:150px;object-fit:cover">
+      <div style="padding:18px">
+        <span class="chip gold">live satsang</span>
+        <h3 style="margin-top:8px">Monthly live sitting with DYN</h3>
+        <p class="muted" style="font-size:14px;margin-top:4px">Members sit together, then ask. Recordings join the library.</p>
+      </div>
+    </div>
+    <div id="circles"></div>
+    <p class="muted" style="font-size:13.5px;text-align:center;margin:20px 0">
+      While the in-app Sangha is being built, the circle lives on
+      <a id="tg-link" href="https://t.me/tounknowndotcom" target="_blank" rel="noopener">Telegram</a>.
+    </p>
+  </section>
+</div>
+
+<!-- ================= MEMBERSHIP ================= -->
+<div class="view" id="v-membership">
+  <div class="interlude" style="padding-top:44px">
+    <p id="dana-opening">These meditations are offered freely — in the spirit of generosity.</p>
+    <span class="label">— dāna, the root of a connected life</span>
+  </div>
+  <section>
+    <div class="tier">
+      <span class="chip">seeker</span>
+      <div class="price">$0 <small>· dāna</small></div>
+      <ul><li>First gate of every Path — free forever</li><li>Community, read-only</li><li>Give only if it feels true</li></ul>
+      <button class="btn btn-ghost btn-wide" onclick="go('paths')">Start free</button>
+    </div>
+    <div class="tier hot">
+      <span class="chip gold">student · toUnknown+</span>
+      <div class="price">$11<small>/mo</small> <small>or $88/yr</small></div>
+      <ul><li>All four Paths, unlocked by your practice</li><li>Downloads for offline sitting</li><li>Sangha participation + monthly satsang</li></ul>
+      <div class="label" style="margin-bottom:8px">give more, if it feels true</div>
+      <input type="range" id="give-slider" min="11" max="33" step="1" value="11" aria-label="Monthly amount — give more if it feels true">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text3);margin-bottom:14px">
+        <span>$<b id="give-val" style="color:var(--gold);font-size:15px">11</b>/mo</span><span class="serif">if it feels true</span>
+      </div>
+      <button class="btn btn-gold btn-wide" onclick="pay('memberMonthly',this)">Become a Student <span class="spin"></span></button>
+      <button class="btn btn-quiet btn-wide" onclick="pay('memberYearly',this)">or $88 / year — two months free</button>
+    </div>
+    <div class="tier">
+      <span class="chip green">sādhaka · the guided circle</span>
+      <div class="price">$33<small>/mo</small></div>
+      <ul><li>Everything in Student</li><li>A circle of max 30 with a lineage teacher</li><li>Monthly live small-group guidance + direct Q&A</li><li>Gate reviews — your practice, seen</li></ul>
+      <button class="btn btn-gold btn-wide" onclick="pay('sadhakaMonthly',this)">Enter the circle <span class="spin"></span></button>
+    </div>
+    <div class="tier">
+      <span class="chip">founding member</span>
+      <div class="price">$108 <small>· once</small></div>
+      <ul><li>Lifetime Student membership</li><li>Your name on the gratitude wall</li></ul>
+      <button class="btn btn-ghost btn-wide" onclick="pay('foundingOneOff',this)">Become founding</button>
+    </div>
+  </section>
+  <section>
+    <div style="border-radius:24px;overflow:hidden;border:0.5px solid var(--hairline);margin-top:26px;box-shadow:0 14px 40px rgba(60,50,20,0.12)">
+      <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1440,h=756,fit=crop,f=jpeg/d95DMJoWQZi9KZO2/dana-m5Kn67gab6IJl6G1.jpg" alt="Dāna — the practice of generosity" width="1440" height="756" loading="lazy" style="display:block;width:100%;height:140px;object-fit:cover">
+    </div>
+    <h2 style="margin:18px 0 6px">One-time dāna</h2>
+    <p class="muted" id="dana-body" style="font-size:14.5px">No fixed cost. No pressure. Only presence, and the freedom to give — if it feels true.</p>
+    <div class="dana-amounts" id="dana-chips" role="group" aria-label="Donation amounts"></div>
+    <button class="btn btn-gold btn-wide" onclick="pay('stripeDonation',this)">Give with a free heart <span class="spin"></span></button>
+    <p style="text-align:center;margin-top:12px"><a id="paypal-link" href="#" target="_blank" rel="noopener" style="color:var(--text3);font-size:13px">or quietly via PayPal</a></p>
+  </section>
+  <div class="interlude">
+    <p>No one is turned away for money.</p>
+    <span class="label">scholarship — write us one honest paragraph · <a id="schol-mail" href="mailto:tounknown.com@gmail.com?subject=Scholarship">apply</a></span>
+  </div>
+</div>
+
+<!-- ================= PROFILE ================= -->
+<div class="view" id="v-profile">
+  <section style="padding-top:22px">
+    <h1>Your sādhana</h1>
+    <div class="stat-row">
+      <div class="stat"><b id="st-min">0</b><span>minutes sat</span></div>
+      <div class="stat"><b id="st-tracks">0</b><span>tracks completed</span></div>
+      <div class="stat"><b id="st-gates">0</b><span>gates passed</span></div>
+    </div>
+    <p class="muted serif" style="font-size:14px;text-align:center" id="st-word">The path begins with a single sitting.</p>
+  </section>
+  <section style="margin-top:30px">
+    <h2 style="margin-bottom:6px">Your teacher</h2>
+    <div class="teacher" id="teacher-card"></div>
+  </section>
+  <section style="margin-top:26px">
+    <h2 style="margin-bottom:6px">Questions</h2>
+    <details><summary>What is the Tounknown Family?</summary><p>"Generosity is the root of a connected life." The community exists through voluntary giving — a digital Sangha supporting mindful living, building VIPASSANA.life and, one day, a non-profit Vipassana Ashram in Bali.</p></details>
+    <details><summary>Can I practice without paying?</summary><p>Yes. The first gate of every Path is free, and no one is turned away for money — write one honest paragraph to apply for a scholarship.</p></details>
+    <details><summary>How do Paths unlock?</summary><p>By practice, not payment. Each track opens after you have sat the one before — the way real retreats and lineages work.</p></details>
+    <details><summary>How are donations used?</summary><p>Course development, teacher payouts, mindfulness programs for children, and infrastructure. The team accepts pay below standard rates.</p></details>
+    <details><summary>The Sanskrit we use</summary><p><b>Sādhana</b> — daily spiritual practice · <b>Mārga</b> — the path · <b>Dīkṣā</b> — initiation, the gate · <b>Abhyāsa</b> — steady, devoted repetition · <b>Dāna</b> — generosity · <b>Sangha</b> — the community of practitioners · <b>Satsang</b> — gathering in truth · <b>Sādhaka</b> — the committed practitioner · <b>Ācārya</b> — the teacher who embodies the teaching · <b>Paramparā</b> — the unbroken chain of transmission from teacher to student; every teacher here names theirs, and it is shown beside their courses.</p></details>
+    <details><summary>How do I manage my membership?</summary><p>Through the Stripe customer portal link in your receipt email — change or cancel any time, effective immediately.</p></details>
+  </section>
+  <div class="foot" id="social-foot"></div>
+</div>
+</main>
+
+<!-- ================= TAB BAR ================= -->
+<nav aria-label="Main">
+  <button class="tab on" data-v="home" aria-label="Home">
+    <svg viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5"/><path d="M6.5 10v9h11v-9"/></svg>Home</button>
+  <button class="tab" data-v="paths" aria-label="Paths">
+    <svg viewBox="0 0 24 24"><path d="M6 20c0-7 12-4 12-13"/><circle cx="18" cy="5" r="1.8"/><circle cx="6" cy="20" r="1.8"/></svg>Mārga</button>
+  <button class="tab" data-v="community" aria-label="Sangha">
+    <svg viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="2.6"/><circle cx="15.5" cy="9" r="2.6"/><path d="M3.5 19c.8-3.2 2.7-4.8 5-4.8s4.2 1.6 5 4.8M12.6 14.6c.9-.3 1.9-.4 2.9-.4 2.3 0 4.2 1.6 5 4.8"/></svg>Sangha</button>
+  <button class="tab" data-v="membership" aria-label="Membership">
+    <svg viewBox="0 0 24 24"><path d="M12 3.5c2.5 3.2 6.5 4 6.5 8.4 0 3.9-2.9 6.6-6.5 6.6s-6.5-2.7-6.5-6.6c0-4.4 4-5.2 6.5-8.4Z"/></svg>Dāna</button>
+  <button class="tab" data-v="profile" aria-label="Profile">
+    <span class="dot" id="member-dot"></span>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.4"/><path d="M4.8 20c1.2-3.8 3.9-5.6 7.2-5.6s6 1.8 7.2 5.6"/></svg>Sādhana</button>
+</nav>
+
+<!-- ================= PATH SHEET ================= -->
+<div class="sheet-wrap" id="sheet-path" role="dialog" aria-modal="true" aria-label="Path details">
+  <div class="sheet-scrim" onclick="closeSheet('sheet-path')"></div>
+  <div class="sheet">
+    <div class="grabber"></div>
+    <div id="path-sheet-body"></div>
+  </div>
+</div>
+
+<!-- ================= PRACTICE SHEET ================= -->
+<div class="sheet-wrap" id="sheet-practice" role="dialog" aria-modal="true" aria-label="Practice">
+  <div class="sheet-scrim"></div>
+  <div class="sheet">
+    <div class="grabber"></div>
+    <div class="practice">
+      <p class="label" id="pr-path"></p>
+      <h2 id="pr-title" style="margin:8px 0 2px"></h2>
+      <p class="serif muted" id="pr-lineage" style="font-size:13px"></p>
+      <div class="p-orb" id="pr-orb"></div>
+      <div class="p-time" id="pr-time">15:00</div>
+      <p class="p-phase" id="pr-phase">breathe in…</p>
+      <button class="btn btn-gold btn-wide" id="pr-btn" onclick="practiceAction()">Begin sitting</button>
+      <button class="btn btn-quiet btn-wide" onclick="closePractice()">not now</button>
+      <p class="muted" style="font-size:12px;margin-top:8px">Full guided audio lives on the course page — this timer holds the space.<br><a id="pr-source" href="#" target="_blank" rel="noopener">Open guided audio ↗</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= GATE SHEET ================= -->
+<div class="sheet-wrap" id="sheet-gate" role="dialog" aria-modal="true" aria-label="Gate reflection">
+  <div class="sheet-scrim"></div>
+  <div class="sheet">
+    <div class="grabber"></div>
+    <div style="text-align:center;padding:6px 0 14px">
+      <p class="label">dīkṣā · the gate</p>
+      <h2 style="margin:10px 0 6px">Reflection before the seal</h2>
+      <p class="serif muted" style="font-size:14.5px">Real lineages pause here. Write honestly — what changed in you on this Path so far?</p>
+    </div>
+    <textarea id="gate-text" placeholder="I noticed…" aria-label="Your reflection"></textarea>
+    <button class="btn btn-gold btn-wide" style="margin-top:14px" onclick="passGate()">Receive the sādhaka seal</button>
+    <button class="btn btn-quiet btn-wide" onclick="closeSheet('sheet-gate')">I'll return when ready</button>
+  </div>
+</div>
+
+<!-- ================= DANA MOMENT SHEET ================= -->
+<div class="sheet-wrap" id="sheet-dana" role="dialog" aria-modal="true" aria-label="Dana moment">
+  <div class="sheet-scrim" onclick="closeSheet('sheet-dana')"></div>
+  <div class="sheet">
+    <div class="grabber"></div>
+    <div style="text-align:center;padding:6px 0">
+      <div class="orb" style="width:44px;height:44px;margin:6px auto 16px"></div>
+      <h2>If this served you</h2>
+      <p class="serif muted" style="margin:8px 0 4px;font-size:15px">give what feels true — after practice, never before.</p>
+      <div class="dana-amounts" id="dana-chips-2" role="group" aria-label="Donation amounts"></div>
+      <button class="btn btn-gold btn-wide" onclick="pay('stripeDonation',this)">Give with a free heart <span class="spin"></span></button>
+      <button class="btn btn-quiet btn-wide" onclick="closeSheet('sheet-dana')">continue the Path 🙏</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+</div></div>
+
+<script>
+"use strict";
+/* ============ config ============ */
+const CFG = JSON.parse(document.getElementById("tu-config").textContent);
+
+/* ============ local images (from download-images.sh) ============
+   If ./images/ exists next to this file, all CDN URLs are swapped
+   for the local copies — full offline ownership. Otherwise the CDN
+   originals load as before. */
+const LOCAL_IMG = {
+  "dod1-2dud-d-d2dunnd1-2d3-4d1-4n-Aq2eB6DL6VSjnbXR.png":"logo.png",
+  "logo-copy-YbNnaZVgpyCnog3e.png":"wordmark.png",
+  "tounknowndotcom-mePvblBa96ugbge1.jpg":"brand-hero.jpg",
+  "vipassana-meditation-mjEPpWR2lWHvRnVz.jpg":"hero-vipassana.jpg",
+  "112-meditation-techniques-of-vigyan-bhairav-tantra-vijniana-bhairava-tantra-mv058VBbxxHle1ZR.jpg":"tantra-112-cover.jpg",
+  "1749811476032-covercopy.jpg":"tantra-cover-alt.jpg",
+  "vipassana-meditation-course-part-1---anapanasati-online-A1aw3ookEphPVrPR.jpg":"vipassana-part1.jpg",
+  "cover-food-detox-edition-dOqyPagbKlIjMrE0.jpg":"food-detox.jpg",
+  "1750926107990-covercopy.jpg":"himalayan-silence.jpg",
+  "1751001777618-cover_copy_n6ztvgd.jpg":"whispers-of-god.jpg",
+  "shiva-meditation-online-A85Vy47MEOF7lOJL.jpg":"shiva-meditation.jpg",
+  "true-meditation-AzGjpnnRKjCvn38p.jpg":"true-meditation.jpg",
+  "tounknown.com-YX41rpojaNUDwELy.png":"masterpiece.png",
+  "dana-m5Kn67gab6IJl6G1.jpg":"dana.jpg",
+  "dyn-A3QlQeJvnpinw4Vv.jpg":"dyn-portrait.jpg",
+  "958fa256-7a1d-4425-9c18-62e57f830a83.jpg":"community-banner.jpg",
+  "trustpilot-vipassana.life-95flksHt92UTTjoa.png":"trustpilot.png"
+};
+function localFor(url){
+  try{
+    const clean=decodeURIComponent(url);
+    for(const k in LOCAL_IMG){ if(clean.indexOf(k)!==-1) return "images/"+LOCAL_IMG[k]; }
+  }catch(e){}
+  return null;
+}
+function swapToLocalImages(){
+  document.querySelectorAll("img").forEach(im=>{
+    const l=localFor(im.getAttribute("src")||"");
+    if(l){ const cdn=im.src; im.onerror=()=>{im.onerror=null;im.src=cdn;}; im.src=l; }
+  });
+  document.querySelectorAll("[style*='background-image']").forEach(el=>{
+    const m=(el.getAttribute("style")||"").match(/url\(['"]?([^'")]+)['"]?\)/);
+    if(!m) return; const l=localFor(m[1]); if(!l) return;
+    const probe=new Image();
+    probe.onload=()=>{ el.style.backgroundImage=`url('${l}')`; };
+    probe.src=l;
+  });
+}
+(function(){ /* one probe decides */
+  const p=new Image();
+  p.onload=()=>{ swapToLocalImages(); /* re-swap after dynamic renders */ new MutationObserver(()=>swapToLocalImages()).observe(document.body,{childList:true,subtree:true}); };
+  p.src="images/logo.png";
+})();
+const $ = id => document.getElementById(id);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* in-memory practice record (Phase 2: member accounts / Supabase) */
+const PROG = { done:{}, gates:{}, minutes:0, tracks:0 };
+const doneKey = (p,i)=>p+":"+i;
+
+/* ============ toast ============ */
+let toastT;
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2600); }
+
+/* ============ navigation ============ */
+const TITLES={home:"Home",paths:"Mārga — the Paths",community:"Sangha",membership:"Dāna & Membership",profile:"Your sādhana"};
+function go(v){
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.dataset.v===v));
+  $("v-"+v).classList.add("on");
+  $("h-title").textContent=TITLES[v]||"";
+  window.scrollTo({top:0,behavior:"instant"});
+  revealInit();
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>go(b.dataset.v)));
+
+/* header large-title collapse */
+addEventListener("scroll",()=>{ $("hdr").classList.toggle("scrolled",scrollY>60); },{passive:true});
+
+/* scroll reveal */
+let io;
+function revealInit(){
+  if(io) io.disconnect();
+  io=new IntersectionObserver(es=>es.forEach((e,i)=>{
+    if(e.isIntersecting){ setTimeout(()=>e.target.classList.add("in"), (i%4)*60); io.unobserve(e.target);}
+  }),{threshold:0.12});
+  document.querySelectorAll(".view.on .reveal:not(.in)").forEach(el=>io.observe(el));
+}
+
+/* ============ payments ============ */
+function pay(key,btn){
+  const url=CFG.payments[key];
+  const sp=btn?btn.querySelector(".spin"):null;
+  if(!url || /YOUR_STRIPE/.test(url)){
+    toast("Payment link not connected yet — set it in the Admin Studio 🙏"); return;
+  }
+  if(sp) sp.style.display="inline-block";
+  setTimeout(()=>{ if(sp) sp.style.display="none"; open(url,"_blank","noopener"); toast("Opening a quiet checkout…"); },420);
+}
+
+/* dana chips */
+function buildDanaChips(elId){
+  const box=$(elId); box.innerHTML="";
+  CFG.payments.danaAmounts.forEach((a,i)=>{
+    const b=document.createElement("button");
+    b.className="d-chip"+(i===1?" sel":""); b.textContent="$"+a;
+    b.setAttribute("aria-pressed", i===1 ? "true":"false");
+    b.onclick=()=>{ box.querySelectorAll(".d-chip").forEach(x=>{x.classList.remove("sel");x.setAttribute("aria-pressed","false");});
+      b.classList.add("sel"); b.setAttribute("aria-pressed","true"); };
+    box.appendChild(b);
+  });
+  const c=document.createElement("button"); c.className="d-chip"; c.textContent="Custom";
+  c.onclick=()=>{ box.querySelectorAll(".d-chip").forEach(x=>x.classList.remove("sel")); c.classList.add("sel"); };
+  box.appendChild(c);
+}
+
+/* give-more slider */
+$("give-slider").addEventListener("input",e=>{ $("give-val").textContent=e.target.value; });
+
+/* ============ paths ============ */
+function pathProgress(p){
+  const steps=p.steps.length;
+  let done=0; p.steps.forEach((s,i)=>{ if(PROG.done[doneKey(p.id,i)]) done++; });
+  return Math.round(done/steps*100);
+}
+function nextIndex(p){
+  for(let i=0;i<p.steps.length;i++){ if(!PROG.done[doneKey(p.id,i)]) return i; }
+  return -1;
+}
+function renderHomePaths(){
+  const row=$("home-paths"); row.innerHTML="";
+  CFG.paths.forEach(p=>{
+    const d=document.createElement("div"); d.className="hcard";
+    d.innerHTML=`<div class="pc-img" style="background-image:url('${esc(p.image)}')"></div>
+      <div class="pc-body"><span class="pc-lineage">${esc(p.tradition)} · ${esc(p.source)}</span>
+      <h3>${esc(p.name)}</h3><p class="pc-essence">${esc(p.essence)}</p></div>`;
+    d.onclick=()=>openPath(p.id);
+    d.setAttribute("role","button"); d.tabIndex=0;
+    d.onkeydown=e=>{if(e.key==="Enter")openPath(p.id)};
+    row.appendChild(d);
+  });
+}
+function renderPaths(){
+  const list=$("paths-list"); list.innerHTML="";
+  CFG.paths.forEach(p=>{
+    const pct=pathProgress(p);
+    const d=document.createElement("div"); d.className="path-card";
+    d.innerHTML=`<div class="pc-img" style="background-image:url('${esc(p.image)}')"></div>
+      <div class="pc-body">
+        <span class="pc-lineage">${esc(p.tradition)} · ${esc(p.source)}</span>
+        <h3>${esc(p.name)}</h3><p class="pc-essence">${esc(p.essence)}</p>
+        <div class="pc-meta">
+          <div class="ring" style="--p:${pct}"><span>${pct}%</span></div>
+          <span class="chip">${p.steps.filter(s=>!s.gate).length} sittings</span>
+          ${pct>0?'<span class="chip gold">on the path</span>':'<span class="chip">first gate free</span>'}
+        </div></div>`;
+    d.onclick=()=>openPath(p.id);
+    d.setAttribute("role","button"); d.tabIndex=0;
+    d.onkeydown=e=>{if(e.key==="Enter")openPath(p.id)};
+    list.appendChild(d);
+  });
+}
+
+/* path detail sheet */
+let curPath=null, curStep=null;
+function openPath(id){
+  curPath=CFG.paths.find(p=>p.id===id);
+  const p=curPath, next=nextIndex(p);
+  const t=CFG.teachers.find(x=>x.id===p.teacher);
+  let steps="";
+  p.steps.forEach((s,i)=>{
+    const done=!!PROG.done[doneKey(p.id,i)];
+    const isNext=i===next;
+    const locked=!done&&!isNext;
+    let ico, sub;
+    if(s.gate){ ico=done?"☸":"⛩"; sub=done?"Sealed — sādhaka":"Opens after the sitting before it"; }
+    else { ico=done?"✓":(isNext?"▶":"·"); sub=(s.min?s.min+" min":"")+(s.free?" · free":"")+(s.deep?" · beyond the gate":""); }
+    steps+=`<div class="step ${locked?"locked":""}">
+      <div class="step-ico ${done?"done":(isNext?"next":"")}">${ico}</div>
+      <div class="step-body"><b>${esc(s.t)}</b><small>${esc(sub)}</small>
+      ${locked?`<div class="seal" style="margin-top:3px">☸ opens when you have sat ${esc(p.steps[i-1]?shortT(p.steps[i-1].t):"the one before")}</div>`:""}</div>
+      ${isNext?`<button class="btn btn-gold" style="padding:9px 16px;font-size:13.5px;flex:0 0 auto" onclick="startStep(${i});event.stopPropagation()">${s.gate?"Enter":"Sit"}</button>`:""}
+    </div>`;
+  });
+  $("path-sheet-body").innerHTML=`
+    <div style="border-radius:20px;overflow:hidden;height:150px;background:url('${esc(p.image)}') center/cover;margin-bottom:16px"></div>
+    <span class="pc-lineage">${esc(p.tradition)} · ${esc(p.source)}</span>
+    <h2 style="margin:4px 0 4px">${esc(p.name)}</h2>
+    <p class="muted" style="font-size:14.5px">${esc(p.essence)}</p>
+    ${t?`<div style="display:flex;align-items:center;gap:10px;margin:12px 0 4px">
+      <img src="${esc(t.avatar)}" alt="${esc(t.name)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:top">
+      <div><b style="font-size:13.5px">${esc(t.name)}</b> <span class="chip gold" style="font-size:10px;padding:2px 8px">paramparā ☸</span><br><span class="serif muted" style="font-size:12px">${esc(t.lineage)}</span></div></div>
+      ${t.parampara?`<p class="serif" style="font-size:12px;color:var(--gold);margin:4px 0 2px;line-height:1.7">${t.parampara.map(esc).join(" → ")}</p>`:""}`:""}
+    <div style="margin-top:14px">${steps}</div>
+    <a class="btn btn-ghost btn-wide" style="margin-top:16px" href="${esc(p.url)}" target="_blank" rel="noopener">Full guided audio course ↗</a>`;
+  openSheet("sheet-path");
+}
+function shortT(t){ return t.length>26 ? t.slice(0,26)+"…" : t; }
+
+/* ============ sheets ============ */
+function openSheet(id){ $(id).classList.add("open"); document.body.style.overflow="hidden"; }
+function closeSheet(id){ $(id).classList.remove("open");
+  if(!document.querySelector(".sheet-wrap.open")) document.body.style.overflow=""; }
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") document.querySelectorAll(".sheet-wrap.open").forEach(s=>closeSheet(s.id));
+});
+
+/* ============ practice ============ */
+let timer=null, remain=0, total=0, practicing=false;
+function startStep(i){
+  const s=curPath.steps[i]; curStep=i;
+  if(s.gate){ openSheet("sheet-gate"); return; }
+  $("pr-path").textContent=curPath.name;
+  $("pr-title").textContent=s.t;
+  $("pr-lineage").textContent=curPath.tradition+" · "+curPath.source;
+  $("pr-source").href=curPath.url;
+  total=(s.min||15)*60; remain=total; practicing=false;
+  $("pr-time").textContent=fmt(remain);
+  $("pr-btn").textContent="Begin sādhana";
+  $("pr-orb").classList.add("still");
+  $("pr-phase").textContent="when you are ready";
+  closeSheet("sheet-path"); openSheet("sheet-practice");
+}
+function fmt(s){ return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
+function practiceAction(){
+  if(!practicing){
+    practicing=true; $("pr-orb").classList.remove("still");
+    $("pr-btn").textContent="Complete the sādhana";
+    breathePhase();
+    timer=setInterval(()=>{
+      remain--; $("pr-time").textContent=fmt(Math.max(remain,0));
+      if(remain<=0){ finishPractice(); }
+    },1000);
+  } else {
+    /* honest early completion still counts the time actually sat */
+    finishPractice();
+  }
+}
+let phaseT;
+function breathePhase(){
+  const phases=["breathe in…","hold, softly","breathe out…","rest in the space"];
+  let i=0; $("pr-phase").textContent=phases[0];
+  clearInterval(phaseT);
+  phaseT=setInterval(()=>{ i=(i+1)%phases.length; if(practicing) $("pr-phase").textContent=phases[i]; },4000);
+}
+function finishPractice(){
+  clearInterval(timer); clearInterval(phaseT); practicing=false;
+  const sat=Math.max(1,Math.round((total-Math.max(remain,0))/60));
+  PROG.minutes+=sat; PROG.tracks++;
+  PROG.done[doneKey(curPath.id,curStep)]=true;
+  closeSheet("sheet-practice");
+  updateStats(); renderPaths();
+  const nxt=nextIndex(curPath);
+  if(nxt!==-1 && curPath.steps[nxt] && curPath.steps[nxt].gate){
+    toast("The Gate has appeared on your Path ⛩");
+  } else {
+    toast(sat+" min sat · the next track has opened");
+  }
+  openPath(curPath.id);
+}
+function closePractice(){ clearInterval(timer); clearInterval(phaseT); practicing=false; closeSheet("sheet-practice"); }
+function startFreeTaster(){ openPath(CFG.paths[0].id); }
+
+/* ============ gate ============ */
+function passGate(){
+  const txt=$("gate-text").value.trim();
+  if(txt.length<20){ toast("Write a little more — the gate asks for honesty, not length. Almost."); return; }
+  PROG.done[doneKey(curPath.id,curStep)]=true; PROG.gates++;
+  $("gate-text").value="";
+  closeSheet("sheet-gate");
+  updateStats(); renderPaths(); openPath(curPath.id);
+  $("member-dot").classList.add("show");
+  setTimeout(()=>{ closeSheet("sheet-path"); openSheet("sheet-dana"); },900);
+  toast("Sādhaka seal received ☸");
+}
+
+/* ============ profile / stats ============ */
+function updateStats(){
+  $("st-min").textContent=PROG.minutes;
+  $("st-tracks").textContent=PROG.tracks;
+  $("st-gates").textContent=PROG.gates;
+  $("st-word").textContent = PROG.tracks===0 ? "The path begins with a single sitting."
+    : PROG.gates>0 ? "You walk as a sādhaka now." : "You are on the Path. Keep sitting.";
+}
+
+/* ============ static renders ============ */
+function renderFuture(){
+  const box=$("future-paths"); if(!box||!CFG.futurePaths) return;
+  box.innerHTML="";
+  CFG.futurePaths.forEach(f=>{
+    const d=document.createElement("div"); d.className="step";
+    d.innerHTML=`<div class="step-ico">⛩</div>
+      <div class="step-body"><b style="color:var(--text2)">${esc(f.name)}</b>
+      <small class="serif" style="font-style:italic;color:var(--gold);opacity:.8">${esc(f.tradition)} · ${esc(f.source)}</small></div>
+      <a class="seal" href="mailto:${esc(CFG.brand.email)}?subject=Sangha%20Circle%20—%20${encodeURIComponent(f.name)}">awaiting its ācārya · apply</a>`;
+    box.appendChild(d);
+  });
+}
+function renderCircles(){
+  const cs=[["Vipassana Circle","Sīla, sits and honest questions"],["Tantra Circle","112 doorways, one at a time"],["Vedanta Circle","Self-inquiry beyond thought"],["Kids & Family Grove","Mindfulness for little ones"]];
+  const box=$("circles"); box.innerHTML="";
+  cs.forEach(([n,d])=>{
+    const el=document.createElement("div"); el.className="circle-card";
+    el.innerHTML=`<b>${n}</b><p class="muted" style="font-size:13.5px;margin-top:4px">${d}</p>
+      <div class="locked-veil"><span>opens with toUnknown+ · <a href="#" onclick="go('membership');return false">join</a></span></div>`;
+    box.appendChild(el);
+  });
+}
+function renderTeacher(){
+  const t=CFG.teachers[0]; if(!t) return;
+  $("teacher-card").innerHTML=`<img src="${esc(t.avatar)}" alt="${esc(t.name)}, meditation teacher">
+    <div><b>${esc(t.name)}</b> <span class="chip gold" style="font-size:10px;padding:2px 8px">paramparā ☸</span><br>
+    <span class="serif" style="font-size:12.5px;color:var(--gold)">${esc(t.lineage)}</span>
+    <p class="muted" style="font-size:13px;margin-top:5px">${esc(t.bio)}</p>
+    ${t.parampara?`<p class="serif" style="font-size:12px;color:var(--gold);margin-top:8px;line-height:1.7">${t.parampara.map(esc).join(" → ")}</p>`:""}</div>`;
+}
+function renderFoot(){
+  const L=CFG.links;
+  $("social-foot").innerHTML=`
+    <a href="${esc(L.telegram)}" target="_blank" rel="noopener">Telegram</a>·
+    <a href="${esc(L.instagram)}" target="_blank" rel="noopener">Instagram</a>·
+    <a href="${esc(L.x)}" target="_blank" rel="noopener">X</a>·
+    <a href="${esc(L.youtube)}" target="_blank" rel="noopener">YouTube</a>·
+    <a href="${esc(L.insightTimer)}" target="_blank" rel="noopener">Insight Timer</a><br>
+    <a href="${esc(L.trustpilot)}" target="_blank" rel="noopener">Trustpilot</a>·
+    <a href="${esc(L.blog)}" target="_blank" rel="noopener">Blog</a>·
+    <a href="${esc(L.terms)}" target="_blank" rel="noopener">Terms</a>·
+    <a href="mailto:${esc(CFG.brand.email)}">WRITE US 💬</a><br>© 2026 toUnknown`;
+}
+function hydrateTexts(){
+  $("hero-tagline").textContent=CFG.brand.tagline;
+  $("hero-subline").textContent=CFG.brand.subline;
+  $("philosophy").textContent=CFG.brand.philosophy;
+  $("paypal-link").href=CFG.payments.paypal;
+  $("tg-link").href=CFG.links.telegram;
+  $("teach-mail").href="mailto:"+CFG.brand.email+"?subject=Sangha%20Circle%20application%20—%20my%20lineage";
+  $("schol-mail").href="mailto:"+CFG.brand.email+"?subject=Scholarship";
+}
+
+/* ============ init ============ */
+hydrateTexts();
+renderHomePaths(); renderPaths(); renderFuture(); renderCircles(); renderTeacher(); renderFoot();
+buildDanaChips("dana-chips"); buildDanaChips("dana-chips-2");
+updateStats(); revealInit();
+</script>
+</body>
+</html>

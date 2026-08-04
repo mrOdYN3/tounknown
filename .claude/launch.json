@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "tounknown-dev",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "/Users/clown/Desktop/toUnknown.Com/devserver.py",
+        "4173"
+      ],
+      "port": 4173
+    }
+  ]
+}

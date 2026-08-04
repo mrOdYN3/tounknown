@@ -1,0 +1,24 @@
+:root{
+/* shadows — soft, warm, layered; depth by light never dark borders */
+--shadow-card:0 6px 24px rgba(60,50,20,0.06);
+--shadow-photo:0 14px 40px rgba(60,50,20,0.12);
+--shadow-btn:0 6px 18px rgba(25,24,19,0.18);
+--shadow-frame:0 0 0 0.5px rgba(24,22,16,0.09),0 30px 90px rgba(60,50,20,0.18);
+--shadow-gold:0 10px 40px rgba(217,164,65,0.16);
+--shadow-sheet:0 -20px 60px rgba(60,50,20,0.15);
+--shadow-toast:0 12px 40px rgba(60,50,20,0.18);
+--glow-orb:0 0 60px rgba(217,164,65,0.35);
+/* borders */
+--border-hairline:0.5px solid var(--hairline);
+--border-gold:0.5px solid rgba(168,120,31,0.45); /* @kind other */
+/* blur */
+--blur-header:blur(24px) saturate(1.8); /* @kind other */
+--blur-sheet:blur(30px) saturate(1.8); /* @kind other */
+--blur-tabbar:blur(26px) saturate(1.8); /* @kind other */
+/* motion */
+--spring:cubic-bezier(0.32,0.72,0,1); /* @kind other */
+--dur-fast:200ms; /* @kind other */ --dur-base:320ms; /* @kind other */ --dur-slow:420ms; /* @kind other */
+--breathe-duration:6s; /* @kind other */
+--focus-ring:0 0 0 3px rgba(217,164,65,0.18);
+}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}

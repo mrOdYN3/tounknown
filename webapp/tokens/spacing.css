@@ -1,0 +1,12 @@
+:root{
+/* 8pt grid */
+--space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px; --space-7:32px; --space-8:40px; --space-9:52px;
+--gutter:20px; /* screen gutter */
+--card-pad:20px; --tier-pad:22px;
+--frame-width:430px; /* mobile app frame */
+/* radii */
+--r-card:20px; --r-path:24px; --r-hcard:22px; --r-sheet:28px; /* top corners */
+--r-btn:16px; --r-input:14px; --r-stat:18px; --r-pill:999px;
+/* hit targets */
+--tap-min:44px;
+}

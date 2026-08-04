@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SōulFlow of Ganesha — updatable NFTs for the practising soul | toUnknown</title>
+<meta name="description" content="SōulFlow of Ganesha: a collection of updatable NFTs dedicated to the remover of obstacles. A Web3 circle for people who actually sit. Minting soon.">
+<meta name="theme-color" content="#0C0B08">
+<link rel="canonical" href="https://nft.tounknown.com/">
+<link rel="icon" href="https://tounknown.com/ds/assets/logo-black.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SōulFlow of Ganesha — updatable NFTs for the practising soul">
+<meta property="og:description" content="A collection of updatable NFTs dedicated to the remover of obstacles. Minting soon.">
+<meta property="og:url" content="https://nft.tounknown.com/">
+<meta property="og:image" content="https://tounknown.com/ds/assets/covers/shiva-meditation-online.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#F5F4F0; --ink-dim:rgba(245,244,240,0.72); --ink-faint:rgba(245,244,240,0.46);
+  --night-1:#100F0B; --night-2:#080705;
+  --gold:#D9A441; --gold-deep:#C08F2E; --gold-soft:rgba(217,164,65,0.14);
+  --hairline:rgba(245,244,240,0.12);
+  --font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  --font-serif:"Marcellus",Georgia,serif;
+  --ease:cubic-bezier(0.32,0.72,0,1);
+  --r-lg:24px; --r-full:999px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--night-2); color:var(--ink);
+  font-family:var(--font-sans); -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+img{max-width:100%; display:block}
+a{color:inherit}
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px}
+
+/* ---------------------------------------------------------------- nav -- */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:14px 24px; background:rgba(8,7,5,0.72);
+  -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%);
+  border-bottom:0.5px solid var(--hairline);
+}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none;
+  font:600 15px/1 var(--font-sans); letter-spacing:-0.02em}
+.brand img{width:24px; height:auto; filter:invert(1) brightness(1.6); animation:breathe 6s ease-in-out infinite}
+.nav-links{display:flex; align-items:center; gap:8px}
+.nav-links a{
+  text-decoration:none; font:600 12px/1 var(--font-sans); letter-spacing:0.04em;
+  text-transform:uppercase; color:var(--ink-faint); padding:10px 12px; border-radius:var(--r-full);
+  transition:color .25s var(--ease), background-color .25s var(--ease);
+}
+.nav-links a:hover{color:var(--ink); background:rgba(245,244,240,0.06)}
+.nav-links a.cta{color:#100F0B; background:var(--gold); }
+.nav-links a.cta:hover{background:#E8B85A}
+@media(max-width:640px){ .nav-links a:not(.cta){display:none} }
+
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.06);opacity:1}}
+
+/* --------------------------------------------------------------- hero -- */
+header.hero{
+  position:relative; min-height:100svh; display:flex; align-items:center; justify-content:center;
+  text-align:center; padding:120px 24px 90px; overflow:hidden;
+}
+.hero-bg{position:absolute; inset:0;
+  background:url('https://tounknown.com/ds/assets/covers/shiva-meditation-online.jpg') center/cover;
+  opacity:.34; transform:scale(1.04)}
+.hero-veil{position:absolute; inset:0;
+  background:radial-gradient(ellipse 62% 58% at 50% 46%, rgba(8,7,5,0.30), rgba(8,7,5,0.86) 78%)}
+.hero-inner{position:relative; max-width:760px}
+.eyebrow{
+  font:600 11px/1.4 var(--font-sans); letter-spacing:0.22em; text-transform:uppercase;
+  color:var(--gold); margin:0 0 22px;
+}
+h1{
+  font-family:var(--font-serif); font-weight:400; margin:0;
+  font-size:clamp(44px,9vw,104px); line-height:0.94; letter-spacing:-0.03em;
+}
+h1 .line{display:block}
+h1 .dim{color:var(--ink-faint)}
+.hero p{margin:26px auto 0; max-width:52ch; font-size:clamp(15px,1.7vw,18px); line-height:1.65; color:var(--ink-dim)}
+.hero-actions{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:34px}
+.btn{
+  display:inline-flex; align-items:center; gap:9px; text-decoration:none; cursor:pointer; border:0;
+  min-height:52px; padding:0 26px; border-radius:var(--r-full);
+  font:600 14px/1 var(--font-sans); letter-spacing:-0.01em;
+  transition:transform .4s var(--ease), background-color .3s var(--ease), opacity .3s;
+}
+.btn:active{transform:scale(0.97)}
+.btn-gold{background:var(--gold); color:#100F0B}
+.btn-gold:hover{background:#E8B85A}
+.btn-ghost{background:rgba(245,244,240,0.08); color:var(--ink); border:0.5px solid var(--hairline)}
+.btn-ghost:hover{background:rgba(245,244,240,0.14)}
+
+.status{
+  display:inline-flex; align-items:center; gap:9px; margin-top:30px;
+  padding:9px 16px; border-radius:var(--r-full);
+  background:var(--gold-soft); border:0.5px solid rgba(217,164,65,0.3);
+  font:600 12px/1 var(--font-sans); letter-spacing:0.05em; text-transform:uppercase; color:var(--gold);
+}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--gold); animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(0.82)}}
+
+/* ------------------------------------------------------------ sections -- */
+section{padding:clamp(72px,10vw,132px) 0; position:relative}
+.sec-head{max-width:660px; margin:0 0 48px}
+h2{font-family:var(--font-serif); font-weight:400; margin:0;
+  font-size:clamp(28px,4vw,46px); line-height:1.1; letter-spacing:-0.025em}
+.lede{margin:18px 0 0; font-size:clamp(15px,1.6vw,17.5px); line-height:1.7; color:var(--ink-dim)}
+
+.rule{height:0.5px; background:var(--hairline); border:0; margin:0}
+
+/* three qualities */
+.qualities{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px;
+  background:var(--hairline); border:0.5px solid var(--hairline); border-radius:var(--r-lg); overflow:hidden}
+.quality{background:var(--night-1); padding:38px 30px; transition:background-color .4s var(--ease)}
+.quality:hover{background:#15140F}
+.quality .n{font:600 11px/1 var(--font-sans); letter-spacing:0.18em; color:var(--gold); display:block; margin-bottom:18px}
+.quality h3{font-family:var(--font-serif); font-weight:400; font-size:26px; margin:0 0 12px; letter-spacing:-0.01em}
+.quality p{margin:0; font-size:14px; line-height:1.7; color:var(--ink-faint)}
+
+/* ganesha gifts */
+.gifts{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:28px; margin-top:14px}
+.gift{padding:26px 0; border-top:0.5px solid var(--hairline)}
+.gift h4{font-family:var(--font-serif); font-weight:400; font-size:19px; margin:0 0 10px; letter-spacing:-0.01em}
+.gift p{margin:0; font-size:14px; line-height:1.7; color:var(--ink-faint)}
+
+/* the practice bridge */
+.bridge{background:var(--night-1); border-top:0.5px solid var(--hairline); border-bottom:0.5px solid var(--hairline)}
+.bridge-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center}
+@media(max-width:860px){ .bridge-grid{grid-template-columns:1fr; gap:36px} }
+.bridge-art{border-radius:var(--r-lg); overflow:hidden; border:0.5px solid var(--hairline); background:#15140F}
+.bridge-art img{width:100%; height:100%; object-fit:cover; object-position:center top}
+
+.inscribe{
+  font-family:var(--font-serif); font-size:clamp(20px,3vw,30px); line-height:1.35;
+  letter-spacing:0.02em; margin:0; text-align:center;
+}
+.attrib{margin:18px 0 0; text-align:center; font:600 11px/1 var(--font-sans);
+  letter-spacing:0.18em; text-transform:uppercase; color:var(--gold)}
+
+footer{padding:64px 0 80px; text-align:center; color:var(--ink-faint); font-size:13px}
+footer a{color:var(--gold-deep); text-decoration:none}
+footer a:hover{text-decoration:underline}
+.foot-links{display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-bottom:22px}
+
+/* reveal */
+.rv{opacity:0; transform:translateY(20px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+.rv.in{opacity:1; transform:none}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1; transform:none; transition:none}
+  .brand img,.dot{animation:none}
+  html{scroll-behavior:auto}
+}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://tounknown.com/#org", "name": "toUnknown", "url": "https://tounknown.com/"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "SōulFlow of Ganesha", "url": "https://nft.tounknown.com/", "description": "A collection of updatable NFTs dedicated to Ganesha, the remover of obstacles — for a Web3 circle built around actual meditation practice. Minting soon.", "isPartOf": {"@id": "https://tounknown.com/#org"}, "about": [{"@type": "Thing", "name": "Ganesha"}, {"@type": "Thing", "name": "Meditation"}, {"@type": "Thing", "name": "Web3"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is SōulFlow of Ganesha?", "acceptedAnswer": {"@type": "Answer", "text": "A collection of updatable NFTs dedicated to Ganesha, the deity of wisdom and the remover of obstacles. The pieces change as the holder's meditation practice deepens, so the collection records sitting rather than buying."}}, {"@type": "Question", "name": "When does it mint?", "acceptedAnswer": {"@type": "Answer", "text": "Minting has not opened yet. Follow the toUnknown Telegram circle for the announcement."}}, {"@type": "Question", "name": "Do I need to hold an NFT to meditate with toUnknown?", "acceptedAnswer": {"@type": "Answer", "text": "No. toUnknown is a meditation school first — Vipassana's first course is free forever, every Path opens with free introductions, and no one is turned away for money. The collection is an ornament, not an entry ticket."}}]}</script>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="/">
+    <img src="https://tounknown.com/ds/assets/logo-black.png" alt="">
+    <span>SōulFlow</span>
+  </a>
+  <div class="nav-links">
+    <a href="#collection">Collection</a>
+    <a href="#ganesha">Ganesha</a>
+    <a href="#practice">Practice</a>
+    <a class="cta" href="https://tounknown.com/">Sit with us →</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <p class="eyebrow">Spiritual · Web3 · Community</p>
+    <h1>
+      <span class="line">SōulFlow</span>
+      <span class="line dim">of Ganesha</span>
+    </h1>
+    <p>A collection of <b style="color:var(--ink);font-weight:600">updatable</b> NFTs dedicated to the
+       remover of obstacles — for people who actually sit, not people who merely collect.</p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="#collection">See the collection</a>
+      <a class="btn btn-ghost" href="https://tounknown.com/">Start meditating free</a>
+    </div>
+    <div class="status"><span class="dot" aria-hidden="true"></span> Minting soon</div>
+  </div>
+</header>
+
+<section id="collection">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>An altar you carry, not a JPEG you flip.</h2>
+      <p class="lede">Each piece is dedicated to Ganesha — the deity of wisdom, intellect and the
+        clearing of obstacles. The pieces are <b style="color:var(--ink);font-weight:600">updatable</b>:
+        they change as the holder's practice deepens, so the collection is a record of sitting rather
+        than a record of buying.</p>
+    </div>
+
+    <div class="qualities rv">
+      <div class="quality">
+        <span class="n">01</span>
+        <h3>Immortal</h3>
+        <p>What is watching has no birthday. The first quality is the one you cannot lose, only forget.</p>
+      </div>
+      <div class="quality">
+        <span class="n">02</span>
+        <h3>Unattached</h3>
+        <p>Holding without gripping. The practice of letting the world be as it is, including the parts you own.</p>
+      </div>
+      <div class="quality">
+        <span class="n">03</span>
+        <h3>Downshifter</h3>
+        <p>Less speed, more life. The deliberate step down from acceleration into attention.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ganesha" class="bridge">
+  <div class="wrap">
+    <div class="bridge-grid">
+      <div class="rv">
+        <p class="eyebrow">Why Ganesha</p>
+        <h2>The one who clears the way.</h2>
+        <p class="lede">Building an altar — even a digital one — forms a link between attention and
+          the world you actually live in. These are the qualities the tradition attributes to him.</p>
+        <div class="gifts">
+          <div class="gift">
+            <h4>Wisdom &amp; reason</h4>
+            <p>Associated with clear thinking; approached for understanding rather than cleverness.</p>
+          </div>
+          <div class="gift">
+            <h4>Remover of obstacles</h4>
+            <p>His best-known aspect — the clearing of what stands between intention and action.</p>
+          </div>
+          <div class="gift">
+            <h4>Intellect &amp; knowledge</h4>
+            <p>The deity of learning; invoked at the beginning of study and of anything new.</p>
+          </div>
+          <div class="gift">
+            <h4>Abundance</h4>
+            <p>A symbol of prosperity and good fortune, which is why his image sits in so many doorways.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bridge-art rv">
+        <img src="https://tounknown.com/ds/assets/covers/112-guided-meditations-of-vigyan-bhairav-tantra-by-shiva.jpg"
+             alt="Devotional artwork" loading="lazy" width="900" height="900">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="practice">
+  <div class="wrap">
+    <p class="inscribe rv">Together we are on chain.<br>Together we are Souls.<br>Together we go to the unknown.</p>
+    <p class="attrib rv">— the SōulFlow way</p>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head rv" style="max-width:720px">
+      <p class="eyebrow">Spiritual education for the soul</p>
+      <h2>The collection is the ornament. The sitting is the point.</h2>
+      <p class="lede">toUnknown is the school behind this — guided meditation rooted in living
+        traditions, where every course names its lineage. Vipassana's first course is free forever,
+        every Path opens with free introductions, and no one is turned away for money.</p>
+      <div class="hero-actions" style="justify-content:flex-start;margin-top:30px">
+        <a class="btn btn-gold" href="https://tounknown.com/">Begin a Path — free</a>
+        <a class="btn btn-ghost" href="https://t.me/tounknowndotcom">Join the circle</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+<footer>
+  <div class="wrap">
+    <div class="foot-links">
+      <a href="https://tounknown.com/">toUnknown</a>
+      <a href="https://t.me/tounknowndotcom">Telegram</a>
+      <a href="https://instagram.com/tounknowndotcom">Instagram</a>
+      <a href="https://tounknown.com/legal.html">Terms &amp; privacy</a>
+    </div>
+    <p style="margin:0">© 2026 toUnknown · <a href="mailto:tounknown.com@gmail.com">tounknown.com@gmail.com</a></p>
+    <p style="margin:10px 0 0;font-size:12px;color:var(--ink-faint)">
+      Nothing here is financial advice. Collect only what you would be glad to hold.</p>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((es) => es.forEach((e, i) => {
+    if (e.isIntersecting) { setTimeout(() => e.target.classList.add("in"), (i % 4) * 80); io.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll(".rv").forEach((el) => io.observe(el));
+</script>
+</body>
+</html>

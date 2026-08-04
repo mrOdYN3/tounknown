@@ -1,0 +1,36 @@
+{
+  "captured": "2026-08-02",
+  "source": "tounknown.com live pages (reviews render client-side, absent from static HTML backup)",
+  "products": [
+    {
+      "slug": "112-guided-meditations-of-vigyan-bhairav-tantra-vijnana-bhairava-tantra",
+      "average": 4.9,
+      "count": 7,
+      "reviews": [
+        { "date": "2025-12-23", "author": "Anonymous", "text": "Beautifully read. Love the calm steady voice and tone. Thank you for the work to bring this together and share this. You have accompanied me daily for many many days, very grateful!" },
+        { "date": "2025-12-02", "author": "Logan Naidoo", "text": "" },
+        { "date": "2025-11-24", "author": "Owen Patrick", "text": "" },
+        { "date": "2025-10-28", "author": "HZRDL", "text": "Thank you for this beautiful blessing, to better understand the true/divine self, soul, collective consciousness, that we are connected to it all." },
+        { "date": "2025-10-22", "author": "lisa king", "text": "Really good" },
+        { "date": "2025-08-21", "author": "Caleb Roseberry", "text": "Very informative and interesting Classic mediations and obviously can't beat the price" },
+        { "date": "2025-08-04", "author": "Anjani", "text": "Beautiful guided meditations based on Shivas words to Devi. Highly recommend trying them out!!" }
+      ]
+    },
+    {
+      "slug": "whispers-of-god-bhakti-yoga-and-anapanasati-vipassana",
+      "average": 5.0,
+      "count": 1,
+      "reviews": [
+        { "date": "2025-10-06", "author": "Brian", "text": "Very much appreciate the free meditations" }
+      ]
+    },
+    {
+      "slug": "himalayan-silence-i-am-shiva-i-am-presence",
+      "average": 5.0,
+      "count": 1,
+      "reviews": [
+        { "date": "2025-11-06", "author": "omar nour", "text": "Great teachings" }
+      ]
+    }
+  ]
+}

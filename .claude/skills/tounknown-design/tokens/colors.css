@@ -1,0 +1,23 @@
+:root{
+/* base — the temple in daylight */
+--paper-1:#FBFAF7; --paper-2:#F5F3ED; --stage:#ECE9E1;
+--white:#FFFFFF; --sand:#F2EFE8;
+--ink:#191813; --ink-60:rgba(25,24,19,0.60); --ink-38:rgba(25,24,19,0.38);
+--gold-deep:#A8781F; --gold-bright:#D9A441; --gold-pale:#E8B95A;
+--sage:#5E8A4A;
+--hairline:rgba(24,22,16,0.09);
+/* dark (Admin Studio) */
+--night-1:#0B0B10; --night-2:#101018;
+--night-surface:rgba(255,255,255,0.04); --night-surface-2:rgba(255,255,255,0.07);
+--night-hairline:rgba(255,255,255,0.10);
+--night-text:#F5F4F0; --night-text-2:rgba(245,244,240,0.62); --night-text-3:rgba(245,244,240,0.40);
+--night-sage:#7FB069; --error:#E06C5A;
+/* semantic aliases (light app) */
+--bg:var(--paper-1); --bg-2:var(--paper-2);
+--surface-card:var(--white); --surface-2:var(--sand);
+--text-body:var(--ink); --text-secondary:var(--ink-60); --text-tertiary:var(--ink-38);
+--accent:var(--gold-deep); --accent-fill:var(--gold-bright);
+--positive:var(--sage);
+--surface-blur:rgba(251,250,247,0.78); --sheet-blur:rgba(252,251,248,0.96);
+--scrim-photo:linear-gradient(180deg,rgba(11,11,16,0.05) 20%,rgba(11,11,16,0.88) 100%); /* @kind other */
+}

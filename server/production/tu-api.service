@@ -1,0 +1,15 @@
+# /etc/systemd/system/tu-api.service
+[Unit]
+Description=toUnknown audio gate API
+After=network.target
+
+[Service]
+EnvironmentFile=/opt/tu-api/env
+ExecStart=/usr/bin/node /opt/tu-api/server.js
+Restart=always
+RestartSec=3
+User=www-data
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

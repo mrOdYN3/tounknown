@@ -1,0 +1,14 @@
+*.env
+*.m4a
+*.mp3
+*.wav
+.DS_Store
+.env
+.env.*
+.mcp.json
+audio/
+build/node_modules/
+seo-dist/
+server/.env
+server/production/env
+webapp-dist/
