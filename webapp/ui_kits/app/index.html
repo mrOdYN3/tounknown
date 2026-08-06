@@ -40,7 +40,9 @@ main .rv.in{opacity:1;transform:none}
 <script type="text/babel" src="tu-desktop.jsx?v=67"></script>
 <script type="text/babel">
 const { AppHeader, TabBar, Toast } = window.ToUnknownDesignSystem_9d38c1;
-const TITLES = { home:TR("title.home","toUnknown"), paths:TR("title.paths","Mārga — the Paths"),
+// Home has no title: the brand already sits at the left of the same bar, and printing it again
+// on the right made the header say "toUnknown … toUnknown".
+const TITLES = { home:"", paths:TR("title.paths","Mārga — the Paths"),
   community:TR("title.sangha","Sangha"), membership:TR("title.dana","Dāna & Membership"),
   profile:TR("title.sadhana","Your sādhana") };
 const TABS = [

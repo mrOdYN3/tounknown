@@ -99,8 +99,12 @@ body{
    down the height. rotate(-90deg) reads bottom-to-top, which is how a spine is set. The wrapper
    is a fixed-width full-height grid so the mark centres on the hero rather than on its own box,
    which a bare transform on the image would get wrong. */
+/* Aligned optically, not by box. The wordmark PNG carries 39px of transparent padding above and
+   below the letters, which after the quarter turn becomes 13px of empty space down its left —
+   so a box flush at 20px painted its ink at 33px and sat visibly right of the header logo.
+   left:6 puts the ink itself on 21px, where the header mark's ink starts. */
 .tu-spine{
-  position: absolute; left: 2px; top: 0; bottom: 0; width: 46px;
+  position: absolute; left: 6px; top: 0; bottom: 0; width: 46px;
   pointer-events: none;
 }
 /* Centred by transform, not by grid: the mark is far wider than the strip it sits in, and a
@@ -108,15 +112,17 @@ body{
    spine a third of the way into the hero. The percentages here resolve against the element's own
    unrotated box, so its centre lands exactly on the strip's centre whatever the rotation. */
 .tu-spine img{
-  position: absolute; left: 50%; top: 42%;
+  position: absolute; left: 50%; top: 33%;
   display: block; width: 178px; height: auto;
   transform: translate(-50%, -50%) rotate(90deg);
   opacity: .52;
   filter: drop-shadow(0 1px 10px rgba(0,0,0,.55));
 }
 @media (min-width: 1024px){
-  .tu-spine{ left: 6px; width: 62px; }
-  .tu-spine img{ width: 248px; opacity: .46; }
+  /* Centred on the rail rather than on the hero: halfway between the top of Home and the foot
+     of Where to begin, so the mark reads as part of that column's rhythm. */
+  .tu-spine{ left: 0; width: 62px; }
+  .tu-spine img{ width: 248px; opacity: .46; top: 39%; }
 }
 
 /* Hero height lives here, not inline, so the desktop rule can raise it without !important. */
