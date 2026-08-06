@@ -300,10 +300,44 @@ const server = http.createServer(async (req, res) => {
       const code = String(body.code || "").trim().toUpperCase();
       if (!code) return send(res, 400, { error: "enter the code you were given" });
 
+      // A code is either a month a practitioner earned and gave away, or one the school issued.
+      // Both grant comped time; they differ only in where they came from.
       const rows = await sb("/rest/v1/practice_rewards?gift_code=eq." + encodeURIComponent(code) +
         "&select=id,member_id,status");
-      const r = rows && rows[0];
-      if (!r) return send(res, 404, { error: "that code is not one of ours" });
+      let r = rows && rows[0];
+      let months = 1;
+
+      if (!r) {
+        const cs = await sb("/rest/v1/coupons?code=eq." + encodeURIComponent(code) +
+          "&select=code,kind,months,max_redemptions,redemptions,expires_at");
+        const c = cs && cs[0];
+        if (!c) return send(res, 404, { error: "that code is not one of ours" });
+        if (c.expires_at && new Date(c.expires_at) < new Date())
+          return send(res, 409, { error: "that code has expired" });
+        if (c.redemptions >= c.max_redemptions)
+          return send(res, 409, { error: "that code has been fully used" });
+        const mine = await sb("/rest/v1/coupon_redemptions?code=eq." + encodeURIComponent(code) +
+          "&member_id=eq." + user.id + "&select=code");
+        if (mine && mine.length) return send(res, 409, { error: "you have already used that code" });
+
+        months = c.months;
+        const meNow = (await sb("/rest/v1/members?id=eq." + user.id + "&select=active_until"))[0] || {};
+        const start = meNow.active_until && new Date(meNow.active_until) > new Date()
+          ? new Date(meNow.active_until) : new Date();
+        const till = new Date(start); till.setMonth(till.getMonth() + months);
+        await sbFetch("/rest/v1/members?id=eq." + user.id, {
+          method: "PATCH",
+          body: JSON.stringify({ tier: "student", active_until: till.toISOString() }),
+        });
+        await sbFetch("/rest/v1/coupon_redemptions", {
+          method: "POST", body: JSON.stringify({ code: c.code, member_id: user.id }),
+        });
+        await sbFetch("/rest/v1/coupons?code=eq." + encodeURIComponent(code), {
+          method: "PATCH", body: JSON.stringify({ redemptions: c.redemptions + 1 }),
+        });
+        return send(res, 200, { granted_until: till.toISOString(), months });
+      }
+
       if (r.status === "redeemed") return send(res, 409, { error: "that month has already been taken" });
       if (r.status !== "gifted") return send(res, 409, { error: "that month is not available" });
       if (r.member_id === user.id) return send(res, 400, { error: "a gift is for someone else" });

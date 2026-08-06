@@ -944,3 +944,37 @@ them there. That is the honest form of social proof, and worth putting on the D�
 Raised and declined. Trading meditation for promotion turns generosity into unpaid marketing and
 rewards audience size rather than practice — it is the growth pattern this product is positioned
 against. The scholarship route already exists and treats the person as a person.
+
+
+## Tier details, the pool as proof, and one coupon system (5 Aug 2026)
+
+**Every tier can now say exactly what it is.** A small `?` beside each chip opens a plain-language
+panel: what you can sit today, what stays closed, what it costs. The Sādhaka panel ends with the
+honest sentence — *"If you want the library today, Student is the same access for $11. Choose this
+to hold a seat and support the circle being built."* A tier that does not yet deliver its
+differentiator should say so on the card, not in a changelog.
+
+Also fixed: Student listed **"Sangha participation" twice**, from my own earlier edit replacing the
+downloads claim.
+
+**The scholarship pool is now the social proof** — *"3 months are waiting in the scholarship pool ·
+given by 2 practitioners"* above the tuition ladder, from the public `GET /api/practice/pool`.
+Real generosity, counted. It replaces invented five-star ratings with something true.
+
+**One coupon system, deliberately narrow.** `coupons` + `coupon_redemptions`, five kinds —
+`founding · partner · press · teacher · scholarship`. Each code carries months, a redemption cap,
+an optional expiry, and a **required** note saying why it exists; the minter refuses a code without
+a reason. `/opt/tu-api/mint-coupon.js --kind partner --months 3 --uses 25 --expires 2026-12-31
+--note "…"`, and `--list` to see them all.
+
+There is **no percent-off kind and no time-limited sale**. Urgency is the pattern this product is
+positioned against, and a discount code would undercut the practice discount — the one price
+reduction the model is meant to reward. Codes grant *time*, never a lower price.
+
+`/api/practice/redeem` handles both a month a practitioner earned and gave away, and a code the
+school issued. Verified: a 3-month partner code granted access to November; the same person twice
+→ *"you have already used that code"*; an invented code → *"that code is not one of ours"*; caps,
+expiry and per-member limits all enforced. Test codes and accounts deleted.
+
+**Removed**: `desktop.html` and `DesktopScreens.jsx` — mock content with no live data, and the last
+place still loading React's development build from unpkg.

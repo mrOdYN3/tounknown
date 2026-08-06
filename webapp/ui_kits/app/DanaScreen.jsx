@@ -2,6 +2,11 @@ const { Interlude, TierCard, Button, DanaChips, GiveSlider } = window.ToUnknownD
 const PAYPAL = "https://www.paypal.com/donate?hosted_button_id=H5VQT3VLQBUBJ";
 
 function DanaScreen({ go, toast }) {
+  // Real generosity, counted — the only social proof this product should show.
+  const [pool, setPool] = React.useState(null);
+  React.useEffect(() => {
+    fetch("/api/practice/pool").then((r) => r.ok ? r.json() : null).then(setPool).catch(() => {});
+  }, []);
   const T = window.TU;
   const [busy, setBusy] = React.useState(null);   // plan id being opened
   const [note, setNote] = React.useState(null);   // { text, tone }
@@ -62,23 +67,52 @@ function DanaScreen({ go, toast }) {
           {TR("dana.discount.body","Sit on 20 days in a month and the next month is 25% less. 25 days, half price. Every day, and the next month is free — keep it, or give it to someone who cannot pay. Counted at the end of the month, so a missed day costs nothing.")}</p>
       </div>
 
-      <TierCard chip={TR("dana.tier.seeker","seeker")} price="$0" priceNote="· dāna" bullets={[TR("dana.tier.seeker.1","First gate of every Path — free forever"),TR("dana.tier.seeker.2","Community, read-only"),TR("dana.tier.seeker.3","Give only if it feels true")]}>
+      {pool && pool.months_available > 0 &&
+        <p style={{margin:"0 0 16px",textAlign:"center",font:"400 13px/1.6 var(--font-serif)",color:"var(--gold-deep)"}}>
+          {pool.months_available} {pool.months_available === 1
+            ? TR("dana.pool.one","month is waiting in the scholarship pool")
+            : TR("dana.pool.many","months are waiting in the scholarship pool")}
+          {" · "}{TR("dana.pool.by","given by")} {pool.given_by} {pool.given_by === 1
+            ? TR("dana.pool.p1","practitioner") : TR("dana.pool.pn","practitioners")}
+        </p>}
+
+      <TierCard details={[
+        {t:"What you can sit today",d:"The whole first course of the Vipassana Path, a 15-minute taster that needs no account, and the opening introductions of every other Path."},
+        {t:"What stays closed",d:"The guided sittings inside the other Paths. You can hear how each course begins before deciding."},
+        {t:"What it costs",d:"Nothing, ever. Give only if the practice was worth something to you."},
+      ]} chip={TR("dana.tier.seeker","seeker")} price="$0" priceNote="· dāna" bullets={[TR("dana.tier.seeker.1","First gate of every Path — free forever"),TR("dana.tier.seeker.2","Community, read-only"),TR("dana.tier.seeker.3","Give only if it feels true")]}>
         <Button variant="ghost" wide onClick={()=>go("paths")}>{TR("dana.tier.seeker.cta","Start free")}</Button>
       </TierCard>
 
-      <TierCard hot chip={TR("dana.tier.student","student · toUnknown+")} chipTone="gold" price="$11" priceNote="/mo or $88/yr"
-        bullets={[TR("dana.tier.student.1","Every Path, unlocked by your practice"),TR("dana.tier.student.2","Sangha participation"),TR("dana.tier.student.3","Sangha participation + monthly satsang")]}>
+      <TierCard details={[
+        {t:"Every Path, unlocked by sitting",d:"All 284 guided sittings across five traditions, plus the Kids & Family collection. Tracks open in order as you sit them — never by paying."},
+        {t:"Practice lowers what you pay",d:"20 days sat in a month takes 25% off the next; 25 days half; every day makes it free. Counted at month end, so a missed day costs nothing."},
+        {t:"Dīkṣā Gates",d:"At the threshold of deeper material you write a short reflection, read by a teacher."},
+        {t:"Sangha",d:"The circle lives on Telegram while the in-app Sangha is built. The monthly satsang begins when the circle does."},
+        {t:"Billing",d:"$11 a month or $88 a year. Cancel any time from your own billing page — access runs to the end of the period you paid for."},
+      ]} hot chip={TR("dana.tier.student","student · toUnknown+")} chipTone="gold" price="$11" priceNote="/mo or $88/yr"
+        bullets={[TR("dana.tier.student.1","Every Path, unlocked by your practice"),TR("dana.tier.student.2","Downloads are coming; sittings stream for now"),TR("dana.tier.student.3","Sangha participation as the circle opens")]}>
         <GiveSlider style={{marginBottom:14}}/>
         <Button wide onClick={()=>buy("student-monthly")}>{buyLabel("student-monthly",TR("dana.tier.student.cta","Become a Student"))}</Button>
         <Button variant="quiet" wide onClick={()=>buy("student-yearly")}>{buyLabel("student-yearly",TR("dana.tier.student.year","or $88 / year — two months free"))}</Button>
       </TierCard>
 
-      <TierCard chip={TR("dana.tier.sadhaka","sādhaka · the guided circle")} chipTone="green" price="$33" priceNote="/mo"
+      <TierCard details={[
+        {t:"Everything in Student",d:"The full library, the practice discount, the gates."},
+        {t:"A place in the first guided circle",d:"No more than thirty practitioners with a lineage teacher. The circle has not opened yet — this holds your place in it."},
+        {t:"Monthly live guidance",d:"Begins once the circle is running. Until then this tier gives you Student access and a reserved seat."},
+        {t:"Your reflections read",d:"Gate reflections are read and answered by a teacher rather than filed."},
+        {t:"Honestly",d:"If you want the library today, Student is the same access for $11. Choose this to hold a seat and support the circle being built."},
+      ]} chip={TR("dana.tier.sadhaka","sādhaka · the guided circle")} chipTone="green" price="$33" priceNote="/mo"
         bullets={[TR("dana.tier.sadhaka.1","Everything in Student"),TR("dana.tier.sadhaka.2","A place in the first guided circle — max 30, when it opens"),TR("dana.tier.sadhaka.3","Monthly live guidance once the circle is running"),TR("dana.tier.sadhaka.4","Your gate reflections read by a teacher")]}>
         <Button wide onClick={()=>buy("sadhaka-monthly")}>{buyLabel("sadhaka-monthly",TR("dana.tier.sadhaka.cta","Enter the circle"))}</Button>
       </TierCard>
 
-      <TierCard chip={TR("dana.tier.founding","founding member")} price="$108" priceNote="· once" bullets={[TR("dana.tier.founding.1","Lifetime Student membership"),TR("dana.tier.founding.2","You keep the library, whatever happens next")]}>
+      <TierCard details={[
+        {t:"Lifetime Student membership",d:"Paid once. Every Path, every sitting, for as long as toUnknown exists — no renewal, no lapse."},
+        {t:"Why it exists",d:"It funds the recordings and the server before there is recurring revenue to do it."},
+        {t:"What it is not",d:"It is not a subscription and does not renew. It is a one-time gift with lifetime access attached."},
+      ]} chip={TR("dana.tier.founding","founding member")} price="$108" priceNote="· once" bullets={[TR("dana.tier.founding.1","Lifetime Student membership"),TR("dana.tier.founding.2","You keep the library, whatever happens next")]}>
         <Button variant="ghost" wide onClick={()=>buy("founding-once")}>{buyLabel("founding-once",TR("dana.tier.founding.cta","Become founding"))}</Button>
       </TierCard>
     </section>

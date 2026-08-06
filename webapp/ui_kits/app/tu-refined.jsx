@@ -155,11 +155,23 @@ function StatCard({ value, label, style }) {
 }
 
 /* -------------------------------------------------------------- TierCard -- */
-function TierCard({ chip, chipTone = "neutral", title, price, priceNote, bullets = [], hot = false, children, style }) {
+function TierCard({ chip, chipTone = "neutral", title, price, priceNote, bullets = [], hot = false, children, style, details }) {
+  // A tier should be able to say exactly what it is, without the card becoming an essay.
+  const [open, setOpen] = React.useState(false);
   return <section className={hot ? "tu-gold-seal" : "tu-glass"} style={{ borderRadius: "var(--r-lg)", padding: 22, position: "relative", overflow: "hidden", ...style }}>
     {hot && <div aria-hidden="true" style={{ position: "absolute", top: -60, right: -40, width: 180, height: 180,
       background: "radial-gradient(circle, rgba(217,164,65,0.20), transparent 68%)", pointerEvents: "none" }} />}
-    {chip && <Chip tone={hot ? "gold" : chipTone}>{chip}</Chip>}
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      {chip && <Chip tone={hot ? "gold" : chipTone}>{chip}</Chip>}
+      {details && <button onClick={() => setOpen(!open)} aria-expanded={open}
+        aria-label={open ? "Hide what is included" : "What is included"} className="tu-press"
+        style={{ width: 22, height: 22, borderRadius: "50%", cursor: "pointer", flex: "0 0 auto",
+          display: "grid", placeItems: "center", font: "600 12px/1 var(--font-sans)",
+          background: open ? "rgba(217,164,65,0.22)" : "rgba(25,24,19,0.06)",
+          color: open ? "var(--gold-deep)" : "var(--text-tertiary)",
+          border: "0.5px solid " + (open ? "rgba(168,120,31,0.4)" : "rgba(24,22,16,0.10)"),
+          transition: "background-color .25s, color .25s" }}>?</button>}
+    </div>
     {title && <h3 className="tu-display" style={{ margin: chip ? "12px 0 0" : 0, fontSize: 19, color: "var(--ink)" }}>{title}</h3>}
     {price && <div style={{ display: "flex", alignItems: "baseline", gap: 7, margin: "10px 0 0" }}>
       <span className="tu-num" style={{ font: "600 30px/1 var(--font-sans)", letterSpacing: "-0.03em", color: "var(--ink)" }}>{price}</span>
@@ -231,7 +243,15 @@ function Sheet({ open, onClose, children, maxWidth = 440, ariaLabel = "Sheet", s
       transform: "translate(-50%,0)",
       animation: "tu-sheet-in .46s var(--ease-spring)", ...style }}>
       <div aria-hidden="true" style={{ width: 38, height: 4.5, borderRadius: 99, background: "rgba(25,24,19,0.16)", margin: "0 auto 16px" }} />
-      {children}
+      {details && open && <div style={{ margin: "14px 0 4px", padding: "14px 16px",
+      borderRadius: 16, background: "rgba(25,24,19,0.035)", border: "0.5px solid var(--hairline)" }}>
+      {details.map((d, i) => (
+        <div key={i} style={{ marginBottom: i === details.length - 1 ? 0 : 12 }}>
+          <b style={{ display: "block", font: "600 12.5px/1.4 var(--font-sans)", color: "var(--ink)" }}>{d.t}</b>
+          <span style={{ font: "400 12.5px/1.6 var(--font-sans)", color: "var(--text-secondary)" }}>{d.d}</span>
+        </div>))}
+    </div>}
+    {children}
     </div>
   </div>;
 }
