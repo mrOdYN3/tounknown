@@ -54,6 +54,7 @@ function ProfileScreen() {
       <StatCard value={stats?stats.minutes:0} label={TR("profile.minutes","minutes sat")}/><StatCard value={stats?stats.completed:0} label={TR("profile.sittings","sittings")}/><StatCard value={0} label={TR("profile.gates","gates passed")}/>
     </div>
     <p className="tu-lede" style={{textAlign:"center",fontSize:16,margin:"4px 0 0"}}><b>{TR("profile.onpath.b","You are on the Path.")}</b> {TR("profile.onpath","Keep sitting.")}</p>
+    {window.PracticeDiscount ? <window.PracticeDiscount/> : null}
     <p className="tu-eyebrow tu-eyebrow-dot" style={{margin:"32px 0 12px"}}>{TR("profile.guide","your guide")}</p>
     <TeacherCard avatar={T.teacher.avatar} name={T.teacher.name} lineage={T.teacher.lineage} bio={T.teacher.bio}/>
     <p className="tu-eyebrow tu-eyebrow-dot" style={{margin:"30px 0 10px"}}>{TR("profile.questions","questions")}</p>

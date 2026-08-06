@@ -183,6 +183,25 @@
       return u;
     },
 
+    // ---- practice discount ----
+    async practiceSummary() {
+      if (!session) return null;
+      const r = await fetch("/api/practice/summary",
+        { headers: { Authorization: "Bearer " + session.access_token } });
+      return r.ok ? r.json() : null;
+    },
+    async giftMonth(rewardId) {
+      if (!session) throw new Error("Sign in first.");
+      const r = await fetch("/api/practice/gift", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token },
+        body: JSON.stringify({ reward_id: rewardId }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || "Could not gift that month.");
+      return j.code;
+    },
+
     // ---- Dīkṣā gates ----
     async loadGatesPassed(trackIds) {
       if (!session || !trackIds.length) return new Set();

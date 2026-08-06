@@ -183,6 +183,7 @@ def page(title, desc, body, canonical, jsonld=None, lang="en", extra_head="", og
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@tounknowndotcom">
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b1c487e5-6ce5-40dc-8415-abc06da1f15e"></script>
 <style>{CSS}</style>
 {extra_head}
 {ld}

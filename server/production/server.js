@@ -12,6 +12,22 @@ const PORT = process.env.PORT || 3001;
 const STRIPE_KEY = process.env.STRIPE_SECRET_KEY || "";
 const STRIPE_WH = process.env.STRIPE_WEBHOOK_SECRET || "";
 const SITE = process.env.SITE_URL || "http://72.60.170.97";
+// 20 days is roughly every-other-day-plus; 30 is a month of daily sitting. Someone who sits
+// every day pays nothing — which is the point.
+const TIERS = [
+  { days: 20, pct: 25 },
+  { days: 25, pct: 50 },
+  { days: 30, pct: 100 },
+];
+function discountFor(days) {
+  let pct = 0;
+  for (const t of TIERS) if (days >= t.days) pct = t.pct;
+  return pct;
+}
+function nextTier(days) {
+  return TIERS.find((t) => days < t.days) || null;
+}
+
 const PRICES = {
   "student-monthly": { id: process.env.STRIPE_PRICE_STUDENT_MONTHLY, mode: "subscription", tier: "student" },
   "student-yearly": { id: process.env.STRIPE_PRICE_STUDENT_YEARLY, mode: "subscription", tier: "student" },
@@ -198,6 +214,56 @@ const server = http.createServer(async (req, res) => {
         allow_promotion_codes: "true",
       });
       return send(res, 200, { url: session.url });
+    }
+
+    // ---- practice discount: the more you sit, the less next month costs ----
+    // Tiers are deliberately reachable. Sitting is daily practice, not a streak game —
+    // there is no penalty for missing a day, only a count at the end of the month.
+    if (url.pathname === "/api/practice/summary" && req.method === "GET") {
+      const jwt = (req.headers.authorization || "").replace(/^Bearer /, "");
+      const user = jwt ? await getUser(jwt) : null;
+      if (!user) return send(res, 401, { error: "sign in first" });
+
+      const now = new Date();
+      const period = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
+        .toISOString().slice(0, 10);
+      const rows = await sb("/rest/v1/practice_month?member_id=eq." + user.id +
+        "&period=eq." + period + "&select=days");
+      const days = (rows && rows[0] && rows[0].days) || 0;
+      const daysInMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0)).getUTCDate();
+
+      const earned = await sb("/rest/v1/practice_rewards?member_id=eq." + user.id +
+        "&order=period.desc&limit=6&select=id,period,days,discount_pct,status,gift_code");
+
+      return send(res, 200, {
+        period, days, daysInMonth,
+        discount: discountFor(days),
+        next: nextTier(days),
+        tiers: TIERS,
+        history: earned || [],
+      });
+    }
+
+    // give an earned free month away instead of taking it
+    if (url.pathname === "/api/practice/gift" && req.method === "POST") {
+      const jwt = (req.headers.authorization || "").replace(/^Bearer /, "");
+      const user = jwt ? await getUser(jwt) : null;
+      if (!user) return send(res, 401, { error: "sign in first" });
+      const body = JSON.parse((await readBody(req)).toString() || "{}");
+      const rewardId = String(body.reward_id || "");
+
+      const rows = await sb("/rest/v1/practice_rewards?id=eq." + encodeURIComponent(rewardId) +
+        "&member_id=eq." + user.id + "&select=id,discount_pct,status");
+      const r = rows && rows[0];
+      if (!r) return send(res, 404, { error: "no such reward" });
+      if (r.discount_pct < 100) return send(res, 400, { error: "only a full free month can be given away" });
+      if (r.status !== "earned") return send(res, 409, { error: "that month has already been used" });
+
+      const code = "TU-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+      await sbFetch("/rest/v1/practice_rewards?id=eq." + encodeURIComponent(rewardId), {
+        method: "PATCH", body: JSON.stringify({ status: "gifted", gift_code: code }),
+      });
+      return send(res, 200, { code });
     }
 
     // ---- Dīkṣā gate: a written reflection, read by a teacher ----
