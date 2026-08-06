@@ -893,3 +893,19 @@ marks it `redeemed`, and grants the recipient a month; plus a field to enter it.
 `denisnykulin@` and `sethsc@` signed up during this session. That changes the priority of the
 Sādhaka tier: it charges $33/month, the tier field is never consulted anywhere in the code, and
 the circle it promises does not exist. It was theoretical when nobody had an account.
+
+
+## The discount is now said out loud (5 Aug 2026)
+
+It had been built but only shown on Sādhana, behind a sign-in — so the single strongest reason to
+subscribe was invisible to everyone deciding whether to subscribe. Now surfaced at every point of
+decision:
+
+- **A band above the tuition ladder** on Dāna: *"The more you sit, the less you pay."*
+- **Home, step 4** ("Give by gratitude") states the tiers.
+- **A new FAQ question** — *"Does meditating actually make the subscription cheaper?"* — in the
+  visible page **and** the FAQPage schema, so Google and assistants read the same answer.
+- **The membership lede** and **llms.txt**.
+
+Live check: 2 mentions on the homepage, 1 on /membership, 3 on /faq, 3 in llms.txt.
+Russian strings added for all of it.
