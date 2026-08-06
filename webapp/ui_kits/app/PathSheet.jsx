@@ -125,8 +125,10 @@ function PathSheet({ path, onClose }) {
   const liveTracks = tracks && tracks.length ? tracks : null;
 
   return <Sheet open={!!path} onClose={onClose} className="tu-sheet-desktop" ariaLabel="Path details">
-    {/* Cover art. Some covers are photographs, some are illustrations on white —
-        a blurred copy behind lets either sit whole, without an arbitrary crop. */}
+    {/* Cover art. These are square portraits — a deity, a teacher, a statue — shown through a
+        wide letterbox, so most of the image is cropped away whatever we do. Anchoring to the top
+        put the window on the crown and sliced the face off at 28% down. 24% centres the face for
+        a square portrait and still reads for the landscape covers. */}
     {(() => {
       const art = (course && course.cover_url) || path.image;
       return <div style={{position:"relative",height:172,borderRadius:"var(--r-lg)",overflow:"hidden",
@@ -134,7 +136,7 @@ function PathSheet({ path, onClose }) {
         <div aria-hidden="true" style={{position:"absolute",inset:0,
           background:"linear-gradient(180deg,#1B1A15 0%,#0C0B08 100%)"}}/>
         <img key={art} src={art} alt="" style={{position:"relative",display:"block",width:"100%",height:"100%",
-          objectFit:"cover",objectPosition:"center top",animation:"tu-fade .5s var(--ease-out)"}}/>
+          objectFit:"cover",objectPosition:"center 24%",animation:"tu-fade .5s var(--ease-out)"}}/>
       </div>;
     })()}
     <p className="tu-eyebrow" style={{margin:"0 0 6px"}}>{path.tradition} · {path.source}</p>

@@ -95,6 +95,9 @@ body{
 
 /* The sheet's resting transform. --sheet-dy is written by the pull-to-dismiss drag and by
    nothing else, which keeps the drag clear of React re-renders and of the desktop !important. */
+/* Hero height lives here, not inline, so the desktop rule can raise it without !important. */
+.tu-hero{ min-height: 560px; }
+
 .tu-sheet{ transform: translate(-50%, var(--sheet-dy, 0px)); }
 .tu-sheet.is-settling{ transition: transform .34s var(--ease-spring); }
 .tu-sheet.is-leaving{
@@ -248,8 +251,23 @@ main .rv.in{ opacity:1; transform:none; filter:blur(0); }
      :not(.tu-overlay) matters: a modal rendered from inside a screen is also a
      `main > div > div`, and capping it shrink-wrapped its position:fixed backdrop to the
      column — the page showed through undimmed to the right of it, reading as a cut edge. */
-  .tu-frame > main > div > section:not(.tu-overlay),
-  .tu-frame > main > div > div:not(.tu-overlay){ max-width: 1160px; margin-left: auto; margin-right: auto; }
+  .tu-frame > main > div > section:not(.tu-overlay):not(.tu-hero),
+  .tu-frame > main > div > div:not(.tu-overlay):not(.tu-hero){ max-width: 1160px; margin-left: auto; margin-right: auto; }
+
+  /* The hero carries a 16:9 photograph of the Shwedagon. Held to the 1160 column and pinned at
+     560px it became a 2.07:1 letterbox — cream down both sides, and the spire sliced off the
+     top. It spans the whole content area now, tall enough to hold the pagoda, and anchored near
+     the top of the frame so the crown always keeps its air. */
+  .tu-frame > main > div > .tu-hero{
+    max-width: none; margin-left: 0; margin-right: 0;
+    min-height: min(82vh, 760px);
+    /* `contain`, not `cover`: a capped height with an uncapped width means cover always finds
+       something to crop, and what it crops first is the spire. The photograph is a night shot
+       whose edges are already black, so the letterbox lands on the same near-black the frame
+       is painted in and reads as more sky. */
+    --hero-size: contain;
+    --hero-pos: center center;
+  }
 
   /* An overlay covers the window, never the column, whatever it is nested inside. */
   .tu-overlay{ max-width: none !important; margin: 0 !important; }

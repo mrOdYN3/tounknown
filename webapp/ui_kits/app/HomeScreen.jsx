@@ -63,8 +63,8 @@ function HomeScreen({ openPath, go }) {
   const collection = all.find((p) => p.status === "living" && p.kind === "collection");
   const byId = (id, fallbackIdx) => living.find((p) => p.id === id) || living[fallbackIdx] || all[fallbackIdx];
   return <div>
-    <div className="tu-haze" style={{position:"relative",minHeight:560,display:"flex",flexDirection:"column",justifyContent:"flex-end",alignItems:"center",textAlign:"center",padding:"140px 22px 60px",overflow:"hidden"}}>
-      <div style={{position:"absolute",inset:0,background:`url('${T.hero}') center 28%/cover no-repeat`,backgroundColor:"#0B0B10"}}></div>
+    <div className="tu-haze tu-hero" style={{position:"relative",display:"flex",flexDirection:"column",justifyContent:"flex-end",alignItems:"center",textAlign:"center",padding:"140px 22px 60px",overflow:"hidden"}}>
+      <div style={{position:"absolute",inset:0,background:`url('${T.hero}') var(--hero-pos, center 28%)/var(--hero-size, cover) no-repeat`,backgroundColor:"#0B0B10"}}></div>
       <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 90% 70% at 50% 60%,rgba(11,11,16,0.6) 0%,rgba(11,11,16,0.35) 55%,rgba(11,11,16,0.7) 100%)"}}></div>
       <div style={{position:"relative",display:"flex",flexDirection:"column",alignItems:"center"}}>
         <img src="../../assets/wordmark-white.png" alt="toUnknown" style={{width:250,height:"auto",display:"block",marginBottom:18}}/>
