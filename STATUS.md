@@ -854,3 +854,42 @@ When it is worth building, it is five steps:
 
 Until then the `Product`/`Offer` schema on `/membership` delivers price rich-results in normal
 search, which is the channel that matters for this category.
+
+
+## The practice discount — practice lowers the price (5 Aug 2026)
+
+The model now matches the philosophy. A subscription that is indifferent to whether anyone sits
+contradicted *"unlocked by sitting, never by paying"*; sitting now reduces what the next month costs.
+
+**Tiers** — 20 days · 25% · 25 days · 50% · every day · free. Counted at the **end** of the month,
+so there is no streak to break and a missed day costs nothing. That distinction is deliberate:
+streak mechanics punish the person who misses a day, which is the opposite of what a practice
+should do to someone.
+
+**A practice day** is a calendar day on which a member *completed a guided sitting*. Talks and
+introductions do not count — the discount follows practice, not listening. Derived in
+`practice_days` / `practice_month` from `practice_events` joined to `tracks.is_sitting`.
+
+**A free month can be given away.** `POST /api/practice/gift` turns a 100% reward into a code the
+member can hand to someone who cannot pay, and refuses a second attempt on the same month. This
+keeps dāna in the money and not only in the copy — and it is cost-neutral, because the member is
+choosing to give rather than keep.
+
+**The monthly job** (`/opt/tu-api/practice-discount.js`, cron 04:23 on the 1st) closes the month
+that has *ended*, records the reward, and applies a Stripe coupon to the next invoice. Coupons are
+created once per tier and reused. `--dry-run` and `--period` for testing.
+
+**Verified end to end**: 22 days → 25% with 25 shown as the next tier; 30 days → 100%; the job
+recorded the reward; gifting returned `TU-RV0PFX`; a second gift on the same month was refused.
+Test data removed.
+
+### Not finished — say so plainly
+**A gift code cannot yet be redeemed.** `POST /api/practice/gift` mints it, but nothing consumes it.
+Until redemption exists the code is a promise the software cannot keep — the same fault as the
+gate reflections nobody can read. Redemption needs: an endpoint that validates an unused code,
+marks it `redeemed`, and grants the recipient a month; plus a field to enter it.
+
+### Two real members now exist
+`denisnykulin@` and `sethsc@` signed up during this session. That changes the priority of the
+Sādhaka tier: it charges $33/month, the tier field is never consulted anywhere in the code, and
+the circle it promises does not exist. It was theoretical when nobody had an account.
