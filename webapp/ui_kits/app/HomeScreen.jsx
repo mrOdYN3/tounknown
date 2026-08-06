@@ -18,7 +18,7 @@ function HowItWorks({ go }) {
       body: "At the threshold of a deeper stage you are asked to put your practice into your own words. It is read by a teacher, not a machine." },
     { n: "4", title: TR("how.4.title","Give by gratitude"),
       lead: "Dāna appears after practice, never before.",
-      body: "You are never asked for money before you have sat. Vipassana's first course stays free, every Path opens with free introductions, and no one is turned away for money — a paragraph is enough to ask.",
+      body: "You are never asked for money before you have sat — and practice lowers the price: 20 days of sitting in a month takes 25% off the next, 25 days half, every day makes it free. Vipassana's first course stays free, every Path opens with free introductions, and no one is turned away for money.",
       cta: { label: TR("how.4.cta","The tuition ladder"), to: "membership" } },
   ];
   return <div style={{marginTop:4}}>

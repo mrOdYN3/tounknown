@@ -68,12 +68,14 @@ FAQ = [
    "listen to before deciding. Membership ($11/month or $88/year) opens the full library of "
    "{sittings} guided sittings. No one is turned away for money — a single honest paragraph to "
    "tounknown.com@gmail.com is enough to be given full access."),
+  ("Does meditating actually make the subscription cheaper?",
+   "Yes — that is the model. Sit on 20 days in a month and the next month costs 25% less; 25 days, half price; every day, and the next month is free. The free month can be kept or given to someone who cannot pay. It is counted at the end of the month, so a missed day costs nothing and there is no streak to break. Only completed guided sittings count, not talks — the discount follows practice, not listening."),
   ("What makes toUnknown different from Headspace, Calm or Insight Timer?",
    "Every course names its lineage — the tradition, the source text and the era it comes from — "
    "and every teacher names their paramparā, the unbroken chain of teachers behind them. Nothing "
    "is invented for the app. And courses unlock by practice rather than by payment: a sitting "
    "opens only after you have genuinely sat the one before it, verified by elapsed time, so the "
-   "track cannot be skipped."),
+   "track cannot be skipped. And practice lowers the price rather than being irrelevant to it: the more you sit, the less the next month costs."),
   ("What does 'unlock by practice, not payment' mean?",
    "Each guided sitting opens only once you have actually sat the previous one. The server checks "
    "elapsed time, so scrubbing to the end of a track does not open the next. Introductions and "
@@ -337,7 +339,8 @@ TIERS = [
 ]
 mb = ['<p class="eyebrow">the tuition ladder</p>', "<h1>Membership &amp; dāna</h1>",
       '<p class="lede">Giving is dāna — you give because the practice was worth something, not to '
-      'obtain it. No one is turned away for money.</p>']
+      'obtain it. And practice lowers the price: sit on 20 days in a month and the next is 25% '
+      'less, 25 days half, every day free — kept or given away. No one is turned away for money.</p>']
 prod_ld = []
 for name, price, blurb, bullets in TIERS:
     mb.append(f'<div class="card"><h3>{esc(name)} — '
@@ -431,6 +434,9 @@ lines = ["# toUnknown", "",
          "- Every other Path opens with free introductions; its guided sittings need membership.",
          "- Membership: Student $11/month or $88/year · Sādhaka $33/month (a place in the first guided circle, max 30, when it opens) · Founding $108 once.",
          "- Scholarships: no one is turned away for money — write to tounknown.com@gmail.com.",
+         "- Practice lowers the price: 20 days sat in a month = 25% off the next month, 25 days = 50%,",
+         "  every day = free. The free month may be kept or given to someone who cannot pay.",
+         "  Counted at month end; a missed day costs nothing. Only completed guided sittings count.",
          "- Unlocking is by practice: a sitting opens only after the previous one has genuinely been sat",
          "  (verified by elapsed time, so scrubbing does not work). Introductions and talks are always open.",
          "- Dīkṣā Gates: before deeper material, a written reflection is read by a teacher.",

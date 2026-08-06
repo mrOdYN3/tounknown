@@ -50,6 +50,18 @@ function DanaScreen({ go, toast }) {
     </section>}
 
     <section style={{padding:"0 20px",display:"flex",flexDirection:"column",gap:16}}>
+      {/* The thing that makes this ladder different from every other subscription — it belongs
+          before the prices, not after them. */}
+      <div style={{margin:"0 0 18px",padding:"18px 18px 16px",borderRadius:"var(--r-lg)",
+        background:"rgba(217,164,65,0.10)",border:"0.5px solid rgba(168,120,31,0.32)"}}>
+        <p className="tu-eyebrow" style={{margin:"0 0 8px",color:"var(--gold-deep)"}}>
+          {TR("dana.discount.eyebrow","practice lowers the price")}</p>
+        <p style={{margin:0,font:"400 16px/1.45 var(--font-serif)",color:"var(--ink)"}}>
+          {TR("dana.discount.lead","The more you sit, the less you pay.")}</p>
+        <p style={{margin:"8px 0 0",font:"400 13.5px/1.65 var(--font-sans)",color:"var(--text-secondary)"}}>
+          {TR("dana.discount.body","Sit on 20 days in a month and the next month is 25% less. 25 days, half price. Every day, and the next month is free — keep it, or give it to someone who cannot pay. Counted at the end of the month, so a missed day costs nothing.")}</p>
+      </div>
+
       <TierCard chip={TR("dana.tier.seeker","seeker")} price="$0" priceNote="· dāna" bullets={[TR("dana.tier.seeker.1","First gate of every Path — free forever"),TR("dana.tier.seeker.2","Community, read-only"),TR("dana.tier.seeker.3","Give only if it feels true")]}>
         <Button variant="ghost" wide onClick={()=>go("paths")}>{TR("dana.tier.seeker.cta","Start free")}</Button>
       </TierCard>
