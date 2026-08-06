@@ -182,6 +182,15 @@ function TierCard({ chip, chipTone = "neutral", title, price, priceNote, bullets
         <span style={{ color: "var(--gold-deep)", marginTop: 1, flex: "0 0 auto" }}><Icon name="check" size={14} stroke={2} /></span>{b}
       </li>)}
     </ul>}
+    {/* What is included, opened by the ? beside the tier name. */}
+    {details && open && <div style={{ margin: "16px 0 0", padding: "14px 16px",
+      borderRadius: 16, background: "rgba(25,24,19,0.035)", border: "0.5px solid var(--hairline)" }}>
+      {details.map((d, i) => (
+        <div key={i} style={{ marginBottom: i === details.length - 1 ? 0 : 12 }}>
+          <b style={{ display: "block", font: "600 12.5px/1.4 var(--font-sans)", color: "var(--ink)" }}>{d.t}</b>
+          <span style={{ font: "400 12.5px/1.6 var(--font-sans)", color: "var(--text-secondary)" }}>{d.d}</span>
+        </div>))}
+    </div>}
     {children && <div style={{ marginTop: 18 }}>{children}</div>}
   </section>;
 }
@@ -243,14 +252,6 @@ function Sheet({ open, onClose, children, maxWidth = 440, ariaLabel = "Sheet", s
       transform: "translate(-50%,0)",
       animation: "tu-sheet-in .46s var(--ease-spring)", ...style }}>
       <div aria-hidden="true" style={{ width: 38, height: 4.5, borderRadius: 99, background: "rgba(25,24,19,0.16)", margin: "0 auto 16px" }} />
-      {details && open && <div style={{ margin: "14px 0 4px", padding: "14px 16px",
-      borderRadius: 16, background: "rgba(25,24,19,0.035)", border: "0.5px solid var(--hairline)" }}>
-      {details.map((d, i) => (
-        <div key={i} style={{ marginBottom: i === details.length - 1 ? 0 : 12 }}>
-          <b style={{ display: "block", font: "600 12.5px/1.4 var(--font-sans)", color: "var(--ink)" }}>{d.t}</b>
-          <span style={{ font: "400 12.5px/1.6 var(--font-sans)", color: "var(--text-secondary)" }}>{d.d}</span>
-        </div>))}
-    </div>}
     {children}
     </div>
   </div>;
