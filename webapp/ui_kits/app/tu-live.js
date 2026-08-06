@@ -45,9 +45,16 @@
 
   // DB row -> the shape the UI components already expect
   function toPath(p) {
+    // Thirteen rows of catalogue copy live in tu-i18n.js rather than in the database. The DB
+    // keeps `lang` for courses and tracks, where the content is genuinely per-language; a Path's
+    // name, tradition line and one-sentence essence are UI strings, and belong beside the rest
+    // of them where a diff can review the translation. TR falls through to the DB value when a
+    // key is absent, so English is untouched.
+    const tr = (field, value) => (window.TR ? window.TR("path." + p.id + "." + field, value) : value);
     return {
-      id: p.id, name: p.title, tradition: p.tradition || "", source: p.source || "",
-      essence: p.description || "", image: p.cover_url || "", kind: p.kind || "lineage",
+      id: p.id, name: tr("title", p.title), tradition: tr("tradition", p.tradition || ""),
+      source: tr("source", p.source || ""), essence: tr("description", p.description || ""),
+      image: p.cover_url || "", kind: p.kind || "lineage",
       status: p.status, steps: [],
     };
   }

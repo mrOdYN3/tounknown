@@ -309,6 +309,65 @@
     "circle.full": "Все {cap} мест заняты",
     "circle.waiting": "Твоё размышление в очереди. Ответ пишет человек, поэтому на это уходит несколько дней.",
     "circle.from": "от твоего учителя",
+    // the Path catalogue — Sanskrit and Pali transliterated, never translated:
+    // Випассана, not "прозрение". The words belong to the tradition, not to us.
+    "path.vipassana.title": "Путь Випассаны",
+    "path.vipassana.tradition": "Тхеравāда",
+    "path.vipassana.source": "Пали-канон · ок. V в. до н. э.",
+    "path.vipassana.description": "Видеть вещи как они есть. Сӣла, самāдхи, паннā.",
+
+    "path.tantra.title": "Путь Тантры",
+    "path.tantra.tradition": "Кашмирский шиваизм",
+    "path.tantra.source": "Виджняна Бхайрава Тантра · ок. VIII в.",
+    "path.tantra.description": "112 дверей Шивы — дыхание, звук, присутствие.",
+
+    "path.vedanta.title": "Путь Веданты",
+    "path.vedanta.tradition": "Адвайта-веданта",
+    "path.vedanta.source": "Недвойственность Упанишад",
+    "path.vedanta.description": "Я есть — до всякой мысли. Гималайская тишина.",
+
+    "path.bhakti.title": "Путь Бхакти",
+    "path.bhakti.tradition": "Бхакти-йога",
+    "path.bhakti.source": "Путь преданности",
+    "path.bhakti.description": "Шёпот Бога — предание себя, молитва, безусловная любовь.",
+
+    "path.stoic.title": "Путь стоиков",
+    "path.stoic.tradition": "Греко-римская философия",
+    "path.stoic.source": "«Размышления» Марка Аврелия · II в. н. э.",
+    "path.stoic.description": "Внутренняя цитадель — стойкость, которую император упражнял каждый день.",
+
+    "path.zen.title": "Путь Дзэн",
+    "path.zen.tradition": "Чань / Дзэн-буддизм",
+    "path.zen.source": "Дзадзэн · сикантадза · ок. VI в.",
+
+    "path.tibetan.title": "Тибетский Путь",
+    "path.tibetan.tradition": "Ваджраяна · Дзогчен",
+    "path.tibetan.source": "Ригпа и махāмудрā",
+
+    "path.raja.title": "Путь Йоги",
+    "path.raja.tradition": "Рāджа-йога",
+    "path.raja.source": "«Йога-сӯтры» Патанджали · ок. II в. до н. э.",
+
+    "path.sufi.title": "Путь суфиев",
+    "path.sufi.tradition": "Исламский мистицизм",
+    "path.sufi.source": "Зикр и муракаба",
+
+    "path.taoist.title": "Путь Дао",
+    "path.taoist.tradition": "Даосизм · цзован",
+    "path.taoist.source": "«Дао дэ цзин» · ок. IV в. до н. э.",
+
+    "path.hesychast.title": "Путь исихастов",
+    "path.hesychast.tradition": "Христианский мистицизм",
+    "path.hesychast.source": "Молитва сердца · «Добротолюбие»",
+
+    "path.kabbalistic.title": "Путь Каббалы",
+    "path.kabbalistic.tradition": "Еврейский мистицизм",
+    "path.kabbalistic.source": "Хитбодедут и созерцание",
+
+    "path.kids.title": "Роща для детей и семьи",
+    "path.kids.tradition": "Осознанность для детей",
+    "path.kids.source": "6–12 лет · истории и практики",
+    "path.kids.description": "Короткие ведомые медитации для маленьких — и для взрослых, что сидят рядом.",
     "common.terms": "Условия и приватность",
   };
 
