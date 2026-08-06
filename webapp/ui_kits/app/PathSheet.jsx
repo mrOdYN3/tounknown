@@ -1,5 +1,6 @@
 const { Sheet, StepRow, Chip, Button } = window.ToUnknownDesignSystem_9d38c1;
 const Icon = window.TUIcon;
+const Notice = (p) => (window.TUNotice ? <window.TUNotice {...p}/> : null);
 const mins = (sec) => {
   if (!sec) return null;
   const m = Math.round(sec / 60);
@@ -36,12 +37,18 @@ function PathSheet({ path, onClose }) {
       .catch(() => {});
   }, []);
   const audioRef = React.useRef(null);
+  const audioElRef = React.useRef(null);   // kept past unmount, so the element can still be paused
 
   React.useEffect(() => window.TULive ? window.TULive.onAuth((sn,m)=>{setSession(sn);setMember(m);}) : undefined, []);
 
   // Which track the <audio> element currently holds. Reassigning src restarts playback from
   // zero, so pause/resume must not touch it — that was silently discarding whole sittings.
   const loadedRef = React.useRef(null);
+  const pauseAudio = () => {
+    const a = audioRef.current;
+    if (a && !a.paused) a.pause();
+    setPlaying(null);
+  };
   const stopAudio = () => {
     const a = audioRef.current;
     if (a) { a.pause(); a.removeAttribute("src"); }
@@ -71,6 +78,21 @@ function PathSheet({ path, onClose }) {
       }).catch(() => setCourses([]));
     }
   }, [path, selectCourse]);
+
+  // Closing the sheet stops the sound. Audio that keeps playing from a screen you have left is
+  // a thing to hunt for, not a feature — there is no player elsewhere in the app to pause it.
+  //
+  // These must sit above the early return: React counts hooks per render, and a hook that only
+  // runs when `path` is set is a different count from one when it is null. They also read
+  // audioElRef rather than audioRef, because returning null unmounts the <audio> and nulls the
+  // ref — which is exactly why a detached element went on playing into the next screen.
+  React.useEffect(() => {
+    if (path) return;
+    const a = audioElRef.current;
+    if (a && !a.paused) a.pause();
+    setPlaying(null);
+  }, [path]);
+  React.useEffect(() => () => { const a = audioElRef.current; if (a) a.pause(); }, []);
 
   if (!path) return null;
 
@@ -121,7 +143,7 @@ function PathSheet({ path, onClose }) {
         <span style={{font:"400 12.5px/1.5 var(--font-serif)",color:"var(--text-secondary)"}}>{t.lineage}</span></div>
     </div>
 
-    <audio ref={audioRef} onEnded={()=>{
+    <audio ref={(el)=>{ audioRef.current = el; if (el) audioElRef.current = el; }} onEnded={()=>{
       const done = playing;
       setPlaying(null);
       if (!done || !window.TULive) return;
@@ -237,16 +259,13 @@ function PathSheet({ path, onClose }) {
           {course.description}</p>}
     </div>}
 
-    {needLogin && <div style={{margin:"12px 0",padding:"14px 16px",borderRadius:16,background:"rgba(217,164,65,0.10)",border:"0.5px solid rgba(168,120,31,0.25)",fontSize:13.5,color:"var(--gold-deep)",fontFamily:"var(--font-serif)"}}>
-      {!session
-        ? "Sign in from the Sādhana tab to sit this course. The introductions here are free to hear, and no one is turned away for money."
-        : "This course opens with membership. No one is turned away for money — one honest paragraph to tounknown.com@gmail.com is enough."}
-      <div style={{marginTop:10}}>
-        <Button onClick={()=>{ onClose(); window.TUGo && window.TUGo(session ? "membership" : "profile"); }}
-          style={{minHeight:40,padding:"0 18px",fontSize:12.5}}>
-          {session ? "See the tuition ladder" : "Go to sign in"}</Button>
-      </div>
-    </div>}
+    <Notice note={!needLogin ? null : (session
+      ? { text: TR("sheet.locked.title","This course opens with membership."),
+          sub: TR("sheet.locked.sub","No one is turned away for money — one honest paragraph to tounknown.com@gmail.com is enough."),
+          icon: "lock",
+          action: { label: TR("sheet.locked.cta","See the tuition ladder"),
+                    run: () => { onClose(); window.TUGo && window.TUGo("membership"); } } }
+      : { kind: "signin" })} onClose={()=>setNeedLogin(false)}/>
 
     <div style={{marginTop:10}}>
       {liveTracks ? (() => {

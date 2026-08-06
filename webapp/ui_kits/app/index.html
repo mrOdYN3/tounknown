@@ -33,6 +33,7 @@ main .rv.in{opacity:1;transform:none}
 <script type="text/babel" src="DanaScreen.jsx?v=67"></script>
 <script type="text/babel" src="PracticeDiscount.jsx?v=67"></script>
 <script type="text/babel" src="CircleSeat.jsx?v=67"></script>
+<script type="text/babel" src="SignInModal.jsx?v=67"></script>
 <script type="text/babel" src="ProfileScreen.jsx?v=67"></script>
 <script type="text/babel" src="PathSheet.jsx?v=67"></script>
 <script type="text/babel" src="StartHere.jsx?v=67"></script>
@@ -60,7 +61,9 @@ function App(){
     addEventListener("scroll",f,{passive:true});
     return ()=>removeEventListener("scroll",f);
   },[]);
-  const go = v=>{ setView(v); window.scrollTo({top:0,behavior:"instant"}); };
+  // Leaving for another screen closes the Path sheet with it — otherwise the sheet floats over
+  // wherever you went next, and the sitting inside it keeps playing out of sight.
+  const go = v=>{ setPath(null); setView(v); window.scrollTo({top:0,behavior:"instant"}); };
   React.useEffect(()=>{ window.TUGo = go; window.TUStart = ()=>setStartOpen(true); },[]);
   React.useEffect(()=>{
     const els = document.querySelectorAll("main > div > *:not(.rv)");

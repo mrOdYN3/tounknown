@@ -3,38 +3,7 @@ const PAYPAL = "https://www.paypal.com/donate?hosted_button_id=H5VQT3VLQBUBJ";
 const Icon = window.TUIcon;
 const PENDING = "tu.pending-plan";
 const SeatCount = (p) => (window.TUCircleSeat ? <window.TUCircleSeat {...p}/> : null);
-
-/* Sign in without leaving the price you were looking at. The plan is held in sessionStorage,
-   so following the emailed link lands back here and opens that checkout. */
-function SignInPanel({ plan, onDone }) {
-  const [email, setEmail] = React.useState("");
-  const [state, setState] = React.useState("idle");
-  if (state === "sent") return <React.Fragment>
-    <p style={{margin:0,font:"400 17px/1.4 var(--font-serif)",color:"var(--ink)"}}>
-      {TR("dana.signin.sent","Check your inbox.")}</p>
-    <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
-      {TR("dana.signin.sent.sub","The link signs you in and brings you straight back to this step. ☸")}</p>
-  </React.Fragment>;
-  return <React.Fragment>
-    <p style={{margin:0,font:"400 17px/1.4 var(--font-serif)",color:"var(--ink)"}}>
-      {TR("dana.signin.title","First, your email.")}</p>
-    <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
-      {TR("dana.signin.sub","No password. Your membership and your practice both follow this address.")}</p>
-    <form onSubmit={(e)=>{ e.preventDefault(); if(!email.trim()) return; setState("sending");
-        window.TULive.signIn(email.trim()).then(()=>setState("sent")).catch(()=>setState("error")); }}
-      style={{marginTop:18,display:"flex",flexDirection:"column",gap:8}}>
-      <input type="email" required autoFocus value={email} onChange={(e)=>setEmail(e.target.value)}
-        placeholder="you@example.com" aria-label="Email address"
-        style={{padding:"0 16px",minHeight:46,font:"400 15px var(--font-sans)",borderRadius:"var(--r-full)",
-          textAlign:"center",border:"0.5px solid rgba(24,22,16,0.12)",background:"rgba(255,255,255,0.9)",
-          color:"var(--ink)",outline:"none"}}/>
-      <Button type="submit" wide disabled={state==="sending"} style={{opacity:state==="sending"?0.6:1}}>
-        {state==="sending" ? TR("dana.signin.sending","Sending…") : TR("dana.signin.cta","Send the link")}</Button>
-    </form>
-    {state==="error" && <p style={{margin:"10px 0 0",fontSize:12.5,color:"#a33"}}>
-      {TR("dana.signin.error","Could not send — try again in a minute.")}</p>}
-  </React.Fragment>;
-}
+const Notice = (p) => (window.TUNotice ? <window.TUNotice {...p}/> : null);
 
 function DanaScreen({ go, toast }) {
   // Real generosity, counted — the only social proof this product should show.
@@ -200,32 +169,8 @@ function DanaScreen({ go, toast }) {
       <a href={"mailto:tounknown.com@gmail.com?subject="+encodeURIComponent("Scholarship request")}
         style={{fontFamily:"var(--font-serif)",fontSize:13,color:"var(--gold-deep)"}}>write to us ↗</a></p>
 
-    {/* Answers where the question was asked. A message about signing in belongs on top of the
-        button you just pressed, not at the top of a page you have already scrolled past. */}
-    {note && <div role="dialog" aria-modal="true" onClick={()=>setNote(null)}
-      style={{position:"fixed",inset:0,zIndex:220,display:"grid",placeItems:"center",padding:22,
-        background:"rgba(14,13,10,0.42)",WebkitBackdropFilter:"blur(7px)",backdropFilter:"blur(7px)",
-        animation:"tu-fade .22s var(--ease-out)"}}>
-      <div onClick={(e)=>e.stopPropagation()} className="tu-glass"
-        style={{width:"min(392px,100%)",borderRadius:"var(--r-xl)",padding:"28px 24px 20px",
-          textAlign:"center",boxShadow:"var(--lift-2)",animation:"tu-rise .32s var(--ease-spring)"}}>
-        <div aria-hidden="true" style={{display:"grid",placeItems:"center",width:48,height:48,margin:"0 auto 16px",
-          borderRadius:"50%",background:"rgba(217,164,65,0.15)",border:"0.5px solid rgba(168,120,31,0.28)",
-          color:"var(--gold-deep)"}}><Icon name={note.kind==="signin" ? "mail" : (note.icon||"spark")} size={21}/></div>
-
-        {note.kind==="signin"
-          ? <SignInPanel plan={note.plan} onDone={()=>setNote(null)}/>
-          : <React.Fragment>
-              <p style={{margin:0,font:"400 17px/1.4 var(--font-serif)",color:"var(--ink)"}}>{note.text}</p>
-              {note.sub && <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>{note.sub}</p>}
-              {note.paypal && <Button variant="ghost" wide style={{marginTop:18}}
-                onClick={()=>window.open(PAYPAL,"_blank","noopener")}>{TR("dana.paypal","Give via PayPal ↗")}</Button>}
-            </React.Fragment>}
-
-        <Button variant="quiet" wide style={{marginTop:8}} onClick={()=>setNote(null)}>
-          {TR("common.close","Close")}</Button>
-      </div>
-    </div>}
+    {/* Asked where the question was raised, never as a band above the fold. */}
+    <Notice note={note} onClose={()=>setNote(null)}/>
   </div>;
 }
 window.DanaScreen = DanaScreen;
