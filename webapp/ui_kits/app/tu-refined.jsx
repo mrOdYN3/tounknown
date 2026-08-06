@@ -30,6 +30,16 @@ function Button({ variant = "gold", wide = false, children, style, ...rest }) {
       boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9), var(--lift-1)",
     },
     quiet: { background: "transparent", color: "var(--text-secondary)", minHeight: 40, fontWeight: 500 },
+    // The one button in the product that has to read as "this is the thing to press" from across
+    // the room: the paywall's way out. Ink with green in it, lit at the rim, so it carries the
+    // go-signal every other product trains people to look for without leaving the palette.
+    go: {
+      background: "linear-gradient(180deg, #24321E 0%, #141D0F 64%)",
+      color: "#EFF7E8",
+      border: "0.5px solid rgba(150,205,120,0.42)",
+      boxShadow: "inset 0 1px 0 rgba(196,240,168,0.24), 0 1px 2px rgba(10,18,6,.28), " +
+                 "0 0 0 3px rgba(120,190,90,0.10), 0 10px 30px -8px rgba(96,178,74,0.46)",
+    },
     seal: {
       background: "linear-gradient(180deg, var(--gold-bright) 0%, var(--gold-deep) 100%)",
       color: "#fff",

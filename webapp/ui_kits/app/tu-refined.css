@@ -261,12 +261,11 @@ main .rv.in{ opacity:1; transform:none; filter:blur(0); }
   .tu-frame > main > div > .tu-hero{
     max-width: none; margin-left: 0; margin-right: 0;
     min-height: min(82vh, 760px);
-    /* `contain`, not `cover`: a capped height with an uncapped width means cover always finds
-       something to crop, and what it crops first is the spire. The photograph is a night shot
-       whose edges are already black, so the letterbox lands on the same near-black the frame
-       is painted in and reads as more sky. */
-    --hero-size: contain;
-    --hero-pos: center center;
+    /* Anchored to the top, and covering. The spire's tip sits 2.8% down the photograph, so
+       anchoring there keeps its air at any window shape while the box stays completely filled.
+       `contain` also kept the spire, but it letterboxed — and the bars showed as a dark band
+       against the paper, which looked like a broken image rather than a night sky. */
+    --hero-pos: center top;
   }
 
   /* An overlay covers the window, never the column, whatever it is nested inside. */

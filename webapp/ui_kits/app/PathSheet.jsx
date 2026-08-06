@@ -271,9 +271,13 @@ function PathSheet({ path, onClose }) {
 
     <Notice note={!needLogin ? null : (session
       ? { text: TR("sheet.locked.title","This course opens with membership."),
-          sub: TR("sheet.locked.sub","No one is turned away for money — one honest paragraph to tounknown.com@gmail.com is enough."),
-          icon: "lock",
-          action: { label: TR("sheet.locked.cta","See the tuition ladder"),
+          sub: TR("sheet.locked.sub","Every Path, every sitting, and your practice saved wherever you sign in."),
+          price: TR("sheet.locked.price","From $11 a month · cancel any time"),
+          icon: "lock", cta: true,
+          dismiss: TR("sheet.locked.later","Not now"),
+          // Kept, at the size it deserves — an offer, not a discount.
+          fine: TR("sheet.locked.fine","No one is turned away for money. If the cost is a barrier, one honest paragraph to tounknown.com@gmail.com is enough."),
+          action: { label: TR("sheet.locked.cta","See membership plans"),
                     run: () => { onClose(); window.TUGo && window.TUGo("membership"); } } }
       : { kind: "signin" })} onClose={()=>setNeedLogin(false)}/>
 

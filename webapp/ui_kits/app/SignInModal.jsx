@@ -76,16 +76,23 @@ function Notice({ note, onClose }) {
       {note.kind==="signin"
         ? <SignInPanel plan={note.plan} onDone={onClose}/>
         : <React.Fragment>
-            <p style={{margin:0,font:"400 17px/1.4 var(--font-serif)",color:"var(--ink)"}}>{note.text}</p>
+            <p style={{margin:0,font:"400 19px/1.35 var(--font-serif)",letterSpacing:"-0.01em",color:"var(--ink)"}}>{note.text}</p>
             {note.sub && <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>{note.sub}</p>}
-            {note.action && <SIButton wide style={{marginTop:18}}
+            {note.price && <p style={{margin:"14px 0 0",font:"600 12px/1.4 var(--font-sans)",
+              textTransform:"uppercase",letterSpacing:"0.1em",color:"var(--gold-deep)"}}>{note.price}</p>}
+            {note.action && <SIButton variant={note.cta ? "go" : "gold"} wide style={{marginTop:note.price?12:18}}
               onClick={()=>{ onClose(); note.action.run(); }}>{note.action.label}</SIButton>}
             {note.paypal && <SIButton variant="ghost" wide style={{marginTop:note.action?8:18}}
               onClick={()=>window.open(SI_PAYPAL,"_blank","noopener")}>{TR("dana.paypal","Give via PayPal ↗")}</SIButton>}
           </React.Fragment>}
 
         <SIButton variant="quiet" wide style={{marginTop:8}} onClick={onClose}>
-          {TR("common.close","Close")}</SIButton>
+          {note.dismiss || TR("common.close","Close")}</SIButton>
+
+        {/* Kept, and kept quiet. Whoever needs this line will look for it; putting it at the
+            size of the offer would make it read like a discount, which it is not. */}
+        {note.fine && <p style={{margin:"16px 0 0",paddingTop:14,borderTop:"0.5px solid var(--hairline)",
+          font:"400 11px/1.55 var(--font-sans)",color:"var(--text-tertiary)"}}>{note.fine}</p>}
       </div>
     </div>, document.body);
 }
