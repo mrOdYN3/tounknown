@@ -9,6 +9,12 @@
         "4173"
       ],
       "port": 4173
+    },
+    {
+      "name": "tu-dist",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8899", "--directory", "webapp-dist"],
+      "port": 8899
     }
   ]
 }

@@ -1,4 +1,9 @@
 <!-- Terms & privacy. Plain, short, and true to what the app actually does. -->
+<!-- nginx serves this as text/html with no charset, so without this line every ā and — on the
+     page rendered as mojibake: "dāna" arrived as "dÄÅna". -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms &amp; privacy — toUnknown</title>
 <link rel="stylesheet" href="styles.css">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b1c487e5-6ce5-40dc-8415-abc06da1f15e"></script>
 <link rel="stylesheet" href="ui_kits/app/tu-refined.css">
@@ -18,7 +23,32 @@
 <main>
   <p class="eyebrow">toUnknown</p>
   <h1>Terms &amp; privacy</h1>
-  <p>Last updated 3 August 2026. Plain language, because the alternative helps no one.</p>
+  <p>Last updated 6 August 2026. Plain language, because the alternative helps no one.</p>
+
+  <h2>Who you are contracting with</h2>
+  <p>toUnknown is run by <b>DYN</b>, its founder and first teacher, and is established in Spain.
+    Card payments are taken by Stripe Payments Europe, Ltd. on our behalf; the charge on your
+    statement comes from Stripe, not from a third party you have never heard of.</p>
+  <p>Everything here is governed by Spanish law. If you are a consumer, none of this removes the
+    protections of the law where you live, and you keep the right to bring a claim in your own
+    courts. The EU online dispute resolution platform is at
+    <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</p>
+  <p>Write to <a href="mailto:tounknown.com@gmail.com">tounknown.com@gmail.com</a> for anything at
+    all — a refund, your data, a complaint, the registration details. It reaches a person, and one
+    email is enough to start any of the processes described on this page.</p>
+
+  <h2 id="withdrawal">Your right to change your mind</h2>
+  <p>If you live in the EU or the UK, you have <b>14 days</b> from the day you buy to cancel for any
+    reason and get all of your money back. You do not need to give a reason. Write to
+    <a href="mailto:tounknown.com@gmail.com?subject=Withdrawal">tounknown.com@gmail.com</a> and we
+    will refund within 14 days, by the same method you paid.</p>
+  <p>One exception, which the law requires us to state plainly: digital content delivered
+    immediately. When you start a paid course inside the 14 days, you are asking us to begin
+    straight away and you accept that doing so ends the automatic right of withdrawal for what you
+    have already listened to. In practice we do not stand on this — <b>if you ask for a refund
+    inside 14 days we give it, whether or not you have listened.</b> We would rather be fair than
+    technically correct.</p>
+  <p>The $108 Founding membership is a one-time purchase and carries the same 14 days.</p>
 
   <h2>What this is</h2>
   <p>toUnknown offers guided meditation courses rooted in living contemplative traditions.
@@ -50,8 +80,11 @@
   <p>The Vipassana Path's first course is free and stays free; every other Path opens with free
     introductions. Membership opens the rest of the library.
     Subscriptions renew until cancelled and you can cancel any time — access continues to the end of the
-    period you have paid for. One-time gifts are gifts, and are not refundable. If a subscription charge
-    was a mistake, write to us and we will refund it; we would rather be fair than technically correct.</p>
+    period you have paid for. If a subscription charge was a mistake, write to us and we will refund
+    it — see <a href="#withdrawal">your right to change your mind</a> above, which covers one-time
+    purchases too. Dāna given freely, over and above a membership, is a gift and stays given.</p>
+  <p>The guided circle is capped at thirty people. If it is full, checkout will tell you so rather
+    than take your money — write to us and we will hold the next seat.</p>
   <p>No one is turned away for money. If the cost is a barrier, write one honest paragraph to
     <a href="mailto:tounknown.com@gmail.com?subject=Scholarship%20request">tounknown.com@gmail.com</a>
     and we will open the library for you.</p>
@@ -61,15 +94,24 @@
     teachers. They are for your own practice. Please do not redistribute, re-upload or resell them.
     The traditions themselves belong to no one — the recordings are simply our work.</p>
 
-  <h2>Your rights</h2>
-  <p>You may ask what we hold about you, ask for a copy, ask us to correct it, or ask us to erase it.
-    One email is enough, and we will act within 30 days.</p>
+  <h2>Your rights over your data</h2>
+  <p>DYN is the data controller. We hold your email because you asked us to sign you in, your practice
+    record because it is the product, and your payment reference because the law requires us to keep
+    proof of a sale. We keep the first two until you ask us to stop, and invoice records for the six
+    years Spanish tax law requires.</p>
+  <p>You may ask what we hold about you, ask for a copy, ask us to correct it, ask us to erase it, or
+    object to any of it. One email is enough, and we will act within 30 days. If we get it wrong you
+    may complain to the Spanish data protection authority, the
+    <a href="https://www.aepd.es" target="_blank" rel="noopener">AEPD</a>, or to the authority in your
+    own country.</p>
 
   <h2>Photography</h2>
   <p>The retreat photographs are our own, taken during Vipassana practice in Burma. The
     children's collection image is by Seljan Salimova on
     <a href="https://unsplash.com/photos/Y9xC_C-KmuE" target="_blank" rel="noopener">Unsplash</a>,
-    used under the Unsplash licence.</p>
+    and the Sangha photograph is by lee bernd on
+    <a href="https://unsplash.com/photos/ISafy0SkFI8" target="_blank" rel="noopener">Unsplash</a>.
+    Both are used under the Unsplash licence.</p>
 
   <hr>
   <footer>

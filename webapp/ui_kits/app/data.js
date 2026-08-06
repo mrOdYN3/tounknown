@@ -5,6 +5,9 @@ window.TU = {
   monkBowl: "../../assets/monk-bowl.jpg",
   monksWindow: "../../assets/monks-window.jpg",
   monksLine: "../../assets/monks-line.jpg",
+  // Sangha header. The Burma frame was three stops under and unrecoverable; this one carries the
+  // same light the rest of the site is built on. lee bernd / Unsplash — credited on /legal.
+  sanghaHall: "../../assets/sangha-hall.jpg",
   masterpiece: "../../assets/covers/tounknown-com.png",
   trustpilot: "../../assets/covers/trustpilot-vipassana-life.png",
   satsang: "../../assets/covers/true-meditation.jpg",

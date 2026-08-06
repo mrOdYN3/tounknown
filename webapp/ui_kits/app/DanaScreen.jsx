@@ -1,5 +1,40 @@
 const { Interlude, TierCard, Button, DanaChips, GiveSlider } = window.ToUnknownDesignSystem_9d38c1;
 const PAYPAL = "https://www.paypal.com/donate?hosted_button_id=H5VQT3VLQBUBJ";
+const Icon = window.TUIcon;
+const PENDING = "tu.pending-plan";
+const SeatCount = (p) => (window.TUCircleSeat ? <window.TUCircleSeat {...p}/> : null);
+
+/* Sign in without leaving the price you were looking at. The plan is held in sessionStorage,
+   so following the emailed link lands back here and opens that checkout. */
+function SignInPanel({ plan, onDone }) {
+  const [email, setEmail] = React.useState("");
+  const [state, setState] = React.useState("idle");
+  if (state === "sent") return <React.Fragment>
+    <p style={{margin:0,font:"400 17px/1.4 var(--font-serif)",color:"var(--ink)"}}>
+      {TR("dana.signin.sent","Check your inbox.")}</p>
+    <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
+      {TR("dana.signin.sent.sub","The link signs you in and brings you straight back to this step. ☸")}</p>
+  </React.Fragment>;
+  return <React.Fragment>
+    <p style={{margin:0,font:"400 17px/1.4 var(--font-serif)",color:"var(--ink)"}}>
+      {TR("dana.signin.title","First, your email.")}</p>
+    <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
+      {TR("dana.signin.sub","No password. Your membership and your practice both follow this address.")}</p>
+    <form onSubmit={(e)=>{ e.preventDefault(); if(!email.trim()) return; setState("sending");
+        window.TULive.signIn(email.trim()).then(()=>setState("sent")).catch(()=>setState("error")); }}
+      style={{marginTop:18,display:"flex",flexDirection:"column",gap:8}}>
+      <input type="email" required autoFocus value={email} onChange={(e)=>setEmail(e.target.value)}
+        placeholder="you@example.com" aria-label="Email address"
+        style={{padding:"0 16px",minHeight:46,font:"400 15px var(--font-sans)",borderRadius:"var(--r-full)",
+          textAlign:"center",border:"0.5px solid rgba(24,22,16,0.12)",background:"rgba(255,255,255,0.9)",
+          color:"var(--ink)",outline:"none"}}/>
+      <Button type="submit" wide disabled={state==="sending"} style={{opacity:state==="sending"?0.6:1}}>
+        {state==="sending" ? TR("dana.signin.sending","Sending…") : TR("dana.signin.cta","Send the link")}</Button>
+    </form>
+    {state==="error" && <p style={{margin:"10px 0 0",fontSize:12.5,color:"#a33"}}>
+      {TR("dana.signin.error","Could not send — try again in a minute.")}</p>}
+  </React.Fragment>;
+}
 
 function DanaScreen({ go, toast }) {
   // Real generosity, counted — the only social proof this product should show.
@@ -18,17 +53,33 @@ function DanaScreen({ go, toast }) {
 
   const buy = (plan) => {
     if (!window.TULive) return;
-    setNote(null); setBusy(plan);
+    setNote(null);
+    // Signing in is part of buying, not an errand to run first on another screen.
+    if (!window.TULive.session()) {
+      try { sessionStorage.setItem(PENDING, plan); } catch {}
+      return setNote({ kind: "signin", plan });
+    }
+    setBusy(plan);
     window.TULive.checkout(plan)
       .then((url) => { window.location.href = url; })
       .catch((e) => {
         setBusy(null);
         const msg = String(e.message || e);
         setNote(/not configured/i.test(msg)
-          ? { text: "Card payments open shortly. Until then you can give quietly via PayPal — every dāna reaches the same place.", tone: "gold" }
-          : { text: msg, tone: "gold" });
+          ? { text: "Card payments open shortly.",
+              sub: "Until then you can give quietly via PayPal — every dāna reaches the same place.",
+              paypal: true, icon: "spark" }
+          : { text: "That did not open.", sub: msg, icon: "close" });
       });
   };
+
+  // Come back from the email link and the checkout you asked for opens itself.
+  React.useEffect(() => {
+    if (!session || !window.TULive) return;
+    let plan = null;
+    try { plan = sessionStorage.getItem(PENDING); sessionStorage.removeItem(PENDING); } catch {}
+    if (plan) buy(plan);
+  }, [session]);
 
   const buyLabel = (plan, label) => busy === plan ? "Opening…" : label;
 
@@ -46,13 +97,6 @@ function DanaScreen({ go, toast }) {
       </div>
     </section>}
 
-    {note && <section style={{padding:"0 20px 4px"}}>
-      <div style={{padding:"14px 16px",borderRadius:18,background:"rgba(217,164,65,0.10)",border:"0.5px solid rgba(168,120,31,0.25)",
-        fontFamily:"var(--font-serif)",fontSize:13.5,color:"var(--gold-deep)"}}>
-        {note.text}
-        <div style={{marginTop:10}}><a href={PAYPAL} target="_blank" rel="noopener" style={{fontWeight:600}}>{TR("dana.paypal","Give via PayPal ↗")}</a></div>
-      </div>
-    </section>}
 
     <section style={{padding:"0 20px",display:"flex",flexDirection:"column",gap:16}}>
       {/* The thing that makes this ladder different from every other subscription — it belongs
@@ -104,7 +148,9 @@ function DanaScreen({ go, toast }) {
         {t:"Your reflections read",d:"Gate reflections are read and answered by a teacher rather than filed."},
         {t:"Honestly",d:"If you want the library today, Student is the same access for $11. Choose this to hold a seat and support the circle being built."},
       ]} chip={TR("dana.tier.sadhaka","sādhaka · the guided circle")} chipTone="green" price="$33" priceNote="/mo"
-        bullets={[TR("dana.tier.sadhaka.1","Everything in Student"),TR("dana.tier.sadhaka.2","A place in the first guided circle — max 30, when it opens"),TR("dana.tier.sadhaka.3","Monthly live guidance once the circle is running"),TR("dana.tier.sadhaka.4","Your gate reflections read by a teacher")]}>
+        bullets={[TR("dana.tier.sadhaka.1","Everything in Student"),TR("dana.tier.sadhaka.2","A numbered seat in the guided circle — thirty, and no more"),TR("dana.tier.sadhaka.3","Monthly live guidance once the circle is running"),TR("dana.tier.sadhaka.4","Every gate reflection read and answered by a teacher")]}>
+        {/* The real number, taken from the roster, rather than an evergreen "max 30". */}
+        <div style={{marginBottom:10}}><SeatCount compact/></div>
         <Button wide onClick={()=>buy("sadhaka-monthly")}>{buyLabel("sadhaka-monthly",TR("dana.tier.sadhaka.cta","Enter the circle"))}</Button>
       </TierCard>
 
@@ -117,8 +163,6 @@ function DanaScreen({ go, toast }) {
       </TierCard>
     </section>
 
-    {!session && <p style={{textAlign:"center",fontSize:13,color:"var(--text-tertiary)",margin:"14px 20px 0"}}>
-      Sign in from the Sādhana tab first — your membership follows your email.</p>}
 
     <section style={{padding:"0 20px"}}>
       <div style={{borderRadius:24,overflow:"hidden",border:"0.5px solid var(--hairline)",marginTop:26,boxShadow:"var(--shadow-photo)"}}>
@@ -155,6 +199,33 @@ function DanaScreen({ go, toast }) {
     <p style={{textAlign:"center",margin:"-8px 20px 0"}}>
       <a href={"mailto:tounknown.com@gmail.com?subject="+encodeURIComponent("Scholarship request")}
         style={{fontFamily:"var(--font-serif)",fontSize:13,color:"var(--gold-deep)"}}>write to us ↗</a></p>
+
+    {/* Answers where the question was asked. A message about signing in belongs on top of the
+        button you just pressed, not at the top of a page you have already scrolled past. */}
+    {note && <div role="dialog" aria-modal="true" onClick={()=>setNote(null)}
+      style={{position:"fixed",inset:0,zIndex:220,display:"grid",placeItems:"center",padding:22,
+        background:"rgba(14,13,10,0.42)",WebkitBackdropFilter:"blur(7px)",backdropFilter:"blur(7px)",
+        animation:"tu-fade .22s var(--ease-out)"}}>
+      <div onClick={(e)=>e.stopPropagation()} className="tu-glass"
+        style={{width:"min(392px,100%)",borderRadius:"var(--r-xl)",padding:"28px 24px 20px",
+          textAlign:"center",boxShadow:"var(--lift-2)",animation:"tu-rise .32s var(--ease-spring)"}}>
+        <div aria-hidden="true" style={{display:"grid",placeItems:"center",width:48,height:48,margin:"0 auto 16px",
+          borderRadius:"50%",background:"rgba(217,164,65,0.15)",border:"0.5px solid rgba(168,120,31,0.28)",
+          color:"var(--gold-deep)"}}><Icon name={note.kind==="signin" ? "mail" : (note.icon||"spark")} size={21}/></div>
+
+        {note.kind==="signin"
+          ? <SignInPanel plan={note.plan} onDone={()=>setNote(null)}/>
+          : <React.Fragment>
+              <p style={{margin:0,font:"400 17px/1.4 var(--font-serif)",color:"var(--ink)"}}>{note.text}</p>
+              {note.sub && <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>{note.sub}</p>}
+              {note.paypal && <Button variant="ghost" wide style={{marginTop:18}}
+                onClick={()=>window.open(PAYPAL,"_blank","noopener")}>{TR("dana.paypal","Give via PayPal ↗")}</Button>}
+            </React.Fragment>}
+
+        <Button variant="quiet" wide style={{marginTop:8}} onClick={()=>setNote(null)}>
+          {TR("common.close","Close")}</Button>
+      </div>
+    </div>}
   </div>;
 }
 window.DanaScreen = DanaScreen;

@@ -16,6 +16,7 @@ function PathSheet({ path, onClose }) {
   const [unlockedIdx, setUnlockedIdx] = React.useState(0); // abhyāsa: opens by sitting
   const [needLogin, setNeedLogin] = React.useState(false);
   const [scrubNote, setScrubNote] = React.useState(false);
+  const [circleNote, setCircleNote] = React.useState(false);
   const [gatesPassed, setGatesPassed] = React.useState(new Set());
   const [gateOpen, setGateOpen] = React.useState(null);      // the gate track being written for
   const [reflection, setReflection] = React.useState("");
@@ -75,6 +76,7 @@ function PathSheet({ path, onClose }) {
 
   const free = !!(course && course.free);
   const hasMembership = !!session && window.TULive.isMember();
+  const inCircle = !!session && window.TULive.isSadhaka && window.TULive.isSadhaka();
   const allowed = free || hasMembership;
   const canPlay = (tr) => allowed || tr.free_preview === true;   // the opening is always open
 
@@ -152,7 +154,9 @@ function PathSheet({ path, onClose }) {
       <h3 style={{margin:"0 0 8px",font:"400 20px/1.25 var(--font-serif)",letterSpacing:"-0.01em",color:"var(--ink)"}}>
         {TR("gate.title","Before you go deeper, say where you are.")}</h3>
       <p style={{margin:"0 0 14px",font:"400 13.5px/1.65 var(--font-sans)",color:"var(--text-secondary)"}}>
-        {TR("gate.blurb","What has changed since you began sitting? What is harder than you expected? Write plainly — this is read by a teacher, not scored by a machine.")}</p>
+        {inCircle
+          ? TR("gate.blurb.circle","What has changed since you began sitting? What is harder than you expected? Write plainly — a teacher in your circle reads this and writes back.")
+          : TR("gate.blurb","What has changed since you began sitting? What is harder than you expected? Write plainly — nothing scores this. It stays yours.")}</p>
       <textarea value={reflection} onChange={(e)=>{ setReflection(e.target.value); setGateErr(null); }}
         rows={6} placeholder={TR("gate.placeholder","In your own words…")}
         style={{width:"100%",boxSizing:"border-box",padding:"13px 15px",borderRadius:16,resize:"vertical",
@@ -166,13 +170,20 @@ function PathSheet({ path, onClose }) {
       <Button wide style={{marginTop:12}} disabled={reflection.trim().length < 120}
         onClick={()=>{
           window.TULive.submitReflection(gateOpen.id, reflection.trim())
-            .then(()=>{ setGatesPassed(new Set([...gatesPassed, gateOpen.id]));
+            .then((r)=>{ setCircleNote(!!(r && r.willBeRead));
+                        setGatesPassed(new Set([...gatesPassed, gateOpen.id]));
                         const t = gateOpen; setGateOpen(null); setReflection("");
                         setTimeout(()=>sit(t), 60); })
             .catch((e)=>setGateErr(String(e.message||e)));
         }}>{TR("gate.submit","Pass the gate")}</Button>
       <Button variant="quiet" wide style={{marginTop:6}} onClick={()=>setGateOpen(null)}>
         {TR("gate.later","Not yet")}</Button>
+    </div>}
+
+    {circleNote && <div style={{margin:"10px 0",padding:"12px 15px",borderRadius:14,
+      background:"rgba(122,138,106,0.12)",border:"0.5px solid rgba(122,138,106,0.3)",
+      font:"400 13px/1.55 var(--font-serif)",color:"var(--sage-deep, #55603F)"}}>
+      {TR("gate.sent.circle","Your reflection has gone to your teacher. You will hear back inside the circle.")}
     </div>}
 
     {scrubNote && <div style={{margin:"10px 0",padding:"12px 15px",borderRadius:14,

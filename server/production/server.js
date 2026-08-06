@@ -14,6 +14,8 @@ const STRIPE_WH = process.env.STRIPE_WEBHOOK_SECRET || "";
 const SITE = process.env.SITE_URL || "http://72.60.170.97";
 // 20 days is roughly every-other-day-plus; 30 is a month of daily sitting. Someone who sits
 // every day pays nothing — which is the point.
+const CIRCLE_CAP = 30;   // "max 30" is a promise, so the server keeps it
+
 const TIERS = [
   { days: 20, pct: 25 },
   { days: 25, pct: 50 },
@@ -201,6 +203,17 @@ const server = http.createServer(async (req, res) => {
         });
       }
 
+      // Do not sell a thirty-first seat. A capped circle that quietly uncaps itself is a lie
+      // that only shows up months later, to the people who paid for the promise.
+      if (price.tier === "sadhaka") {
+        const taken = await sb("/rest/v1/members?tier=eq.sadhaka&active_until=gt." +
+          new Date().toISOString() + "&select=id") || [];
+        if (taken.length >= CIRCLE_CAP && !taken.some((m) => m.id === user.id)) {
+          return send(res, 409, { error: "The circle is full — all " + CIRCLE_CAP +
+            " seats are taken. Write to us and we will hold the next one for you." });
+        }
+      }
+
       const session = await stripe("checkout/sessions", {
         mode: price.mode,
         "line_items[0][price]": price.id,
@@ -360,6 +373,32 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, { granted_until: until.toISOString() });
     }
 
+    // ---- the guided circle: what $33 buys that $11 does not ----
+    // The seat is derived from members.tier, which the webhook has always written and nothing
+    // has ever read. Cap is real: the thirty-first sādhaka is told the circle is full.
+    if (url.pathname === "/api/circle" && req.method === "GET") {
+      const roster = await sb("/rest/v1/members?tier=eq.sadhaka&active_until=gt." +
+        new Date().toISOString() + "&order=created_at.asc&select=id,created_at") || [];
+      const out = { seats: roster.length, cap: CIRCLE_CAP, open: Math.max(0, CIRCLE_CAP - roster.length) };
+
+      const jwt = (req.headers.authorization || "").replace(/^Bearer /, "");
+      const user = jwt ? await getUser(jwt) : null;
+      if (user) {
+        const i = roster.findIndex((m) => m.id === user.id);
+        if (i > -1) {
+          out.seat = i + 1;
+          out.since = roster[i].created_at;
+          // Their reflections, and which of them a teacher has answered.
+          const refl = await sb("/rest/v1/gate_reflections?member_id=eq." + user.id +
+            "&order=created_at.desc&select=track_id,created_at,teacher_note") || [];
+          out.reflections = refl.length;
+          out.answered = refl.filter((r) => r.teacher_note).length;
+          out.latest = refl.find((r) => r.teacher_note) || null;
+        }
+      }
+      return send(res, 200, out);
+    }
+
     // ---- Dīkṣā gate: a written reflection, read by a teacher ----
     if (url.pathname === "/api/reflection" && req.method === "POST") {
       const jwt = (req.headers.authorization || "").replace(/^Bearer /, "");
@@ -383,7 +422,11 @@ const server = http.createServer(async (req, res) => {
         headers: { Prefer: "resolution=merge-duplicates" },
         body: JSON.stringify({ member_id: user.id, track_id: trackId, reflection: text }),
       });
-      return send(res, 200, { passed: true });
+      // Only the circle is promised a reply, so only the circle is told to expect one.
+      const me = await sb("/rest/v1/members?id=eq." + user.id + "&select=tier,active_until");
+      const inCircle = !!(me && me[0] && me[0].tier === "sadhaka" &&
+        me[0].active_until && new Date(me[0].active_until) > new Date());
+      return send(res, 200, { passed: true, willBeRead: inCircle });
     }
 
     // ---- billing portal: members manage or cancel their own membership ----

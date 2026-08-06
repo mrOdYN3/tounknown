@@ -19,6 +19,12 @@
   --lift-3: 0 2px 4px rgba(43,36,18,0.06),  0 22px 50px -18px rgba(43,36,18,0.20);
   --lift-gold: 0 2px 4px rgba(120,84,16,0.08), 0 18px 44px -16px rgba(196,146,48,0.34);
 
+  /* ---- sage: the quiet confirmation green, beside the temple gold ------ */
+  /* Referenced by the gate counter since it was written; never actually defined,
+     so the "you have said enough" cue never appeared. Both pass AA on paper. */
+  --sage:       #68764F;   /* 4.69:1 on paper — AA at 12px */
+  --sage-deep:  #55603F;   /* 6.43:1 */
+
   /* ---- continuous (squircle-ish) corners ------------------------------ */
   --r-xs:10px; --r-sm:14px; --r-md:20px; --r-lg:26px; --r-xl:32px; --r-full:999px;
 

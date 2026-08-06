@@ -7,18 +7,18 @@ function HowItWorks({ go }) {
   const [open, setOpen] = React.useState(0);
   const steps = [
     { n: "1", title: TR("how.1.title","Choose a lineage Path"),
-      lead: "Vipassana · Tantra · Vedanta · Bhakti · Stoic — each names its tradition, source text and era.",
-      body: "Nothing here is invented. Every Path descends from a living tradition and cites where it comes from, so you always know whose practice you are sitting.",
+      lead: TR("how.1.lead","Vipassana · Tantra · Vedanta · Bhakti · Stoic — each names its tradition, source text and era."),
+      body: TR("how.1.body","Nothing here is invented. Every Path descends from a living tradition and cites where it comes from, so you always know whose practice you are sitting."),
       cta: { label: TR("how.1.cta","See the Paths"), to: "paths" } },
     { n: "2", title: TR("how.2.title","Unlock by abhyāsa — steady practice"),
-      lead: "Each sitting opens only after you have sat the one before it.",
-      body: "Introductions and talks are open to listen to whenever you like. The guided sittings open in order, and only once the previous one has genuinely been sat — the timing is checked, so a track cannot be skipped to the end." },
+      lead: TR("how.2.lead","Each sitting opens only after you have sat the one before it."),
+      body: TR("how.2.body","Introductions and talks are open to listen to whenever you like. The guided sittings open in order, and only once the previous one has genuinely been sat — the timing is checked, so a track cannot be skipped to the end.") },
     { n: "☸", title: TR("how.3.title","Pass the Dīkṣā Gate"), gate: true,
-      lead: "Practice hours and a written reflection — the sādhaka seal.",
-      body: "At the threshold of a deeper stage you are asked to put your practice into your own words. It is read by a teacher, not a machine." },
+      lead: TR("how.3.lead","Practice hours and a written reflection — the sādhaka seal."),
+      body: TR("how.3.body","At the threshold of a deeper stage you are asked to put your practice into your own words. Nothing scores it. In the guided circle a teacher reads it and writes back.") },
     { n: "4", title: TR("how.4.title","Give by gratitude"),
-      lead: "Dāna appears after practice, never before.",
-      body: "You are never asked for money before you have sat — and practice lowers the price: 20 days of sitting in a month takes 25% off the next, 25 days half, every day makes it free. Vipassana's first course stays free, every Path opens with free introductions, and no one is turned away for money.",
+      lead: TR("how.4.lead","Dāna appears after practice, never before."),
+      body: TR("how.4.body","You are never asked for money before you have sat — and practice lowers the price: 20 days of sitting in a month takes 25% off the next, 25 days half, every day makes it free. Vipassana's first course stays free, every Path opens with free introductions, and no one is turned away for money."),
       cta: { label: TR("how.4.cta","The tuition ladder"), to: "membership" } },
   ];
   return <div style={{marginTop:4}}>
@@ -108,19 +108,19 @@ function HomeScreen({ openPath, go }) {
       <div style={{textAlign:"left",display:"flex",flexDirection:"column",gap:20}}>
         <div className="tu-glass tu-lift" style={{borderRadius:"var(--r-2xl)",padding:24}}>
           <h3 className="tu-display" style={{margin:0,fontSize:20,color:"var(--ink)"}}>Vigyan Bhairav Tantra</h3>
-          <p style={{margin:"10px 0 16px",fontSize:13.5,color:"var(--text-secondary)"}}>112 Guided Audio Meditation techniques by Shiva (Vijñana Bhairava Tantra). An ancient Indian scripture unveils 112 transformative techniques guiding seekers toward <b style={{color:"var(--ink)"}}>spiritual awakening, self-realization.</b></p>
-          <Button onClick={()=>openPath(byId("tantra",1))}>Let's try</Button>
+          <p style={{margin:"10px 0 16px",fontSize:13.5,color:"var(--text-secondary)"}}>{TR("home.vbt.body","112 guided audio techniques given by Shiva in the Vijñāna Bhairava Tantra — an ancient scripture whose 112 doors each lead to the same recognition.")}</p>
+          <Button onClick={()=>openPath(byId("tantra",1))}>{TR("home.vbt.cta","Try a technique")}</Button>
         </div>
         <div className="tu-glass tu-lift" style={{borderRadius:"var(--r-2xl)",padding:24}}>
           <h3 className="tu-display" style={{margin:0,fontSize:20,color:"var(--ink)"}}>Vipassana Meditation</h3>
-          <p style={{margin:"10px 0 16px",fontSize:13.5,color:"var(--text-secondary)"}}>An ancient technique rediscovered by Gautama Buddha over 2500 years ago — three fundamental elements: <b style={{color:"var(--ink)"}}>Sīla</b> (moral conduct), <b style={{color:"var(--ink)"}}>Samadhi</b> (focused attention and equanimity), <b style={{color:"var(--ink)"}}>Pañña</b> (wisdom and insight).</p>
-          <Button onClick={()=>openPath(byId("vipassana",0))}>Start!</Button>
+          <p style={{margin:"10px 0 16px",fontSize:13.5,color:"var(--text-secondary)"}}>{TR("home.vip.body","The technique Gautama Buddha rediscovered 2,500 years ago, resting on three things: sīla (conduct), samādhi (collected attention), paññā (insight).")}</p>
+          <Button onClick={()=>openPath(byId("vipassana",0))}>{TR("home.vip.cta","Begin here")}</Button>
         </div>
       </div>
     </section>
     <section style={{padding:"0 20px",marginTop:34}}>
       <p className="tu-eyebrow tu-eyebrow-dot" style={{margin:"0 0 10px"}}>{TR("home.paths.eyebrow","the living paths")}</p>
-      <p className="tu-lede" style={{marginBottom:16}}><b>{TR("home.paths.lede.b","Only the roots.")}</b> From every ancient tradition — one Path at a time, walked, not browsed.</p>
+      <p className="tu-lede" style={{marginBottom:16}}><b>{TR("home.paths.lede.b","Only the roots.")}</b> {TR("home.paths.lede","From every ancient tradition — one Path at a time, walked, not browsed.")}</p>
     </section>
     <p className="tu-rail-hint">
       {TR("home.paths.hint","swipe for all the Paths")}
@@ -140,7 +140,7 @@ function HomeScreen({ openPath, go }) {
     {collection && <section style={{padding:"6px 20px 0",marginTop:30}}>
       <p className="tu-eyebrow tu-eyebrow-dot" style={{margin:"0 0 10px"}}>{TR("home.kids.eyebrow","for children")}</p>
       <p className="tu-lede" style={{marginBottom:16}}>
-        <b>{TR("home.kids.lede.b","Little ones sit too.")}</b> Short stories and sittings for ages 6–12 — and whoever sits beside them.</p>
+        <b>{TR("home.kids.lede.b","Little ones sit too.")}</b> {TR("home.kids.lede","Short stories and sittings for ages 6–12 — and whoever sits beside them.")}</p>
       <PathCard imagePos="center center" frost={false} image={collection.image} lineage={`${collection.tradition} · ${collection.source}`}
         title={collection.name} essence={collection.essence} onClick={()=>openPath(collection)}/>
     </section>}

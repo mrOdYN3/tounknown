@@ -57,6 +57,11 @@
     session: () => session,
     member: () => member,
     isMember: () => !!(member && member.active_until && new Date(member.active_until) > new Date()),
+    // The tier was fetched from the first day and read by nothing, so $33 bought what $11 bought.
+    tier: () => (member && member.active_until && new Date(member.active_until) > new Date())
+      ? (member.tier || "student") : "seeker",
+    isSadhaka: () => !!(member && member.tier === "sadhaka" &&
+      member.active_until && new Date(member.active_until) > new Date()),
     onAuth(f) { listeners.add(f); f(session, member); return () => listeners.delete(f); },
 
     async signIn(email) {
@@ -242,7 +247,7 @@
       });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.error || "Could not submit.");
-      return true;
+      return j;   // carries willBeRead — only the circle is promised a reply
     },
 
     // ---- where to begin ----

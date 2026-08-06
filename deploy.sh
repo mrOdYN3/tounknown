@@ -95,6 +95,20 @@ echo "→ publishing /ru (same app, Russian metadata)"
 scp -q "$ROOT/build/make-ru.py" "$VPS:/tmp/make-ru.py"
 ssh "$VPS" 'python3 /tmp/make-ru.py && rm -f /tmp/make-ru.py'
 
+echo "→ syncing the API"
+# This step did not exist: deploy.sh restarted tu-api without ever uploading it, so every
+# server-side change since the first deploy was restarting the same old file.
+node --check "$ROOT/server/production/server.js"
+rsync -az "$ROOT/server/production/server.js" \
+         "$ROOT/server/production/practice-discount.js" \
+         "$ROOT/server/production/mint-coupon.js" "$VPS:/opt/tu-api/"
+
+echo "→ syncing nginx config"
+scp -q "$ROOT/server/production/nginx-tounknown.conf" "$VPS:/tmp/tu-nginx.conf"
+ssh "$VPS" 'cp /etc/nginx/sites-available/tounknown /root/tu-nginx.bak.$(date +%s) 2>/dev/null || true
+  cp /tmp/tu-nginx.conf /etc/nginx/sites-available/tounknown && rm -f /tmp/tu-nginx.conf
+  nginx -t' || { echo "  ✗ nginx config rejected — not reloading"; exit 1; }
+
 echo "→ reloading services"
 ssh "$VPS" 'systemctl restart tu-api && systemctl reload nginx && systemctl is-active tu-api'
 echo "→ smoke test"
