@@ -66,6 +66,12 @@ function HomeScreen({ openPath, go }) {
     <div className="tu-haze tu-hero" style={{position:"relative",display:"flex",flexDirection:"column",justifyContent:"flex-end",alignItems:"center",textAlign:"center",padding:"140px 22px 60px",overflow:"hidden"}}>
       <div style={{position:"absolute",inset:0,background:`url('${T.hero}') var(--hero-pos, center 28%)/var(--hero-size, cover) no-repeat`,backgroundColor:"#0B0B10"}}></div>
       <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 90% 70% at 50% 60%,rgba(11,11,16,0.6) 0%,rgba(11,11,16,0.35) 55%,rgba(11,11,16,0.7) 100%)"}}></div>
+      {/* The wordmark on its side against the left edge, the way a book carries its title on the
+          spine. Decorative — the readable mark is the one in the centre, so this one is hidden
+          from screen readers and kept quiet enough not to compete with it. */}
+      <div aria-hidden="true" className="tu-spine">
+        <img src="../../assets/wordmark-white.png" alt=""/>
+      </div>
       <div style={{position:"relative",display:"flex",flexDirection:"column",alignItems:"center"}}>
         <img src="../../assets/wordmark-white.png" alt="toUnknown" style={{width:250,height:"auto",display:"block",marginBottom:18}}/>
         <p style={{margin:"0 0 8px",fontFamily:"var(--font-serif)",fontSize:11.5,letterSpacing:"2.5px",textTransform:"uppercase",color:"rgba(245,244,240,0.88)",textWrap:"balance"}}>{T.brand.tagline}</p>

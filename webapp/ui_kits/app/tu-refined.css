@@ -95,6 +95,30 @@ body{
 
 /* The sheet's resting transform. --sheet-dy is written by the pull-to-dismiss drag and by
    nothing else, which keeps the drag clear of React re-renders and of the desktop !important. */
+/* The hero's left spine: the wordmark rotated a quarter turn, flush to the edge and centred
+   down the height. rotate(-90deg) reads bottom-to-top, which is how a spine is set. The wrapper
+   is a fixed-width full-height grid so the mark centres on the hero rather than on its own box,
+   which a bare transform on the image would get wrong. */
+.tu-spine{
+  position: absolute; left: 8px; top: 0; bottom: 0; width: 46px;
+  pointer-events: none;
+}
+/* Centred by transform, not by grid: the mark is far wider than the strip it sits in, and a
+   grid start-aligns an item that overflows its track instead of centring it — which parked the
+   spine a third of the way into the hero. The percentages here resolve against the element's own
+   unrotated box, so its centre lands exactly on the strip's centre whatever the rotation. */
+.tu-spine img{
+  position: absolute; left: 50%; top: 50%;
+  display: block; width: 178px; height: auto;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  opacity: .40;
+  filter: drop-shadow(0 1px 10px rgba(0,0,0,.55));
+}
+@media (min-width: 1024px){
+  .tu-spine{ left: 18px; width: 62px; }
+  .tu-spine img{ width: 248px; opacity: .34; }
+}
+
 /* Hero height lives here, not inline, so the desktop rule can raise it without !important. */
 .tu-hero{ min-height: 560px; }
 
