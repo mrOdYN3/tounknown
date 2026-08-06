@@ -266,6 +266,66 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, { code });
     }
 
+    // give an earned month to the scholarship pool instead of a named person
+    if (url.pathname === "/api/practice/pool" && req.method === "POST") {
+      const jwt = (req.headers.authorization || "").replace(/^Bearer /, "");
+      const user = jwt ? await getUser(jwt) : null;
+      if (!user) return send(res, 401, { error: "sign in first" });
+      const body = JSON.parse((await readBody(req)).toString() || "{}");
+      const rewardId = String(body.reward_id || "");
+      const rows = await sb("/rest/v1/practice_rewards?id=eq." + encodeURIComponent(rewardId) +
+        "&member_id=eq." + user.id + "&select=id,discount_pct,status");
+      const r = rows && rows[0];
+      if (!r) return send(res, 404, { error: "no such reward" });
+      if (r.discount_pct < 100) return send(res, 400, { error: "only a full free month can be given away" });
+      if (r.status !== "earned") return send(res, 409, { error: "that month has already been used" });
+      await sbFetch("/rest/v1/practice_rewards?id=eq." + encodeURIComponent(rewardId), {
+        method: "PATCH", body: JSON.stringify({ status: "pooled" }),
+      });
+      return send(res, 200, { pooled: true });
+    }
+
+    // how many months are waiting — public, because it is the honest form of social proof
+    if (url.pathname === "/api/practice/pool" && req.method === "GET") {
+      const rows = await sb("/rest/v1/scholarship_pool?select=months_available,given_by");
+      return send(res, 200, (rows && rows[0]) || { months_available: 0, given_by: 0 });
+    }
+
+    // redeem a gifted month
+    if (url.pathname === "/api/practice/redeem" && req.method === "POST") {
+      const jwt = (req.headers.authorization || "").replace(/^Bearer /, "");
+      const user = jwt ? await getUser(jwt) : null;
+      if (!user) return send(res, 401, { error: "sign in first" });
+      const body = JSON.parse((await readBody(req)).toString() || "{}");
+      const code = String(body.code || "").trim().toUpperCase();
+      if (!code) return send(res, 400, { error: "enter the code you were given" });
+
+      const rows = await sb("/rest/v1/practice_rewards?gift_code=eq." + encodeURIComponent(code) +
+        "&select=id,member_id,status");
+      const r = rows && rows[0];
+      if (!r) return send(res, 404, { error: "that code is not one of ours" });
+      if (r.status === "redeemed") return send(res, 409, { error: "that month has already been taken" });
+      if (r.status !== "gifted") return send(res, 409, { error: "that month is not available" });
+      if (r.member_id === user.id) return send(res, 400, { error: "a gift is for someone else" });
+
+      // A comped month, granted independently of Stripe — the recipient may have no card at all,
+      // which is rather the point.
+      const me = (await sb("/rest/v1/members?id=eq." + user.id + "&select=active_until"))[0] || {};
+      const from = me.active_until && new Date(me.active_until) > new Date()
+        ? new Date(me.active_until) : new Date();
+      const until = new Date(from); until.setMonth(until.getMonth() + 1);
+
+      await sbFetch("/rest/v1/members?id=eq." + user.id, {
+        method: "PATCH",
+        body: JSON.stringify({ tier: "student", active_until: until.toISOString() }),
+      });
+      await sbFetch("/rest/v1/practice_rewards?id=eq." + r.id, {
+        method: "PATCH",
+        body: JSON.stringify({ status: "redeemed", gifted_to: user.id, redeemed_at: new Date().toISOString() }),
+      });
+      return send(res, 200, { granted_until: until.toISOString() });
+    }
+
     // ---- Dīkṣā gate: a written reflection, read by a teacher ----
     if (url.pathname === "/api/reflection" && req.method === "POST") {
       const jwt = (req.headers.authorization || "").replace(/^Bearer /, "");

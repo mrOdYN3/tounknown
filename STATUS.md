@@ -909,3 +909,38 @@ decision:
 
 Live check: 2 mentions on the homepage, 1 on /membership, 3 on /faq, 3 in llms.txt.
 Russian strings added for all of it.
+
+
+## Gift codes close the loop — and fund the scholarships (5 Aug 2026)
+
+The gift code could be minted but not redeemed, which made it a promise the software could not
+keep. Redemption now exists, and with it a second option that turns the whole thing into a
+self-funding system.
+
+**A practitioner who earns a free month has three choices:**
+1. Keep it — the discount applies to their own next invoice.
+2. **Give it to someone they know** — mints a `TU-XXXXXX` code that person enters in the app.
+3. **Release it to the scholarship pool** — when someone writes to say they cannot pay, the month
+   comes from the pool rather than from the founder's pocket.
+
+Option 3 is the interesting one. *"No one is turned away for money"* was previously a cost the
+owner absorbed alone; now practice funds practice. No competitor can copy it, because none of them
+verify sittings server-side.
+
+**Redemption grants a comped month directly** (`tier=student`, `active_until` +1 month) rather than
+going through Stripe — the recipient may have no card at all, which is the point. If they already
+have time remaining, the month is added to the end rather than overwriting it.
+
+**Verified end to end**: giver earned 30 days → code `TU-MDP0CI`; redeeming your own gift →
+*"a gift is for someone else"*; an invented code → *"that code is not one of ours"*; the recipient
+redeemed successfully and became `student` until 6 Sep; the same code twice → *"that month has
+already been taken"*; releasing to the pool → `{months_available: 1, given_by: 1}`. Test accounts
+removed; the two real members untouched.
+
+`GET /api/practice/pool` is public — how many months are waiting, and how many practitioners put
+them there. That is the honest form of social proof, and worth putting on the Dāna screen.
+
+### Deliberately not built: access in exchange for social posts
+Raised and declined. Trading meditation for promotion turns generosity into unpaid marketing and
+rewards audience size rather than practice — it is the growth pattern this product is positioned
+against. The scholarship route already exists and treats the person as a person.

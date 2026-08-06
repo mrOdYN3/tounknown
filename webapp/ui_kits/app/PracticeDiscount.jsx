@@ -9,6 +9,9 @@ function PracticeDiscount() {
   const [session, setSession] = React.useState(window.TULive && window.TULive.session());
   const [gift, setGift] = React.useState(null);
   const [err, setErr] = React.useState(null);
+  const [pooled, setPooled] = React.useState(false);
+  const [code, setCode] = React.useState("");
+  const [redeemed, setRedeemed] = React.useState(null);
 
   React.useEffect(() => window.TULive ? window.TULive.onAuth(setSession) : undefined, []);
   React.useEffect(() => {
@@ -57,14 +60,48 @@ function PracticeDiscount() {
         <p style={{margin:"0 0 10px",font:"400 13.5px/1.6 var(--font-serif)",color:"var(--gold-deep)"}}>
           {TR("practice.gift.lead","You earned a free month. You can give it away instead.")}</p>
         {gift
-          ? <p style={{margin:0,font:"600 15px/1 var(--font-sans)",color:"var(--ink)",letterSpacing:"0.06em"}}>{gift}</p>
-          : <Button variant="ghost" onClick={()=>{
-              window.TULive.giftMonth(giftable[0].id)
-                .then(setGift).catch((e)=>setErr(String(e.message||e)));
-            }} style={{minHeight:40,padding:"0 16px",fontSize:12.5}}>
-              {TR("practice.gift.cta","Give this month to someone")}</Button>}
+          ? <div>
+              <p style={{margin:0,font:"600 17px/1 var(--font-sans)",color:"var(--ink)",letterSpacing:"0.08em"}}>{gift}</p>
+              <p style={{margin:"8px 0 0",fontSize:12.5,color:"var(--text-tertiary)"}}>
+                {TR("practice.gift.done","Give this to whoever needs it. They enter it below.")}</p>
+            </div>
+          : pooled
+          ? <p style={{margin:0,font:"400 13.5px/1.6 var(--font-serif)",color:"var(--sage)"}}>
+              {TR("practice.pool.done","Released. Someone who wrote to say they cannot pay will be given this month. ☸")}</p>
+          : <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              <Button variant="ghost" onClick={()=>{
+                window.TULive.giftMonth(giftable[0].id).then(setGift).catch((e)=>setErr(String(e.message||e)));
+              }} style={{minHeight:40,padding:"0 16px",fontSize:12.5}}>
+                {TR("practice.gift.cta","Give it to someone I know")}</Button>
+              <Button variant="quiet" onClick={()=>{
+                window.TULive.poolMonth(giftable[0].id).then(()=>setPooled(true)).catch((e)=>setErr(String(e.message||e)));
+              }} style={{minHeight:40,padding:"0 14px",fontSize:12.5}}>
+                {TR("practice.pool.cta","Put it in the scholarship pool")}</Button>
+            </div>}
         {err && <p style={{margin:"8px 0 0",fontSize:12,color:"#a33"}}>{err}</p>}
       </div>}
+
+      <div style={{marginTop:16,paddingTop:14,borderTop:"0.5px solid var(--hairline)"}}>
+        <p style={{margin:"0 0 10px",fontSize:12.5,color:"var(--text-tertiary)"}}>
+          {TR("practice.redeem.lead","Been given a month by another practitioner?")}</p>
+        {redeemed
+          ? <p style={{margin:0,font:"400 13.5px/1.6 var(--font-serif)",color:"var(--sage)"}}>
+              {TR("practice.redeem.done","It is yours. Sit well. ☸")}</p>
+          : <form onSubmit={(e)=>{ e.preventDefault();
+              window.TULive.redeemCode(code.trim()).then(()=>setRedeemed(true))
+                .catch((x)=>setErr(String(x.message||x))); }}
+              style={{display:"flex",gap:8}}>
+              <input value={code} onChange={(e)=>{setCode(e.target.value);setErr(null);}}
+                placeholder="TU-XXXXXX" aria-label="Gift code"
+                style={{flex:1,minWidth:0,padding:"0 14px",minHeight:42,fontSize:14,font:"inherit",
+                  borderRadius:"var(--r-full)",border:"0.5px solid rgba(24,22,16,0.14)",
+                  background:"rgba(255,255,255,0.86)",color:"var(--ink)",outline:"none",
+                  letterSpacing:"0.06em",textTransform:"uppercase"}}/>
+              <Button type="submit" disabled={code.trim().length < 4}
+                style={{minHeight:42,padding:"0 18px",fontSize:12.5}}>
+                {TR("practice.redeem.cta","Redeem")}</Button>
+            </form>}
+      </div>
     </div>
   </section>;
 }

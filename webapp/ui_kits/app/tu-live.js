@@ -202,6 +202,28 @@
       return j.code;
     },
 
+    async poolMonth(rewardId) {
+      const r = await fetch("/api/practice/pool", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token },
+        body: JSON.stringify({ reward_id: rewardId }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || "Could not release that month.");
+      return true;
+    },
+    async redeemCode(code) {
+      if (!session) throw new Error("Sign in first.");
+      const r = await fetch("/api/practice/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token },
+        body: JSON.stringify({ code }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || "Could not redeem that code.");
+      return j.granted_until;
+    },
+
     // ---- Dīkṣā gates ----
     async loadGatesPassed(trackIds) {
       if (!session || !trackIds.length) return new Set();
