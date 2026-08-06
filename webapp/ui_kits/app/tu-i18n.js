@@ -372,6 +372,9 @@
     "sheet.locked.sub": "Никого не отворачивают из-за денег — довольно одного честного абзаца на tounknown.com@gmail.com.",
     "sheet.locked.cta": "Посмотреть лестницу обучения",
     "signin.sent.sub.plain": "Ссылка впустит тебя. Практика будет ждать. ☸",
+    "sheet.loading": "ищем дорожку…",
+    "sheet.listening": "звучит…",
+    "sheet.sitting": "сидим…",
     "common.terms": "Условия и приватность",
   };
 

@@ -196,7 +196,7 @@ function TierCard({ chip, chipTone = "neutral", title, price, priceNote, bullets
 }
 
 /* --------------------------------------------------------------- StepRow -- */
-function StepRow({ title, subtitle, state = "idle", gate = false, lockedNote, action, onAction, style }) {
+function StepRow({ title, subtitle, state = "idle", gate = false, lockedNote, action, onAction, loading = false, style }) {
   // "open" is for spoken tracks — introductions and talks. They are listened to, not sat,
   // so they are never locked and never gate what follows.
   const done = state === "done", next = state === "next",
@@ -214,8 +214,11 @@ function StepRow({ title, subtitle, state = "idle", gate = false, lockedNote, ac
     <div style={{ width: 38, height: 38, borderRadius: "50%", flex: "0 0 auto", display: "grid", placeItems: "center",
       borderWidth: "0.5px", borderStyle: "solid", position: "relative", ...skin }}>
       <Icon name={glyph} size={16} stroke={1.7} />
-      {next && <span aria-hidden="true" style={{ position: "absolute", inset: -1, borderRadius: "50%",
+      {next && !loading && <span aria-hidden="true" style={{ position: "absolute", inset: -1, borderRadius: "50%",
         border: "1px solid rgba(217,164,65,0.55)", animation: "tu-halo 3.2s var(--ease-spring) infinite" }} />}
+      {loading && [0, 1].map((i) => (
+        <span key={i} aria-hidden="true" style={{ position: "absolute", inset: -1, borderRadius: "50%",
+          border: "1px solid rgba(168,120,31,0.6)", animation: `tu-halo 1.6s ${i * 0.8}s linear infinite` }} />))}
     </div>
     <div style={{ flex: 1, minWidth: 0 }}>
       <b style={{ display: "block", font: "600 13.5px/1.4 var(--font-sans)", letterSpacing: "-0.01em",
@@ -224,12 +227,20 @@ function StepRow({ title, subtitle, state = "idle", gate = false, lockedNote, ac
       {locked && lockedNote && <div style={{ marginTop: 4, font: "400 11.5px/1.45 var(--font-serif)", color: "var(--gold-deep)", opacity: 0.9 }}>☸ {lockedNote}</div>}
     </div>
     {(next || open) && action && <Button variant={open ? "ghost" : "gold"} onClick={onAction}
-      style={{ minHeight: 38, padding: "0 16px", fontSize: 12.5 }}>{action}</Button>}
+      disabled={loading} aria-busy={loading || undefined}
+      style={{ minHeight: 38, padding: "0 16px", fontSize: 12.5, minWidth: loading ? 74 : undefined }}>
+      {loading
+        ? <span aria-label="loading" style={{ display: "inline-flex", gap: 4, alignItems: "center" }}>
+            {[0, 1, 2].map((i) => (
+              <span key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor",
+                animation: `tu-breathe 1.05s ${i * 0.16}s var(--ease-spring) infinite` }} />))}
+          </span>
+        : action}</Button>}
   </div>;
 }
 
 /* ---------------------------------------------------------------- Sheet ---- */
-function Sheet({ open, onClose, children, maxWidth = 440, ariaLabel = "Sheet", style }) {
+function Sheet({ open, onClose, children, maxWidth = 440, ariaLabel = "Sheet", className = "", style }) {
   React.useEffect(() => {
     if (!open) return;
     const k = (e) => e.key === "Escape" && onClose && onClose();
@@ -238,20 +249,66 @@ function Sheet({ open, onClose, children, maxWidth = 440, ariaLabel = "Sheet", s
     addEventListener("keydown", k);
     return () => { removeEventListener("keydown", k); document.body.style.overflow = prev; };
   }, [open, onClose]);
+
+  /* Pull the sheet down to dismiss it, with a thumb or a mouse.
+
+     The drag sets one custom property, --sheet-dy, and the stylesheet composes the transform
+     from it. Writing `transform` here directly meant losing to React on every re-render and to
+     the desktop rule's !important; nothing else writes this variable. */
+  const panelRef = React.useRef(null);
+  const drag = React.useRef(null);
+  const setY = (dy) => panelRef.current &&
+    panelRef.current.style.setProperty("--sheet-dy", (dy || 0) + "px");
+  const settle = (on) => panelRef.current &&
+    panelRef.current.classList.toggle("is-settling", on);
+
+  const onPointerDown = (e) => {
+    const el = panelRef.current; if (!el || e.button) return;
+    // Beginning a pull from the middle of the list would fight the list's own scrolling, so it
+    // starts at the handle — or anywhere, once the sheet is already scrolled to the top.
+    const fromHandle = e.target.closest && e.target.closest("[data-sheet-handle]");
+    if (!fromHandle && el.scrollTop > 0) return;
+    drag.current = { y: e.clientY, at: Date.now(), dy: 0, free: !!fromHandle };
+    el.style.animation = "none";     // the entrance keyframes would outrank the drag
+    settle(false);
+  };
+  const onPointerMove = (e) => {
+    const d = drag.current, el = panelRef.current; if (!d || !el) return;
+    const dy = e.clientY - d.y;
+    if (dy <= 0) { d.dy = 0; setY(0); return; }
+    if (!d.free && el.scrollTop > 0) { drag.current = null; settle(true); setY(0); return; }
+    d.dy = dy;
+    setY(dy > 160 ? 160 + (dy - 160) * 0.4 : dy);   // resists the further it travels
+  };
+  const endDrag = () => {
+    const d = drag.current, el = panelRef.current; if (!d || !el) return;
+    drag.current = null;
+    const flick = Date.now() - d.at < 320 && d.dy > 56;
+    if (d.dy > 130 || flick) {
+      el.classList.add("is-leaving");
+      setTimeout(() => onClose && onClose(), 210);
+    } else { settle(true); setY(0); }
+  };
+
   if (!open) return null;
   return <div role="dialog" aria-modal="true" aria-label={ariaLabel} style={{ position: "fixed", inset: 0, zIndex: 90 }}>
     <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(20,18,12,0.30)",
       WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", animation: "tu-fade .32s var(--ease-out)" }} />
-    <div style={{
+    <div ref={panelRef} className={"tu-sheet " + className}
+      onPointerDown={onPointerDown} onPointerMove={onPointerMove}
+      onPointerUp={endDrag} onPointerCancel={endDrag}
+      style={{
       position: "absolute", left: "50%", bottom: 0,
       width: "100%", maxWidth, maxHeight: "92dvh", overflowY: "auto", overscrollBehavior: "contain",
       borderRadius: "var(--r-xl) var(--r-xl) 0 0", padding: "10px 20px calc(30px + env(safe-area-inset-bottom))",
       background: "var(--glass-thick)",
       WebkitBackdropFilter: "var(--glass-blur-deep)", backdropFilter: "var(--glass-blur-deep)",
       boxShadow: "inset 0 1px 0 rgba(255,255,255,0.94), var(--shadow-sheet)",
-      transform: "translate(-50%,0)",
       animation: "tu-sheet-in .46s var(--ease-spring)", ...style }}>
-      <div aria-hidden="true" style={{ width: 38, height: 4.5, borderRadius: 99, background: "rgba(25,24,19,0.16)", margin: "0 auto 16px" }} />
+      <div data-sheet-handle="" style={{ padding: "6px 0 10px", margin: "-6px 0 6px", cursor: "grab",
+        touchAction: "none", display: "grid", placeItems: "center" }}>
+        <div aria-hidden="true" style={{ width: 38, height: 4.5, borderRadius: 99, background: "rgba(25,24,19,0.16)" }} />
+      </div>
     {children}
     </div>
   </div>;

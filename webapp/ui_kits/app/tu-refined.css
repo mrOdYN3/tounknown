@@ -93,6 +93,18 @@ body{
 @keyframes tu-halo{ 0%,100%{ transform:scale(1); opacity:.28 } 50%{ transform:scale(1.5); opacity:0 } }
 @keyframes tu-shimmer{ 0%{ background-position:-160% 0 } 100%{ background-position:260% 0 } }
 
+/* The sheet's resting transform. --sheet-dy is written by the pull-to-dismiss drag and by
+   nothing else, which keeps the drag clear of React re-renders and of the desktop !important. */
+.tu-sheet{ transform: translate(-50%, var(--sheet-dy, 0px)); }
+.tu-sheet.is-settling{ transition: transform .34s var(--ease-spring); }
+.tu-sheet.is-leaving{
+  transition: transform .26s var(--ease-out), opacity .26s linear;
+  transform: translate(-50%, 100%); opacity: .35; pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce){
+  .tu-sheet.is-settling, .tu-sheet.is-leaving{ transition-duration: .01ms; }
+}
+
 main .rv{ opacity:0; transform:translate3d(0,22px,0); transition:opacity .62s var(--ease-spring), transform .62s var(--ease-spring); }
 main .rv.in{ opacity:1; transform:none; }
 
@@ -309,10 +321,12 @@ main .rv.in{ opacity:1; transform:none; filter:blur(0); }
   /* ---- the bottom sheet becomes a centred dialog ---- */
   .tu-sheet-desktop{
     top: 50% !important; bottom: auto !important; left: 50% !important; right: auto !important;
-    transform: translate(-50%,-50%) !important;
-    width: min(680px, 92vw) !important; max-height: 88vh !important;
+    transform: translate(-50%, calc(-50% + var(--sheet-dy, 0px))) !important;
+    width: min(680px, 92vw) !important; max-width: min(680px, 92vw) !important;
+    max-height: 88vh !important;
     border-radius: var(--r-xl) !important;
   }
+  .tu-sheet-desktop.is-leaving{ transform: translate(-50%, calc(-50% + 110vh)) !important; }
 
   /* type has room to breathe */
   .tu-display-xl{ font-size: clamp(44px, 4.4vw, 62px); }

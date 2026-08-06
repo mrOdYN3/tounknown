@@ -14,6 +14,7 @@ function PathSheet({ path, onClose }) {
   const [session, setSession] = React.useState(window.TULive && window.TULive.session());
   const [member, setMember] = React.useState(window.TULive && window.TULive.member());
   const [playing, setPlaying] = React.useState(null); // track id
+  const [loadingId, setLoadingId] = React.useState(null); // track id waiting on the network
   const [unlockedIdx, setUnlockedIdx] = React.useState(0); // abhyāsa: opens by sitting
   const [needLogin, setNeedLogin] = React.useState(false);
   const [scrubNote, setScrubNote] = React.useState(false);
@@ -47,12 +48,12 @@ function PathSheet({ path, onClose }) {
   const pauseAudio = () => {
     const a = audioRef.current;
     if (a && !a.paused) a.pause();
-    setPlaying(null);
+    setPlaying(null); setLoadingId(null);
   };
   const stopAudio = () => {
     const a = audioRef.current;
     if (a) { a.pause(); a.removeAttribute("src"); }
-    loadedRef.current = null; setPlaying(null);
+    loadedRef.current = null; setPlaying(null); setLoadingId(null);
   };
 
   const selectCourse = React.useCallback((c) => {
@@ -104,7 +105,7 @@ function PathSheet({ path, onClose }) {
 
   const sit = (tr) => {
     const a = audioRef.current;
-    if (playing === tr.id) { a.pause(); setPlaying(null); return; }
+    if (playing === tr.id) { a.pause(); setPlaying(null); setLoadingId(null); return; }
     if (!canPlay(tr)) { setNeedLogin(true); return; }
     // a Dīkṣā gate asks for words before it asks for silence
     if (tr.is_gate && !gatesPassed.has(tr.id)) {
@@ -116,7 +117,9 @@ function PathSheet({ path, onClose }) {
       a.src = window.TULive.streamUrl(tr.id);
       loadedRef.current = tr.id;
     }                                           // same track — resume where it stopped
-    a.play().then(() => setPlaying(tr.id)).catch(() => setNeedLogin(true));
+    setLoadingId(tr.id);
+    a.play().then(() => setPlaying(tr.id))
+      .catch(() => { setLoadingId(null); setNeedLogin(true); });
   };
 
   const liveTracks = tracks && tracks.length ? tracks : null;
@@ -143,7 +146,12 @@ function PathSheet({ path, onClose }) {
         <span style={{font:"400 12.5px/1.5 var(--font-serif)",color:"var(--text-secondary)"}}>{t.lineage}</span></div>
     </div>
 
-    <audio ref={(el)=>{ audioRef.current = el; if (el) audioElRef.current = el; }} onEnded={()=>{
+    <audio ref={(el)=>{ audioRef.current = el; if (el) audioElRef.current = el; }}
+      onWaiting={()=>{ if (playing) setLoadingId(playing); }}
+      onStalled={()=>{ if (playing) setLoadingId(playing); }}
+      onPlaying={()=>setLoadingId(null)}
+      onError={()=>setLoadingId(null)}
+      onEnded={()=>{
       const done = playing;
       setPlaying(null);
       if (!done || !window.TULive) return;
@@ -275,6 +283,7 @@ function PathSheet({ path, onClose }) {
         const sitIndex = new Map(sits.map((x, n) => [x.id, n]));
         return liveTracks.slice(0, shown).map((tr) => {
           const isPlaying = playing === tr.id;
+          const isLoading = loadingId === tr.id;
           const talk = tr.is_sitting === false;
           const n = sitIndex.get(tr.id);
           const state = talk ? "open"
@@ -288,9 +297,12 @@ function PathSheet({ path, onClose }) {
           return <StepRow key={tr.id} gate={!!tr.is_gate} state={state}
             title={tr.title}
             subtitle={[mins(tr.seconds), talk ? TR("sheet.intro","introduction") : null,
-              isPlaying ? "sitting now…" : access].filter(Boolean).join(" · ")}
+              isLoading ? TR("sheet.loading","finding the track…")
+                : isPlaying ? (talk ? TR("sheet.listening","playing…") : TR("sheet.sitting","sitting now…"))
+                : access].filter(Boolean).join(" · ")}
             lockedNote={state==="locked" && prevSit
               ? `${TR("sheet.opens","opens when you have sat")} ${prevSit.title.length>26?prevSit.title.slice(0,26)+"…":prevSit.title}` : undefined}
+            loading={isLoading}
             action={(talk || state==="next") ? (isPlaying ? TR("sheet.pause","Pause") : talk ? TR("sheet.listen","Listen") : TR("sheet.sit","Sit")) : undefined}
             onAction={()=>sit(tr)}/>;
         });
