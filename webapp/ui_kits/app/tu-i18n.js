@@ -378,6 +378,15 @@
     "sheet.loading": "ищем дорожку…",
     "sheet.listening": "звучит…",
     "sheet.sitting": "сидим…",
+    "profile.name.title": "Как к тебе обращаться?",
+    "profile.name.hi": "Здравствуй, {n}.",
+    "profile.name.sub": "Это видят только учитель и круг. Оставь пустым — останешься безымянным.",
+    "profile.name.ph": "Твоё имя",
+    "profile.name.save": "Сохранить",
+    "profile.name.saving": "Сохраняем…",
+    "profile.name.done": "Сохранено. ☸",
+    "profile.name.error": "Не сохранилось — попробуй ещё раз.",
+    "dana.signin.sent.spam": "Обычно приходит за минуту. Если нет — загляни в спам.",
     "common.terms": "Условия и приватность",
   };
 

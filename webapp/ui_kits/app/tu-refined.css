@@ -92,6 +92,8 @@ body{
 @keyframes tu-breathe{ 0%,100%{ transform:scale(1); opacity:.85 } 50%{ transform:scale(1.075); opacity:1 } }
 @keyframes tu-halo{ 0%,100%{ transform:scale(1); opacity:.28 } 50%{ transform:scale(1.5); opacity:0 } }
 @keyframes tu-shimmer{ 0%{ background-position:-160% 0 } 100%{ background-position:260% 0 } }
+/* the confirmation disc: arrives with a little weight behind it, then settles */
+@keyframes tu-pop{ 0%{ transform:scale(.7); opacity:0 } 62%{ transform:scale(1.06) } 100%{ transform:scale(1); opacity:1 } }
 
 /* The sheet's resting transform. --sheet-dy is written by the pull-to-dismiss drag and by
    nothing else, which keeps the drag clear of React re-renders and of the desktop !important. */

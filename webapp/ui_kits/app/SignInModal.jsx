@@ -14,6 +14,21 @@ const SIIcon = window.TUIcon;
 const SI_PAYPAL = "https://www.paypal.com/donate?hosted_button_id=H5VQT3VLQBUBJ";
 const SI_PENDING = "tu.pending-plan";
 
+/* The disc above the message. Gold while it is asking, sage once it has done the thing —
+   the same green the gate counter uses for "that is enough". */
+function Disc({ name, tone = "gold" }) {
+  const green = tone === "done";
+  return <div aria-hidden="true" style={{display:"grid",placeItems:"center",width:48,height:48,
+    margin:"0 auto 16px", borderRadius:"50%",
+    background: green ? "rgba(104,118,79,0.16)" : "rgba(217,164,65,0.15)",
+    border: "0.5px solid " + (green ? "rgba(104,118,79,0.34)" : "rgba(168,120,31,0.28)"),
+    color: green ? "var(--sage-deep)" : "var(--gold-deep)",
+    transition: "background .4s var(--ease-out), border-color .4s var(--ease-out), color .4s var(--ease-out)",
+    animation: green ? "tu-pop .42s var(--ease-spring)" : undefined}}>
+    <SIIcon name={name} size={green ? 22 : 21} stroke={green ? 2 : undefined}/>
+  </div>;
+}
+
 function SignInPanel({ plan, onDone }) {
   const [email, setEmail] = React.useState("");
   const [state, setState] = React.useState("idle");
@@ -25,12 +40,19 @@ function SignInPanel({ plan, onDone }) {
   }, [plan]);
 
   if (state === "sent") return <React.Fragment>
-    <p style={{margin:0,font:"400 17px/1.4 var(--font-serif)",color:"var(--ink)"}}>
+    <Disc name="check" tone="done"/>
+    <p style={{margin:0,font:"400 19px/1.35 var(--font-serif)",letterSpacing:"-0.01em",color:"var(--ink)"}}>
       {TR("dana.signin.sent","Check your inbox.")}</p>
+    {/* Their own address back to them: the commonest reason a link never arrives is a typo,
+        and seeing it is how you catch one. */}
+    <p style={{margin:"12px 0 0",font:"500 13.5px/1.5 var(--font-sans)",color:"var(--sage-deep)",
+      wordBreak:"break-word"}}>{email.trim()}</p>
     <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
       {plan
         ? TR("dana.signin.sent.sub","The link signs you in and brings you straight back to this step. ☸")
         : TR("signin.sent.sub.plain","The link signs you in. Your practice will be waiting. ☸")}</p>
+    <p style={{margin:"14px 0 0",font:"400 12px/1.55 var(--font-sans)",color:"var(--text-tertiary)"}}>
+      {TR("dana.signin.sent.spam","It usually lands within a minute. If not, look in spam.")}</p>
   </React.Fragment>;
 
   return <React.Fragment>
@@ -68,10 +90,7 @@ function Notice({ note, onClose }) {
     <div onClick={(e)=>e.stopPropagation()} className="tu-glass"
       style={{width:"min(392px,100%)",borderRadius:"var(--r-xl)",padding:"28px 24px 20px",
         textAlign:"center",boxShadow:"var(--lift-2)",animation:"tu-rise .32s var(--ease-spring)"}}>
-      <div aria-hidden="true" style={{display:"grid",placeItems:"center",width:48,height:48,margin:"0 auto 16px",
-        borderRadius:"50%",background:"rgba(217,164,65,0.15)",border:"0.5px solid rgba(168,120,31,0.28)",
-        color:"var(--gold-deep)"}}>
-        <SIIcon name={note.kind==="signin" ? "mail" : (note.icon||"spark")} size={21}/></div>
+      {note.kind!=="signin" && <Disc name={note.icon||"spark"}/>}
 
       {note.kind==="signin"
         ? <SignInPanel plan={note.plan} onDone={onClose}/>

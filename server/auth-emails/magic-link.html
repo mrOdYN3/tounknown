@@ -1,0 +1,41 @@
+<!-- Supabase → Authentication → Email Templates → Magic Link
+     Subject: Your link to toUnknown
+     Table layout and inline styles on purpose: Gmail strips <style> blocks and most clients
+     still lay out mail with tables. -->
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+       style="background:#FBFAF7;margin:0;padding:32px 0;">
+  <tr><td align="center">
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+           style="max-width:460px;background:#FFFFFF;border:1px solid #EDE9DF;border-radius:22px;">
+      <tr><td style="padding:34px 34px 0;" align="center">
+        <img src="https://tounknown.com/ds/assets/wordmark-black.png" alt="toUnknown"
+             width="150" style="display:block;width:150px;height:auto;border:0;">
+      </td></tr>
+      <tr><td style="padding:26px 34px 0;" align="center">
+        <p style="margin:0;font:400 21px/1.35 Georgia,'Times New Roman',serif;color:#191813;">
+          Your link to toUnknown.</p>
+        <p style="margin:12px 0 0;font:400 14px/1.65 -apple-system,'Segoe UI',Helvetica,Arial,sans-serif;color:#5C584E;">
+          One tap and you are in. No password to remember — your practice follows this address.</p>
+      </td></tr>
+      <tr><td style="padding:24px 34px 0;" align="center">
+        <a href="{{ .ConfirmationURL }}"
+           style="display:inline-block;padding:15px 30px;border-radius:999px;background:#191813;
+                  color:#FBFAF7;font:600 14px/1 -apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+                  text-decoration:none;">Sit down</a>
+      </td></tr>
+      <tr><td style="padding:22px 34px 0;" align="center">
+        <p style="margin:0;font:400 11.5px/1.6 -apple-system,'Segoe UI',Helvetica,Arial,sans-serif;color:#8A857A;">
+          The link works once and expires in an hour. If you did not ask for it, nothing has
+          happened to your account — you can ignore this and it simply lapses.</p>
+      </td></tr>
+      <tr><td style="padding:22px 34px 30px;" align="center">
+        <div style="border-top:1px solid #EDE9DF;padding-top:18px;">
+          <p style="margin:0;font:400 11.5px/1.6 Georgia,'Times New Roman',serif;color:#A8781F;">
+            ☸ &nbsp;Unlocked by sitting, never by paying.</p>
+          <p style="margin:8px 0 0;font:400 11px/1.6 -apple-system,'Segoe UI',Helvetica,Arial,sans-serif;color:#A5A093;">
+            toUnknown · <a href="https://tounknown.com" style="color:#A5A093;">tounknown.com</a></p>
+        </div>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>

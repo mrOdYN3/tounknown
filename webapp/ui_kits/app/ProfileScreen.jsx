@@ -32,6 +32,45 @@ function AuthCard() {
     {state==="error" && <p style={{margin:"8px 0 0",fontSize:12.5,color:"#a33"}}>{TR("profile.error","Could not send — try again in a minute.")}</p>}
   </div>;
 }
+/* Your name, which the app has had a column for since the first migration and has never asked
+   for. Optional on purpose — a practice does not require one — but a Sangha that greets you by
+   name is a different room from one that greets an email address. */
+function NameCard() {
+  const [member, setMember] = React.useState(window.TULive && window.TULive.member());
+  const [session, setSession] = React.useState(window.TULive && window.TULive.session());
+  React.useEffect(() => window.TULive ? window.TULive.onAuth((sn,m)=>{setSession(sn);setMember(m);}) : undefined, []);
+  const saved = (member && member.display_name) || "";
+  const [name, setName] = React.useState(saved);
+  const [state, setState] = React.useState("idle");
+  React.useEffect(() => { setName(saved); }, [saved]);
+  if (!session) return null;
+
+  const dirty = name.trim() !== saved.trim();
+  return <div className="tu-glass" style={{borderRadius:"var(--r-lg)",padding:"18px 18px 16px",marginTop:14}}>
+    <b style={{display:"block",font:"600 13px/1.4 var(--font-sans)",letterSpacing:"-0.01em",color:"var(--ink)"}}>
+      {saved ? TR("profile.name.hi","Hello, {n}.").replace("{n}", saved) : TR("profile.name.title","What should we call you?")}</b>
+    <p style={{margin:"4px 0 12px",font:"400 12.5px/1.55 var(--font-sans)",color:"var(--text-secondary)"}}>
+      {TR("profile.name.sub","Only your teacher and the circle see this. Leave it blank and you stay anonymous.")}</p>
+    <form onSubmit={(e)=>{ e.preventDefault(); setState("saving");
+        window.TULive.saveProfile({ display_name: name.trim() || null })
+          .then(()=>setState("saved")).catch(()=>setState("error")); }}
+      style={{display:"flex",gap:8}}>
+      <input value={name} onChange={(e)=>{ setName(e.target.value); setState("idle"); }}
+        placeholder={TR("profile.name.ph","Your name")} maxLength={48} aria-label="Your name"
+        style={{flex:1,minWidth:0,padding:"0 15px",minHeight:44,font:"400 14px var(--font-sans)",
+          borderRadius:"var(--r-full)",border:"0.5px solid rgba(24,22,16,0.12)",
+          background:"rgba(255,255,255,0.86)",color:"var(--ink)",outline:"none"}}/>
+      <Btn type="submit" disabled={!dirty || state==="saving"}
+        style={{opacity:(!dirty||state==="saving")?0.45:1,minHeight:44,padding:"0 18px",fontSize:12.5}}>
+        {state==="saving" ? TR("profile.name.saving","Saving…") : TR("profile.name.save","Save")}</Btn>
+    </form>
+    {state==="saved" && <p style={{margin:"9px 0 0",font:"400 12.5px var(--font-sans)",color:"var(--sage-deep)"}}>
+      {TR("profile.name.done","Saved. ☸")}</p>}
+    {state==="error" && <p style={{margin:"9px 0 0",font:"400 12.5px var(--font-sans)",color:"#a33"}}>
+      {TR("profile.name.error","Could not save — try again.")}</p>}
+  </div>;
+}
+
 function ProfileScreen() {
   const T = window.TU;
   const [stats, setStats] = React.useState(null);
@@ -50,6 +89,7 @@ function ProfileScreen() {
   return <div style={{padding:"22px 20px 0"}}>
     <h1 className="tu-display-xl" style={{margin:0,color:"var(--ink)"}}>{TR("title.sadhana","Your sādhana")}</h1>
     <AuthCard/>
+    <NameCard/>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,margin:"18px 0"}}>
       <StatCard value={stats?stats.minutes:0} label={TR("profile.minutes","minutes sat")}/><StatCard value={stats?stats.completed:0} label={TR("profile.sittings","sittings")}/><StatCard value={0} label={TR("profile.gates","gates passed")}/>
     </div>

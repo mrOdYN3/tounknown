@@ -12,7 +12,7 @@
   async function refreshMember() {
     if (!session) { member = null; return; }
     try {
-      const r = await fetch(cfg.url + "/rest/v1/members?select=tier,active_until&id=eq." + session.user.id, {
+      const r = await fetch(cfg.url + "/rest/v1/members?select=tier,active_until,display_name&id=eq." + session.user.id, {
         headers: { apikey: cfg.publishableKey, Authorization: "Bearer " + session.access_token },
       });
       member = r.ok ? (await r.json())[0] || null : null;
@@ -70,6 +70,20 @@
     isSadhaka: () => !!(member && member.tier === "sadhaka" &&
       member.active_until && new Date(member.active_until) > new Date()),
     onAuth(f) { listeners.add(f); f(session, member); return () => listeners.delete(f); },
+
+    // display_name has had a column since the first migration and nothing ever wrote to it.
+    async saveProfile(fields) {
+      if (!session) throw new Error("Sign in first.");
+      const r = await fetch(cfg.url + "/rest/v1/members?id=eq." + session.user.id, {
+        method: "PATCH",
+        headers: { ...authHeaders(), Prefer: "return=representation" },
+        body: JSON.stringify(fields),
+      });
+      if (!r.ok) throw new Error("Could not save.");
+      const rows = await r.json().catch(() => []);
+      if (rows && rows[0]) { member = { ...member, ...rows[0] }; listeners.forEach((f) => f(session, member)); }
+      return rows && rows[0];
+    },
 
     async signIn(email) {
       const { error } = await client.auth.signInWithOtp({
