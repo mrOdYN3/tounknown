@@ -76,6 +76,43 @@ function SignInPanel({ plan, onDone }) {
   </React.Fragment>;
 }
 
+/* Asked once, when someone lands back from the emailed link and we still have no name for them.
+   Skippable — the practice does not need one — and never asked twice. */
+function NamePanel({ onClose }) {
+  const [name, setName] = React.useState("");
+  const [state, setState] = React.useState("idle");
+  const done = () => { try { localStorage.setItem("tu.asked-name","1"); } catch {} onClose(); };
+  if (state === "saved") return <React.Fragment>
+    <Disc name="check" tone="done"/>
+    <p style={{margin:0,font:"400 19px/1.35 var(--font-serif)",color:"var(--ink)"}}>
+      {TR("welcome.done","Welcome, {n}.").replace("{n}", name.trim())}</p>
+    <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
+      {TR("welcome.done.sub","Your practice is saved to this account from here on. ☸")}</p>
+  </React.Fragment>;
+  return <React.Fragment>
+    <Disc name="sadhana"/>
+    <p style={{margin:0,font:"400 19px/1.35 var(--font-serif)",color:"var(--ink)"}}>
+      {TR("welcome.title","You are in. What should we call you?")}</p>
+    <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
+      {TR("welcome.sub","Only your teacher and the circle see this. You can skip it and stay anonymous.")}</p>
+    <form onSubmit={(e)=>{ e.preventDefault(); if(!name.trim()) return done(); setState("saving");
+        window.TULive.saveProfile({ display_name: name.trim() })
+          .then(()=>setState("saved")).catch(()=>setState("error"))
+          .finally(()=>{ try { localStorage.setItem("tu.asked-name","1"); } catch {} }); }}
+      style={{marginTop:18,display:"flex",flexDirection:"column",gap:8}}>
+      <input autoFocus value={name} onChange={(e)=>setName(e.target.value)} maxLength={48}
+        placeholder={TR("profile.name.ph","Your name")} aria-label="Your name"
+        style={{padding:"0 16px",minHeight:46,font:"400 15px var(--font-sans)",borderRadius:"var(--r-full)",
+          textAlign:"center",border:"0.5px solid rgba(24,22,16,0.12)",background:"rgba(255,255,255,0.9)",
+          color:"var(--ink)",outline:"none"}}/>
+      <SIButton type="submit" wide disabled={state==="saving"} style={{opacity:state==="saving"?0.6:1}}>
+        {state==="saving" ? TR("profile.name.saving","Saving…") : TR("welcome.cta","That is me")}</SIButton>
+    </form>
+    {state==="error" && <p style={{margin:"10px 0 0",fontSize:12.5,color:"#a33"}}>
+      {TR("profile.name.error","Could not save — try again.")}</p>}
+  </React.Fragment>;
+}
+
 function Notice({ note, onClose }) {
   if (!note) return null;
   // Portalled to <body>. The Path sheet carries a transform and a backdrop-filter, either of
@@ -90,10 +127,10 @@ function Notice({ note, onClose }) {
     <div onClick={(e)=>e.stopPropagation()} className="tu-glass"
       style={{width:"min(392px,100%)",borderRadius:"var(--r-xl)",padding:"28px 24px 20px",
         textAlign:"center",boxShadow:"var(--lift-2)",animation:"tu-rise .32s var(--ease-spring)"}}>
-      {note.kind!=="signin" && <Disc name={note.icon||"spark"}/>}
+      {note.kind!=="signin" && note.kind!=="name" && <Disc name={note.icon||"spark"}/>}
 
-      {note.kind==="signin"
-        ? <SignInPanel plan={note.plan} onDone={onClose}/>
+      {note.kind==="signin" ? <SignInPanel plan={note.plan} onDone={onClose}/>
+        : note.kind==="name" ? <NamePanel onClose={onClose}/>
         : <React.Fragment>
             <p style={{margin:0,font:"400 19px/1.35 var(--font-serif)",letterSpacing:"-0.01em",color:"var(--ink)"}}>{note.text}</p>
             {note.sub && <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>{note.sub}</p>}
@@ -106,7 +143,7 @@ function Notice({ note, onClose }) {
           </React.Fragment>}
 
         <SIButton variant="quiet" wide style={{marginTop:8}} onClick={onClose}>
-          {note.dismiss || TR("common.close","Close")}</SIButton>
+          {note.dismiss || (note.kind==="name" ? TR("welcome.skip","Skip for now") : TR("common.close","Close"))}</SIButton>
 
         {/* Kept, and kept quiet. Whoever needs this line will look for it; putting it at the
             size of the offer would make it read like a discount, which it is not. */}

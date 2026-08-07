@@ -67,6 +67,25 @@ function App(){
   // wherever you went next, and the sitting inside it keeps playing out of sight.
   const go = v=>{ setPath(null); setView(v); window.scrollTo({top:0,behavior:"instant"}); };
   React.useEffect(()=>{ window.TUGo = go; window.TUStart = ()=>setStartOpen(true); },[]);
+
+  // Coming back from the emailed link is the moment to ask who you are — once, and never again
+  // whether you answered or skipped.
+  const [askName,setAskName] = React.useState(false);
+  const asking = React.useRef(false);
+  React.useEffect(()=>{
+    if (!window.TULive) return;
+    return window.TULive.onAuth((sn,m)=>{
+      // Saving the name updates `member`, which fires this listener again — without the latch
+      // the prompt tore itself down the instant it succeeded, so the confirmation never showed.
+      // Once open, only the panel closes it.
+      if (asking.current) return;
+      let asked = false;
+      try { asked = localStorage.getItem("tu.asked-name") === "1"; } catch {}
+      const should = !!sn && !!m && !m.display_name && !asked;
+      asking.current = should;
+      setAskName(should);
+    });
+  },[]);
   React.useEffect(()=>{
     const els = document.querySelectorAll("main > div > *:not(.rv)");
     els.forEach(el=>el.classList.add("rv"));
@@ -88,6 +107,9 @@ function App(){
       : <TabBar tabs={TABS} active={view} onChange={go} style={{maxWidth:"var(--frame-w)"}}/>}
     <PathSheet path={path} onClose={()=>setPath(null)}/>
     <StartHere open={startOpen} onClose={()=>setStartOpen(false)} onOpenPath={setPath} go={go}/>
+    {window.TUNotice && askName ? <window.TUNotice note={{kind:"name"}} onClose={()=>{
+      try { localStorage.setItem("tu.asked-name","1"); } catch {}
+      asking.current = false; setAskName(false); }}/> : null}
     {toastMsg && <Toast fixed show message={toastMsg}/>}
   </div>;
 }
