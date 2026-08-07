@@ -73,6 +73,7 @@ function SignInPanel({ plan, onDone }) {
     </form>
     {state==="error" && <p style={{margin:"10px 0 0",fontSize:12.5,color:"#a33"}}>
       {TR("dana.signin.error","Could not send — try again in a minute.")}</p>}
+    <OAuthRow/>
   </React.Fragment>;
 }
 
@@ -111,6 +112,57 @@ function NamePanel({ onClose }) {
     {state==="error" && <p style={{margin:"10px 0 0",fontSize:12.5,color:"#a33"}}>
       {TR("profile.name.error","Could not save — try again.")}</p>}
   </React.Fragment>;
+}
+
+/* Social sign-in, rendered only for providers the project has actually enabled — the list comes
+   from the server, so this is empty until Google or Apple is switched on in the dashboard and
+   there is never a button that leads nowhere.
+
+   Supabase links an OAuth identity to an existing user when the provider hands back the same,
+   verified email address. Everyone here signed in through a link they clicked, so their address
+   is verified and the same person lands on the same account, practice and membership intact.
+   The exception worth knowing is Apple's Hide My Email, which returns a private relay address:
+   it cannot match, so that route makes a second account. */
+const MARKS = {
+  google: <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#4285F4" d="M45 24c0-1.6-.1-2.7-.4-4H24v7.5h12c-.2 2-1.5 5-4.4 7l6.7 5.2C42.2 36.2 45 30.7 45 24z"/>
+    <path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-6.9-5.4c-1.9 1.3-4.4 2.2-7.6 2.2-5.8 0-10.7-3.9-12.5-9.2l-7.1 5.5C8 41.1 15.4 46 24 46z"/>
+    <path fill="#FBBC05" d="M11.5 28.3a13.5 13.5 0 010-8.6l-7.1-5.5a22 22 0 000 19.6z"/>
+    <path fill="#EA4335" d="M24 9.5c3.2 0 6 1.1 8.2 3.2l6.1-6.1C34.9 3.1 29.9 1 24 1 15.4 1 8 5.9 4.4 14.2l7.1 5.5C13.3 13.4 18.2 9.5 24 9.5z"/>
+  </svg>,
+  apple: <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.2 1.2-2.4 1.3-2.5-.1 0-2.5-1-2.5-3.6zM14.2 5.9c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/>
+  </svg>,
+};
+const LABELS = { google: "Google", apple: "Apple" };
+
+function OAuthRow({ compact }) {
+  const [list, setList] = React.useState(null);
+  const [busy, setBusy] = React.useState(null);
+  React.useEffect(() => {
+    let live = true;
+    if (window.TULive && window.TULive.providers)
+      window.TULive.providers().then((p) => { if (live) setList(p); }).catch(() => setList([]));
+    return () => { live = false; };
+  }, []);
+  if (!list || !list.length) return null;
+
+  return <div style={{marginTop:compact?12:16}}>
+    <div aria-hidden="true" style={{display:"flex",alignItems:"center",gap:10,margin:"0 0 12px"}}>
+      <span style={{flex:1,height:1,background:"var(--hairline)"}}/>
+      <span style={{font:"500 11px/1 var(--font-sans)",letterSpacing:"0.08em",textTransform:"uppercase",
+        color:"var(--text-tertiary)"}}>{TR("auth.or","or")}</span>
+      <span style={{flex:1,height:1,background:"var(--hairline)"}}/>
+    </div>
+    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+      {list.map((k) => (
+        <SIButton key={k} variant="ghost" wide disabled={busy===k}
+          style={{opacity:busy===k?0.6:1,gap:10}}
+          onClick={()=>{ setBusy(k); window.TULive.signInWith(k).catch(()=>setBusy(null)); }}>
+          {MARKS[k]}{TR("auth.continue","Continue with {p}").replace("{p}", LABELS[k])}
+        </SIButton>))}
+    </div>
+  </div>;
 }
 
 function Notice({ note, onClose }) {
@@ -154,4 +206,5 @@ function Notice({ note, onClose }) {
 }
 
 window.TUNotice = Notice;
+window.TUOAuthRow = OAuthRow;
 window.TU_PENDING_PLAN = SI_PENDING;

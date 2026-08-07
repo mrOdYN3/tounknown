@@ -1,6 +1,7 @@
 const { StatCard, TeacherCard } = window.ToUnknownDesignSystem_9d38c1;
 const SocialLinks = window.ToUnknownDesignSystem_9d38c1.SocialLinks || (()=>null);
 const Btn = window.ToUnknownDesignSystem_9d38c1.Button;
+const Social = (p) => (window.TUOAuthRow ? <window.TUOAuthRow {...p}/> : null);
 function AuthCard() {
   const [session, setSession] = React.useState(window.TULive && window.TULive.session());
   const [email, setEmail] = React.useState("");
@@ -33,6 +34,7 @@ function AuthCard() {
         {state==="sending"?"Sending…":"Send link"}</Btn>
     </form>}
     {state==="error" && <p style={{margin:"8px 0 0",fontSize:12.5,color:"#a33"}}>{TR("profile.error","Could not send — try again in a minute.")}</p>}
+    <Social compact/>
   </div>;
 }
 /* Your name, which the app has had a column for since the first migration and has never asked

@@ -5,6 +5,7 @@
   const client = window.supabase.createClient(cfg.url, cfg.publishableKey);
   let session = null;
   let member = null; // { tier, active_until }
+  let providerCache = null;
   const listeners = new Set();
 
   function emit() { listeners.forEach((f) => f(session, member)); }
@@ -83,6 +84,28 @@
       const rows = await r.json().catch(() => []);
       if (rows && rows[0]) { member = { ...member, ...rows[0] }; listeners.forEach((f) => f(session, member)); }
       return rows && rows[0];
+    },
+
+    /* Which social logins the project actually has switched on. Read from the server rather than
+       hard-coded, so the buttons appear the moment a provider is enabled in the dashboard and
+       never sit there dead in the meantime. */
+    async providers() {
+      if (providerCache) return providerCache;
+      try {
+        const r = await fetch(cfg.url + "/auth/v1/settings", { headers: { apikey: cfg.publishableKey } });
+        const j = await r.json();
+        const ext = (j && j.external) || {};
+        providerCache = ["google", "apple"].filter((k) => ext[k] === true);
+      } catch { providerCache = []; }
+      return providerCache;
+    },
+    async signInWith(provider) {
+      const { error } = await client.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin + window.location.pathname },
+      });
+      if (error) throw error;
+      return true;
     },
 
     async signIn(email) {
