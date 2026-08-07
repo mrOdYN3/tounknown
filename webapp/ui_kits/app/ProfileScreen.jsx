@@ -17,9 +17,12 @@ function AuthCard() {
   </div>;
 
   return <div className="tu-glass" style={card}>
-    <b style={{fontSize:14.5,letterSpacing:"-0.01em",color:"var(--ink)"}}>{TR("profile.signin.title","Sign in to keep your practice")}</b>
-    <p style={{margin:"4px 0 10px",fontSize:13,color:"var(--text-secondary)"}}>{TR("profile.signin.sub","No password — we send a link to your email.")}</p>
-    {state==="sent" ? <p style={{margin:0,fontFamily:"var(--font-serif)",fontSize:13,color:"var(--gold-deep)"}}>{TR("profile.sent","Check your inbox — the link signs you in. ☸")}</p> :
+    <b style={{fontSize:14.5,letterSpacing:"-0.01em",color:"var(--ink)"}}>{TR("profile.signin.title","Sign in, or come back")}</b>
+    {/* One door for both. signInWithOtp creates the account if the address is new and signs in
+        if it is not — the card just never said so, which reads as a sign-up form to someone
+        who already has an account. */}
+    <p style={{margin:"4px 0 10px",fontSize:13,color:"var(--text-secondary)"}}>{TR("profile.signin.sub","New here or returning, it is the same link — no password to set, and none to lose.")}</p>
+    {state==="sent" ? <p style={{margin:0,fontFamily:"var(--font-serif)",fontSize:13,color:"var(--sage-deep)"}}>{TR("profile.sent","Check your inbox — the link signs you in. ☸")}</p> :
     <form onSubmit={e=>{e.preventDefault(); if(!email) return; setState("sending");
         window.TULive.signIn(email.trim()).then(()=>setState("sent")).catch(()=>setState("error"));}}
       style={{display:"flex",gap:8}}>
