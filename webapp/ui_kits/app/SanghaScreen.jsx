@@ -3,11 +3,7 @@ const SeatPanel = () => (window.TUCircleSeat ? <window.TUCircleSeat/> : null);
 function SanghaScreen({ go }) {
   const T = window.TU;
   return <div>
-    <div style={{position:"relative",height:260,overflow:"hidden",marginBottom:4}}>
-      <div style={{position:"absolute",inset:0,background:`url('${T.sanghaHall}') 50% 40%/cover`,backgroundColor:"var(--paper-2)"}}/>
-      <div style={{position:"absolute",inset:0,
-        background:"linear-gradient(180deg,rgba(251,250,247,0) 0%,rgba(251,250,247,0) 46%,var(--paper-1) 100%)"}}/>
-    </div>
+    {/* No hero here for now — the artwork moved to Sādhana. */}
     <div style={{padding:"0 20px"}}>
     <h1 className="tu-display-xl" style={{margin:0,color:"var(--ink)"}}>{TR("sangha.title","Sangha")}</h1>
     <p className="tu-lede" style={{margin:"12px 0 24px"}}><b>{TR("sangha.lede.b","Not a feed.")}</b> {TR("sangha.lede","A circle of practitioners.")}</p>

@@ -124,7 +124,19 @@ function ProfileScreen() {
     [TR("profile.q3","How do Paths unlock?"), "By practice, not payment. Each track opens after you have sat the one before — the way real retreats and lineages work."],
     [TR("profile.q4","The Sanskrit we use"), "Sādhana — daily spiritual practice · Mārga — the path · Dīkṣā — initiation, the gate · Abhyāsa — steady, devoted repetition · Dāna — generosity · Sangha — the community · Satsang — gathering in truth · Sādhaka — the committed practitioner · Ācārya — the teacher · Paramparā — the unbroken chain of transmission; every teacher here names theirs."],
   ];
-  return <div style={{padding:"22px 20px 0"}}>
+  return <div>
+    {/* Masked, not overlaid: the artwork's own alpha fades into the paper, so there is no seam
+        to find whatever sits behind it. */}
+    {/* A band, not the whole frame: 2:1 and `cover`, so the artwork spans the full width with a
+        little taken off the top and foot rather than being stranded in empty space. A height cap
+        is safe with `cover` — it only ever crops further, it cannot letterbox. Faded out at the
+        foot so there is no edge where the picture meets the paper. */}
+    <div aria-hidden="true" className="tu-band"
+      style={{aspectRatio:"1.72 / 1",maxHeight:"min(460px, 48vh)"}}>
+      <div className="tu-band-img" style={{backgroundImage:`url('${T.sanghaHall}')`,
+        backgroundSize:"cover",backgroundPosition:"50% 18%"}}/>
+    </div>
+    <div style={{padding:"0 20px"}}>
     <h1 className="tu-display-xl" style={{margin:0,color:"var(--ink)"}}>{TR("title.sadhana","Your sādhana")}</h1>
     <AuthCard/>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,margin:"18px 0"}}>
@@ -142,6 +154,7 @@ function ProfileScreen() {
     <div style={{padding:"36px 0 20px",textAlign:"center",color:"var(--text-tertiary)",fontSize:12}}>
       <SocialLinks style={{marginBottom:10}}/>
       © 2026 toUnknown
+    </div>
     </div>
   </div>;
 }

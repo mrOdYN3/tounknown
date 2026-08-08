@@ -35,10 +35,9 @@ function PathsScreen({ openPath }) {
 
   return <div>
     {/* The monk on his alms round — the living lineage, on the screen that lists the Paths. */}
-    <div style={{position:"relative",height:230,overflow:"hidden",marginBottom:4}}>
-      <div style={{position:"absolute",inset:0,background:`url('${T.monkBowl}') 18% 30%/cover`,backgroundColor:"#0B0B10"}}/>
-      <div style={{position:"absolute",inset:0,
-        background:"linear-gradient(180deg,rgba(11,11,16,0.34) 0%,rgba(251,250,247,0.06) 56%,var(--paper-1) 100%)"}}/>
+    <div className="tu-band" style={{height:"clamp(260px, 38vh, 380px)"}}>
+      <div className="tu-band-img" style={{backgroundImage:`url('${T.monkBowl}')`,
+        backgroundSize:"cover",backgroundPosition:"18% 30%"}}/>
     </div>
     <div style={{padding:"0 20px"}}>
     <h1 className="tu-display-xl" style={{margin:0,color:"var(--ink)"}}>Mārga</h1>

@@ -139,6 +139,15 @@ body{
 /* Hero height lives here, not inline, so the desktop rule can raise it without !important. */
 .tu-hero{ min-height: 560px; }
 
+/* A screen's opening picture. Spans the content area rather than the text column — the same
+   full-bleed the Home pagoda has — and fades out at its foot instead of stopping at a line. */
+.tu-band{ position: relative; width: 100%; overflow: hidden; margin-bottom: 8px; }
+.tu-band > .tu-band-img{
+  position: absolute; inset: 0; background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(180deg,#000 0%,#000 58%,rgba(0,0,0,0) 100%);
+          mask-image: linear-gradient(180deg,#000 0%,#000 58%,rgba(0,0,0,0) 100%);
+}
+
 .tu-sheet{ transform: translate(-50%, var(--sheet-dy, 0px)); }
 .tu-sheet.is-settling{ transition: transform .34s var(--ease-spring); }
 .tu-sheet.is-leaving{
@@ -303,8 +312,8 @@ main .rv.in{ opacity:1; transform:none; filter:blur(0); }
      :not(.tu-overlay) matters: a modal rendered from inside a screen is also a
      `main > div > div`, and capping it shrink-wrapped its position:fixed backdrop to the
      column — the page showed through undimmed to the right of it, reading as a cut edge. */
-  .tu-frame > main > div > section:not(.tu-overlay):not(.tu-hero),
-  .tu-frame > main > div > div:not(.tu-overlay):not(.tu-hero){ max-width: 1160px; margin-left: auto; margin-right: auto; }
+  .tu-frame > main > div > section:not(.tu-overlay):not(.tu-hero):not(.tu-band),
+  .tu-frame > main > div > div:not(.tu-overlay):not(.tu-hero):not(.tu-band){ max-width: 1160px; margin-left: auto; margin-right: auto; }
 
   /* The hero carries a 16:9 photograph of the Shwedagon. Held to the 1160 column and pinned at
      560px it became a 2.07:1 letterbox — cream down both sides, and the spire sliced off the
