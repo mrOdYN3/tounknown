@@ -67,29 +67,39 @@ function NameCard() {
   const [session, setSession] = React.useState(window.TULive && window.TULive.session());
   React.useEffect(() => window.TULive ? window.TULive.onAuth((sn,m)=>{setSession(sn);setMember(m);}) : undefined, []);
   const saved = (member && member.display_name) || "";
+  const savedBorn = (member && member.born_on) || "";
   const [name, setName] = React.useState(saved);
+  const [born, setBorn] = React.useState(savedBorn);
   const [state, setState] = React.useState("idle");
-  React.useEffect(() => { setName(saved); }, [saved]);
+  React.useEffect(() => { setName(saved); setBorn(savedBorn); }, [saved, savedBorn]);
   if (!session) return null;
 
-  const dirty = name.trim() !== saved.trim();
+  const dirty = name.trim() !== saved.trim() || born !== savedBorn;
   return <div className="tu-glass" style={{borderRadius:"var(--r-lg)",padding:"18px 18px 16px",marginTop:14}}>
     <b style={{display:"block",font:"600 13px/1.4 var(--font-sans)",letterSpacing:"-0.01em",color:"var(--ink)"}}>
       {saved ? TR("profile.name.hi","Hello, {n}.").replace("{n}", saved) : TR("profile.name.title","What should we call you?")}</b>
     <p style={{margin:"4px 0 12px",font:"400 12.5px/1.55 var(--font-sans)",color:"var(--text-secondary)"}}>
-      {TR("profile.name.sub","Only your teacher and the circle see this. Leave it blank and you stay anonymous.")}</p>
+      {TR("profile.name.sub","The name is what your teacher and the circle see. The date is never shown to anyone — it is only how we tell two people of the same name apart if one of you ever writes in having lost their inbox.")}</p>
     <form onSubmit={(e)=>{ e.preventDefault(); setState("saving");
-        window.TULive.saveProfile({ display_name: name.trim() || null })
+        window.TULive.saveProfile({ display_name: name.trim() || null, born_on: born || null })
           .then(()=>setState("saved")).catch(()=>setState("error")); }}
-      style={{display:"flex",gap:8}}>
+      style={{display:"flex",flexDirection:"column",gap:8}}>
       <input value={name} onChange={(e)=>{ setName(e.target.value); setState("idle"); }}
         placeholder={TR("profile.name.ph","Your name")} maxLength={48} aria-label="Your name"
-        style={{flex:1,minWidth:0,padding:"0 15px",minHeight:44,font:"400 14px var(--font-sans)",
+        style={{padding:"0 15px",minHeight:44,font:"400 14px var(--font-sans)",
           borderRadius:"var(--r-full)",border:"0.5px solid rgba(24,22,16,0.12)",
           background:"rgba(255,255,255,0.86)",color:"var(--ink)",outline:"none"}}/>
-      <Btn type="submit" disabled={!dirty || state==="saving"}
-        style={{opacity:(!dirty||state==="saving")?0.45:1,minHeight:44,padding:"0 18px",fontSize:12.5}}>
-        {state==="saving" ? TR("profile.name.saving","Saving…") : TR("profile.name.save","Save")}</Btn>
+      <div style={{display:"flex",gap:8,alignItems:"center"}}>
+        <input type="date" value={born} onChange={(e)=>{ setBorn(e.target.value); setState("idle"); }}
+          min="1900-01-01" max={new Date(Date.now()-4*365*864e5).toISOString().slice(0,10)}
+          aria-label="Date of birth"
+          style={{flex:1,minWidth:0,padding:"0 15px",minHeight:44,font:"400 14px var(--font-sans)",
+            borderRadius:"var(--r-full)",border:"0.5px solid rgba(24,22,16,0.12)",
+            background:"rgba(255,255,255,0.86)",color:"var(--ink)",outline:"none"}}/>
+        <Btn type="submit" disabled={!dirty || state==="saving"}
+          style={{opacity:(!dirty||state==="saving")?0.45:1,minHeight:44,padding:"0 18px",fontSize:12.5}}>
+          {state==="saving" ? TR("profile.name.saving","Saving…") : TR("profile.name.save","Save")}</Btn>
+      </div>
     </form>
     {state==="saved" && <p style={{margin:"9px 0 0",font:"400 12.5px var(--font-sans)",color:"var(--sage-deep)"}}>
       {TR("profile.name.done","Saved. ☸")}</p>}

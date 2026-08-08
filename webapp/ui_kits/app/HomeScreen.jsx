@@ -91,7 +91,7 @@ function HomeScreen({ openPath, go }) {
           <b style={{display:"block",font:"600 14.5px/1.35 var(--font-sans)",letterSpacing:"-0.01em",color:"var(--ink)"}}>
             {TR("home.start.title","Never meditated before?")}</b>
           <small style={{color:"var(--text-tertiary)",fontSize:12.5}}>
-            {TR("home.start.sub","Four questions, and we will name the Path to start on.")}</small>
+            {TR("home.start.sub","Four questions, one Path.")}</small>
         </span>
         <span aria-hidden="true" style={{color:"var(--text-tertiary)",flex:"0 0 auto"}}><Icon name="chevron" size={17}/></span>
       </button>

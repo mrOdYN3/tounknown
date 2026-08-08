@@ -13,7 +13,7 @@
   async function refreshMember() {
     if (!session) { member = null; return; }
     try {
-      const r = await fetch(cfg.url + "/rest/v1/members?select=tier,active_until,display_name&id=eq." + session.user.id, {
+      const r = await fetch(cfg.url + "/rest/v1/members?select=tier,active_until,display_name,born_on&id=eq." + session.user.id, {
         headers: { apikey: cfg.publishableKey, Authorization: "Bearer " + session.access_token },
       });
       member = r.ok ? (await r.json())[0] || null : null;
