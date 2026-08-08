@@ -16,7 +16,7 @@ function SanghaScreen({ go }) {
     <div style={{margin:"0 -20px 20px"}}><SeatPanel/></div>
     <div style={{padding:"0 20px"}}>
     <div style={{borderRadius:24,border:"0.5px solid rgba(168,120,31,0.45)",boxShadow:"var(--shadow-gold)",background:"rgba(255,255,255,0.62)",backdropFilter:"blur(20px) saturate(1.5)",overflow:"hidden",marginBottom:16}}>
-      <img src={T.satsang} alt="True meditation — live satsang" width="768" height="400" loading="lazy" style={{display:"block",width:"100%",height:150,objectFit:"cover"}}/>
+      <img src={T.satsang} alt="True meditation — live satsang" width="768" height="400" loading="lazy" style={{display:"block",width:"100%",height:150,objectFit:"cover",objectPosition:"58% 44%"}}/>
       <div style={{padding:18}}>
         <Chip tone="gold">{TR("sangha.satsang","live satsang")}</Chip>
         <h3 style={{margin:"8px 0 0",fontSize:17,fontFamily:"var(--font-serif)",fontWeight:400,letterSpacing:"0.2px",color:"var(--ink)"}}>{TR("sangha.monthly","Monthly live sitting with DYNN")}</h3>

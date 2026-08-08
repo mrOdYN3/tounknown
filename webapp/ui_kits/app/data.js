@@ -10,7 +10,7 @@ window.TU = {
   sanghaHall: "../../assets/sangha-hall.jpg",
   masterpiece: "../../assets/covers/tounknown-com.png",
   trustpilot: "../../assets/covers/trustpilot-vipassana-life.png",
-  satsang: "../../assets/covers/true-meditation.jpg",
+  satsang: "../../assets/covers/satsang-flower.jpg",
   danaImg: "../../assets/covers/dana.jpg",
   brand: {
     tagline: "KNOW THYSELF THROUGH SPIRITUAL STRENGTH",
