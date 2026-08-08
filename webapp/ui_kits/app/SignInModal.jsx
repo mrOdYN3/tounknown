@@ -81,8 +81,25 @@ function SignInPanel({ plan, onDone }) {
    Skippable — the practice does not need one — and never asked twice. */
 function NamePanel({ onClose }) {
   const [name, setName] = React.useState("");
-  const [state, setState] = React.useState("idle");
+  // "confirmed" first: arriving from the emailed link, the first thing to say is that it worked.
+  // It stands on its own for a moment and then gives way to the question.
+  const [state, setState] = React.useState("confirmed");
   const done = () => { try { localStorage.setItem("tu.asked-name","1"); } catch {} onClose(); };
+
+  React.useEffect(() => {
+    if (state !== "confirmed") return;
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const t = setTimeout(() => setState("idle"), still ? 900 : 1900);
+    return () => clearTimeout(t);
+  }, [state]);
+
+  if (state === "confirmed") return <React.Fragment>
+    <Disc name="check" tone="done"/>
+    <p style={{margin:0,font:"400 21px/1.3 var(--font-serif)",letterSpacing:"-0.015em",color:"var(--ink)"}}>
+      {TR("welcome.confirmed","Confirmed.")}</p>
+    <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
+      {TR("welcome.confirmed.sub","Your email is verified and your practice now has somewhere to live.")}</p>
+  </React.Fragment>;
   if (state === "saved") return <React.Fragment>
     <Disc name="check" tone="done"/>
     <p style={{margin:0,font:"400 19px/1.35 var(--font-serif)",color:"var(--ink)"}}>
