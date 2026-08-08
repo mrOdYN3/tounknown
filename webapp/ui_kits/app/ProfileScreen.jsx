@@ -36,15 +36,6 @@ function AuthCard() {
         {state==="sending"?"Sending…":"Send link"}</Btn>
     </form>}
     {state==="error" && <p style={{margin:"8px 0 0",fontSize:12.5,color:"#a33"}}>{TR("profile.error","Could not send — try again in a minute.")}</p>}
-    {/* Written in the words someone scans for. "No password to lose" is true and still sends
-        people hunting for a reset link, because every other site has one — so the sentence says
-        the phrase, and the one case that genuinely needs help gets a way through. */}
-    {state!=="sent" && <p style={{margin:"10px 2px 0",font:"400 12px/1.55 var(--font-sans)",color:"var(--text-tertiary)"}}>
-      {TR("profile.nopassword","Forgotten your password? There isn't one — sending yourself a link is how you get back in, every time.")}{" "}
-      <button type="button" onClick={()=>setRecover(true)}
-        style={{background:"none",border:0,padding:0,font:"500 12px/1.55 var(--font-sans)",
-          color:"var(--gold-deep)",textDecoration:"underline",cursor:"pointer"}}>
-        {TR("profile.lostinbox","Lost the inbox itself?")}</button></p>}
     <Social compact/>
     {/* One link rather than a paragraph and a link. However someone phrases the problem to
         themselves — forgotten password, lost inbox, locked out — this is the door, and the panel
@@ -52,7 +43,7 @@ function AuthCard() {
     <div style={{textAlign:"center",marginTop:14}}>
       <button type="button" onClick={()=>setRecover(true)}
         style={{background:"none",border:0,padding:"6px 4px",font:"500 12.5px/1.4 var(--font-sans)",
-          color:"var(--text-tertiary)",textDecoration:"underline",textUnderlineOffset:"2.5px",
+          color:"var(--gold-deep)",textDecoration:"underline",textUnderlineOffset:"2.5px",
           cursor:"pointer"}}>
         {TR("profile.recover.link","Can't get in? Recover your account")}</button>
     </div>
