@@ -4,9 +4,9 @@ function SanghaScreen({ go }) {
   const T = window.TU;
   return <div>
     <div style={{position:"relative",height:260,overflow:"hidden",marginBottom:4}}>
-      <div style={{position:"absolute",inset:0,background:`url('${T.sanghaHall}') 50% 52%/cover`,backgroundColor:"#E8E2D6"}}/>
+      <div style={{position:"absolute",inset:0,background:`url('${T.sanghaHall}') 50% 40%/cover`,backgroundColor:"var(--paper-2)"}}/>
       <div style={{position:"absolute",inset:0,
-        background:"linear-gradient(180deg,rgba(11,11,16,0.30) 0%,rgba(251,250,247,0.05) 58%,var(--paper-1) 100%)"}}/>
+        background:"linear-gradient(180deg,rgba(251,250,247,0) 0%,rgba(251,250,247,0) 46%,var(--paper-1) 100%)"}}/>
     </div>
     <div style={{padding:"0 20px"}}>
     <h1 className="tu-display-xl" style={{margin:0,color:"var(--ink)"}}>{TR("sangha.title","Sangha")}</h1>

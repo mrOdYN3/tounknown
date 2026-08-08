@@ -353,17 +353,8 @@ function TabBar({ tabs, active, onChange, fixed = true, style }) {
     { id: "membership", label: "Dāna", icon: "dana" },
     { id: "profile", label: "Sādhana", icon: "sadhana" },
   ];
-  /* The bar hangs inside a full-height fixed shell rather than off the viewport itself.
-     On Android `position: fixed` anchors to the layout viewport, which stays as tall as the page
-     would be with the URL bar retracted — so while that bar is showing, `bottom: 14px` lands
-     below the glass and the label row is cut off. It only bites on screens short enough that
-     scrolling never retracts the URL bar, which is why Sangha showed it and Home did not.
-
-     100dvh is the *visible* height and follows the URL bar as it comes and goes, so a child
-     absolutely positioned at the bottom of this shell sits at the bottom of what you can see.
-     No measuring and no offset to double-count: the box is simply the right size. */
-  const bar = <nav aria-label="Main" style={{
-    position: fixed ? "absolute" : "relative", bottom: fixed ? "calc(14px + env(safe-area-inset-bottom))" : undefined,
+  return <nav aria-label="Main" style={{
+    position: fixed ? "fixed" : "relative", bottom: fixed ? "calc(14px + env(safe-area-inset-bottom))" : undefined,
     left: fixed ? "50%" : undefined, transform: fixed ? "translateX(-50%)" : undefined,
     width: "calc(100% - 28px)", maxWidth: 412, zIndex: 60,
     display: "flex", gap: 2, padding: 6, borderRadius: "var(--r-full)",
@@ -391,18 +382,6 @@ function TabBar({ tabs, active, onChange, fixed = true, style }) {
       </button>;
     })}
   </nav>;
-
-  if (!fixed) return bar;
-  /* Centred on the app frame, not on the window. `left: 0; right: 0` spans the layout viewport
-     including the scrollbar gutter, so on a 395px window with a 375px frame the bar centred on
-     197.5 while every other element centred on 187.5 — ten pixels right of the whole app, with
-     its right edge hanging past the frame. Matching .tu-frame's own max-width and centring keeps
-     the bar in the same column as the content it belongs to, at any window width. */
-  return <div style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", top: 0,
-    width: "100%", maxWidth: "var(--frame-w, 440px)",
-    height: "100dvh", pointerEvents: "none", zIndex: 60 }}>
-    <div style={{ pointerEvents: "auto" }}>{bar}</div>
-  </div>;
 }
 
 /* ----------------------------------------------------------- TeacherCard -- */
