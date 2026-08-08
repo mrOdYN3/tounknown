@@ -353,7 +353,7 @@ function TabBar({ tabs, active, onChange, fixed = true, style }) {
     { id: "membership", label: "Dāna", icon: "dana" },
     { id: "profile", label: "Sādhana", icon: "sadhana" },
   ];
-  return <nav aria-label="Main" style={{
+  return <nav aria-label="Main" className={fixed ? "tu-tabbar" : undefined} style={{
     position: fixed ? "fixed" : "relative", bottom: fixed ? "calc(14px + env(safe-area-inset-bottom))" : undefined,
     left: fixed ? "50%" : undefined, transform: fixed ? "translateX(-50%)" : undefined,
     width: "calc(100% - 28px)", maxWidth: 412, zIndex: 60,

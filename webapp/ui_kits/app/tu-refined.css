@@ -130,6 +130,23 @@ body{
 /* Hero height lives here, not inline, so the desktop rule can raise it without !important. */
 .tu-hero{ min-height: 560px; }
 
+/* A fixed element anchors to the *layout* viewport, which on a phone stays as tall as the page
+   would be with the browser's toolbar hidden — while the toolbar is actually covering the bottom
+   of what you can see. On a long screen you never notice, because scrolling retracts the toolbar;
+   on a short one like Sangha it never retracts and the bar sits below the fold with its labels
+   cut off.
+
+   100lvh is that layout height and 100dvh is what is currently visible, so their difference is
+   exactly the toolbar — zero when it is hidden, its height when it is not. Doing this in CSS
+   rather than JavaScript matters: measuring it from script means racing the very layout pass
+   that changes it, which is why the first two attempts kept reporting a gap of zero. */
+@supports (height: 100dvh) and (height: 100lvh) {
+  .tu-tabbar{
+    bottom: calc(14px + env(safe-area-inset-bottom) + max(100lvh - 100dvh, var(--vv-bottom, 0px))) !important;
+    transition: bottom .18s var(--ease-out);
+  }
+}
+
 .tu-sheet{ transform: translate(-50%, var(--sheet-dy, 0px)); }
 .tu-sheet.is-settling{ transition: transform .34s var(--ease-spring); }
 .tu-sheet.is-leaving{

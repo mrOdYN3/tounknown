@@ -4,7 +4,7 @@ function SanghaScreen({ go }) {
   const T = window.TU;
   return <div>
     <div style={{position:"relative",height:260,overflow:"hidden",marginBottom:4}}>
-      <div style={{position:"absolute",inset:0,background:`url('${T.sanghaHall}') 50% 48%/cover`,backgroundColor:"#1A1008"}}/>
+      <div style={{position:"absolute",inset:0,background:`url('${T.sanghaHall}') 52% 38%/cover`,backgroundColor:"#1A1008"}}/>
       <div style={{position:"absolute",inset:0,
         background:"linear-gradient(180deg,rgba(11,11,16,0.30) 0%,rgba(251,250,247,0.05) 58%,var(--paper-1) 100%)"}}/>
     </div>
