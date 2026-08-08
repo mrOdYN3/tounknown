@@ -1,5 +1,4 @@
 -- toUnknown migration 02 — paths become the single source of truth for the UI.
-begin;
 
 alter table public.paths add column if not exists source text;   -- "Pali Canon · ~5th c. BCE"
 alter table public.paths add column if not exists kind  text default 'lineage'; -- lineage | collection
@@ -64,4 +63,3 @@ on conflict (id) do update set title=excluded.title, tradition=excluded.traditio
 update courses set path_id='kids', sort=0 where id='home-alone-kewin';
 update courses set path_id='kids', sort=1 where id='santas-christmas';
 
-commit;

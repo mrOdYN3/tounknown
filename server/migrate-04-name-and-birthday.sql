@@ -7,7 +7,6 @@
 -- If you already ran the earlier version of this file, run it again — the GRANT below is the
 -- part that was missing, and without it saving fails with "permission denied for table members".
 
-begin;
 
 alter table public.members
   add column if not exists born_on date;
@@ -21,7 +20,6 @@ comment on column public.members.born_on is
 -- missing privilege. Row-level security still decides *which* row; this decides which columns.
 grant update (display_name, born_on) on public.members to authenticated;
 
-commit;
 
 -- Check it took:
 --   select id, email, display_name, born_on from public.members;
