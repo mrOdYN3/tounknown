@@ -51,6 +51,25 @@ Two things the schema will bite on, both learned the hard way:
   into `loadMember`'s select — probe for it separately, so a missing migration cannot take
   sign-in down.
 
+## Never leave a hard edge
+
+Nothing in this product ends in a straight cut. Where a photograph meets paper, where a section
+meets the next, where a scroll strip runs off the side — it fades. A visible seam is the single
+thing that makes an interface look assembled rather than made.
+
+Prefer `mask-image` over an overlaid gradient. An overlay only guesses at the colour beneath it
+and shows a seam wherever the guess is wrong — over glass, over a gradient, in the other theme.
+A mask fades the element's own alpha, so whatever is behind simply arrives, at any opacity and on
+any ground:
+
+```
+WebkitMaskImage: "linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,0) 100%)",
+maskImage:       "linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,0) 100%)",
+```
+
+The same applies to motion: things arrive and leave, they do not appear and vanish. Transitions
+use `--ease-spring` or `--ease-out`, never `linear`, and always honour `prefers-reduced-motion`.
+
 ## Conventions
 
 - SEO/AEO matters: JSON-LD (Organization, Course, FAQPage, Person), answer-first copy, entity-rich lineage text, llms.txt

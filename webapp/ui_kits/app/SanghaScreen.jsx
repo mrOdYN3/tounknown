@@ -20,12 +20,15 @@ function SanghaScreen({ go }) {
           veiled rather than printed: held back to 78%, saturation eased, and faded into the card
           at its foot so there is no hard seam between picture and paper. It reads as light
           through glass instead of a stock photo dropped into a box. */}
-      <div style={{position:"relative",height:150,overflow:"hidden",background:"var(--paper-2)"}}>
+      <div style={{position:"relative",height:150,overflow:"hidden"}}>
+        {/* Masked, not overlaid. A white gradient laid on top only approximates the card beneath
+            and leaves a seam wherever the two disagree; masking fades the photograph's own alpha
+            to nothing, so whatever is behind simply arrives. No edge to see at any opacity. */}
         <img src={T.satsang} alt="True meditation — live satsang" width="1400" height="788" loading="lazy"
           style={{display:"block",width:"100%",height:"100%",objectFit:"cover",objectPosition:"58% 44%",
-            opacity:0.78,filter:"saturate(0.86) contrast(0.97)"}}/>
-        <div aria-hidden="true" style={{position:"absolute",inset:0,
-          background:"linear-gradient(180deg,rgba(251,250,247,0.10) 0%,rgba(251,250,247,0) 42%,rgba(251,250,247,0.62) 100%)"}}/>
+            opacity:0.8,filter:"saturate(0.86) contrast(0.97)",
+            WebkitMaskImage:"linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,0.55) 76%,rgba(0,0,0,0) 100%)",
+            maskImage:"linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,0.55) 76%,rgba(0,0,0,0) 100%)"}}/>
         <div aria-hidden="true" style={{position:"absolute",inset:0,
           background:"radial-gradient(120% 90% at 62% 44%,rgba(217,164,65,0.16) 0%,rgba(217,164,65,0) 62%)",
           mixBlendMode:"soft-light"}}/>
