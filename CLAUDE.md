@@ -31,6 +31,26 @@ Recommended stack: **Next.js (App Router) + Supabase (magic-link auth, Postgres,
 
 Phase 3: Stripe Connect Express payouts, teacher dashboard, cohort scheduling, monthly membership-pool payout job from playback minutes.
 
+## Database changes — never hand the owner SQL
+
+Schema changes are applied with `sh server/migrate.sh server/migrate-NN-name.sql`, which runs the
+file against the database over psql from the VPS, inside a single transaction. Write the
+migration, run it, verify it, and say what changed — do not paste `alter table` into chat and ask
+the owner to run it in the Supabase dashboard. That was the old habit and it was wrong: it put a
+step that belongs in version control into a web form, and it stalled work every time.
+
+The connection string is `DATABASE_URL` in `/opt/tu-api/env`, beside the Supabase and Stripe
+keys. It is never committed. If `migrate.sh` reports it missing, that is the only case where the
+owner is asked for anything — one line, once.
+
+Two things the schema will bite on, both learned the hard way:
+- `UPDATE` on `members` is granted **column by column**. A new column a member must write needs
+  `grant update (col) on public.members to authenticated;` in the same migration, or the read
+  succeeds, the write returns 42501, and it looks like an app bug.
+- A `select` naming a column that does not exist 400s the whole request. Never fold a new column
+  into `loadMember`'s select — probe for it separately, so a missing migration cannot take
+  sign-in down.
+
 ## Conventions
 
 - SEO/AEO matters: JSON-LD (Organization, Course, FAQPage, Person), answer-first copy, entity-rich lineage text, llms.txt

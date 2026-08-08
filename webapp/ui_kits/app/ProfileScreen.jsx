@@ -45,8 +45,18 @@ function AuthCard() {
         style={{background:"none",border:0,padding:0,font:"500 12px/1.55 var(--font-sans)",
           color:"var(--gold-deep)",textDecoration:"underline",cursor:"pointer"}}>
         {TR("profile.lostinbox","Lost the inbox itself?")}</button></p>}
-    <Notice note={recover ? {kind:"recover"} : null} onClose={()=>setRecover(false)}/>
     <Social compact/>
+    {/* One link rather than a paragraph and a link. However someone phrases the problem to
+        themselves — forgotten password, lost inbox, locked out — this is the door, and the panel
+        behind it explains that there was never a password in the first place. */}
+    <div style={{textAlign:"center",marginTop:14}}>
+      <button type="button" onClick={()=>setRecover(true)}
+        style={{background:"none",border:0,padding:"6px 4px",font:"500 12.5px/1.4 var(--font-sans)",
+          color:"var(--text-tertiary)",textDecoration:"underline",textUnderlineOffset:"2.5px",
+          cursor:"pointer"}}>
+        {TR("profile.recover.link","Can't get in? Recover your account")}</button>
+    </div>
+    <Notice note={recover ? {kind:"recover"} : null} onClose={()=>setRecover(false)}/>
   </div>;
 }
 /* Your name, which the app has had a column for since the first migration and has never asked
