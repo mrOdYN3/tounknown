@@ -16,7 +16,20 @@ function SanghaScreen({ go }) {
     <div style={{margin:"0 -20px 20px"}}><SeatPanel/></div>
     <div style={{padding:"0 20px"}}>
     <div style={{borderRadius:24,border:"0.5px solid rgba(168,120,31,0.45)",boxShadow:"var(--shadow-gold)",background:"rgba(255,255,255,0.62)",backdropFilter:"blur(20px) saturate(1.5)",overflow:"hidden",marginBottom:16}}>
-      <img src={T.satsang} alt="True meditation — live satsang" width="768" height="400" loading="lazy" style={{display:"block",width:"100%",height:150,objectFit:"cover",objectPosition:"58% 44%"}}/>
+      {/* The photograph is a cold blue against a room of paper-white and temple gold, so it is
+          veiled rather than printed: held back to 78%, saturation eased, and faded into the card
+          at its foot so there is no hard seam between picture and paper. It reads as light
+          through glass instead of a stock photo dropped into a box. */}
+      <div style={{position:"relative",height:150,overflow:"hidden",background:"var(--paper-2)"}}>
+        <img src={T.satsang} alt="True meditation — live satsang" width="1400" height="788" loading="lazy"
+          style={{display:"block",width:"100%",height:"100%",objectFit:"cover",objectPosition:"58% 44%",
+            opacity:0.78,filter:"saturate(0.86) contrast(0.97)"}}/>
+        <div aria-hidden="true" style={{position:"absolute",inset:0,
+          background:"linear-gradient(180deg,rgba(251,250,247,0.10) 0%,rgba(251,250,247,0) 42%,rgba(251,250,247,0.62) 100%)"}}/>
+        <div aria-hidden="true" style={{position:"absolute",inset:0,
+          background:"radial-gradient(120% 90% at 62% 44%,rgba(217,164,65,0.16) 0%,rgba(217,164,65,0) 62%)",
+          mixBlendMode:"soft-light"}}/>
+      </div>
       <div style={{padding:18}}>
         <Chip tone="gold">{TR("sangha.satsang","live satsang")}</Chip>
         <h3 style={{margin:"8px 0 0",fontSize:17,fontFamily:"var(--font-serif)",fontWeight:400,letterSpacing:"0.2px",color:"var(--ink)"}}>{TR("sangha.monthly","Monthly live sitting with DYNN")}</h3>

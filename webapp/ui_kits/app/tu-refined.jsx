@@ -353,8 +353,17 @@ function TabBar({ tabs, active, onChange, fixed = true, style }) {
     { id: "membership", label: "Dāna", icon: "dana" },
     { id: "profile", label: "Sādhana", icon: "sadhana" },
   ];
-  return <nav aria-label="Main" style={{
-    position: fixed ? "fixed" : "relative", bottom: fixed ? "calc(14px + env(safe-area-inset-bottom))" : undefined,
+  /* The bar hangs inside a full-height fixed shell rather than off the viewport itself.
+     On Android `position: fixed` anchors to the layout viewport, which stays as tall as the page
+     would be with the URL bar retracted — so while that bar is showing, `bottom: 14px` lands
+     below the glass and the label row is cut off. It only bites on screens short enough that
+     scrolling never retracts the URL bar, which is why Sangha showed it and Home did not.
+
+     100dvh is the *visible* height and follows the URL bar as it comes and goes, so a child
+     absolutely positioned at the bottom of this shell sits at the bottom of what you can see.
+     No measuring and no offset to double-count: the box is simply the right size. */
+  const bar = <nav aria-label="Main" style={{
+    position: fixed ? "absolute" : "relative", bottom: fixed ? "calc(14px + env(safe-area-inset-bottom))" : undefined,
     left: fixed ? "50%" : undefined, transform: fixed ? "translateX(-50%)" : undefined,
     width: "calc(100% - 28px)", maxWidth: 412, zIndex: 60,
     display: "flex", gap: 2, padding: 6, borderRadius: "var(--r-full)",
@@ -382,6 +391,12 @@ function TabBar({ tabs, active, onChange, fixed = true, style }) {
       </button>;
     })}
   </nav>;
+
+  if (!fixed) return bar;
+  return <div style={{ position: "fixed", left: 0, right: 0, top: 0,
+    height: "100dvh", pointerEvents: "none", zIndex: 60 }}>
+    <div style={{ pointerEvents: "auto" }}>{bar}</div>
+  </div>;
 }
 
 /* ----------------------------------------------------------- TeacherCard -- */
