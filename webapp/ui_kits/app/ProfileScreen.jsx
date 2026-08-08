@@ -13,10 +13,10 @@ function AuthCard() {
 
   const card = {padding:"20px", borderRadius:"var(--r-lg)", margin:"20px 0"};
 
+  // One profile card, not two: who you are, what to call you, and the way out — the same panel
+  // the reader thinks of as "my account", rather than a stack of boxes that each know one fact.
   if (session) return <div className="tu-glass" style={card}>
-    <b style={{fontSize:13.5,color:"var(--ink)"}}>{TR("profile.signedin","Signed in")}</b>
-    <p style={{margin:"4px 0 10px",fontSize:13,color:"var(--text-secondary)"}}>{session.user.email}</p>
-    <Btn variant="ghost" onClick={()=>window.TULive.signOut()} style={{minHeight:40,padding:"0 16px",fontSize:12.5}}>Sign out</Btn>
+    <Profile session={session}/>
   </div>;
 
   return <div className="tu-glass" style={card}>
@@ -53,10 +53,9 @@ function AuthCard() {
 /* Your name, which the app has had a column for since the first migration and has never asked
    for. Optional on purpose — a practice does not require one — but a Sangha that greets you by
    name is a different room from one that greets an email address. */
-function NameCard() {
+function Profile({ session }) {
   const [member, setMember] = React.useState(window.TULive && window.TULive.member());
-  const [session, setSession] = React.useState(window.TULive && window.TULive.session());
-  React.useEffect(() => window.TULive ? window.TULive.onAuth((sn,m)=>{setSession(sn);setMember(m);}) : undefined, []);
+  React.useEffect(() => window.TULive ? window.TULive.onAuth((sn,m)=>setMember(m)) : undefined, []);
   const saved = (member && member.display_name) || "";
   const savedBorn = (member && member.born_on) || "";
   const [name, setName] = React.useState(saved);
@@ -66,9 +65,20 @@ function NameCard() {
   if (!session) return null;
 
   const dirty = name.trim() !== saved.trim() || born !== savedBorn;
-  return <div className="tu-glass" style={{borderRadius:"var(--r-lg)",padding:"18px 18px 16px",marginTop:14}}>
-    <b style={{display:"block",font:"600 13px/1.4 var(--font-sans)",letterSpacing:"-0.01em",color:"var(--ink)"}}>
-      {saved ? TR("profile.name.hi","Hello, {n}.").replace("{n}", saved) : TR("profile.name.title","What should we call you?")}</b>
+  return <React.Fragment>
+    {/* the account itself, then what to call you */}
+    <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
+      <div style={{minWidth:0}}>
+        <b style={{display:"block",font:"600 13px/1.4 var(--font-sans)",letterSpacing:"-0.01em",color:"var(--ink)"}}>
+          {saved ? TR("profile.name.hi","Hello, {n}.").replace("{n}", saved) : TR("profile.name.title","What should we call you?")}</b>
+        <p style={{margin:"3px 0 0",font:"400 12.5px/1.5 var(--font-sans)",color:"var(--text-tertiary)",
+          wordBreak:"break-word"}}>{session.user.email}</p>
+      </div>
+      <Btn variant="ghost" onClick={()=>window.TULive.signOut()}
+        style={{minHeight:36,padding:"0 14px",fontSize:12,flex:"0 0 auto"}}>
+        {TR("profile.signout","Sign out")}</Btn>
+    </div>
+    <div style={{height:1,background:"var(--hairline)",margin:"14px 0"}}/>
     <p style={{margin:"4px 0 12px",font:"400 12.5px/1.55 var(--font-sans)",color:"var(--text-secondary)"}}>
       {TR("profile.name.sub","The name is what your teacher and the circle see. The date is never shown to anyone — it is only how we tell two people of the same name apart if one of you ever writes in having lost their inbox.")}</p>
     <form onSubmit={(e)=>{ e.preventDefault(); setState("saving");
@@ -96,7 +106,7 @@ function NameCard() {
       {TR("profile.name.done","Saved. ☸")}</p>}
     {state==="error" && <p style={{margin:"9px 0 0",font:"400 12.5px var(--font-sans)",color:"#a33"}}>
       {TR("profile.name.error","Could not save — try again.")}</p>}
-  </div>;
+  </React.Fragment>;
 }
 
 function ProfileScreen() {
@@ -117,7 +127,6 @@ function ProfileScreen() {
   return <div style={{padding:"22px 20px 0"}}>
     <h1 className="tu-display-xl" style={{margin:0,color:"var(--ink)"}}>{TR("title.sadhana","Your sādhana")}</h1>
     <AuthCard/>
-    <NameCard/>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,margin:"18px 0"}}>
       <StatCard value={stats?stats.minutes:0} label={TR("profile.minutes","minutes sat")}/><StatCard value={stats?stats.completed:0} label={TR("profile.sittings","sittings")}/><StatCard value={0} label={TR("profile.gates","gates passed")}/>
     </div>

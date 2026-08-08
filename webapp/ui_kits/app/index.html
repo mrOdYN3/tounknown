@@ -68,28 +68,6 @@ function App(){
   const go = v=>{ setPath(null); setView(v); window.scrollTo({top:0,behavior:"instant"}); };
   React.useEffect(()=>{ window.TUGo = go; window.TUStart = ()=>setStartOpen(true); },[]);
 
-  /* How far the bottom of the layout viewport sits below the bottom of what you can actually
-     see. CSS expresses this as 100lvh - 100dvh and that is the better answer where the browser
-     reports a real retracting toolbar — but some engines leave innerHeight taller than the
-     visual viewport without moving either unit, and then the tab bar hangs below the fold with
-     its labels cut off. Measuring covers both; the CSS keeps working where it can.
-
-     Recomputed on a stagger because the layout viewport settles a frame or two after the new
-     screen paints — a single immediate read returns the old height and publishes a gap of 0. */
-  React.useEffect(()=>{
-    const set = () => {
-      const vv = window.visualViewport;
-      const gap = vv ? Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)) : 0;
-      document.documentElement.style.setProperty("--vv-bottom", gap + "px");
-    };
-    const timers = [0, 200, 600].map((d) => setTimeout(set, d));
-    const vv = window.visualViewport;
-    addEventListener("resize", set); addEventListener("orientationchange", set);
-    if (vv) { vv.addEventListener("resize", set); vv.addEventListener("scroll", set); }
-    return () => { timers.forEach(clearTimeout);
-      removeEventListener("resize", set); removeEventListener("orientationchange", set);
-      if (vv) { vv.removeEventListener("resize", set); vv.removeEventListener("scroll", set); } };
-  },[view]);
 
 
   // Coming back from the emailed link is the moment to ask who you are — once, and never again
