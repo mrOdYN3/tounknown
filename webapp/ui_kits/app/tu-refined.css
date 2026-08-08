@@ -35,7 +35,16 @@
 }
 
 /* ---------------------------------------------------------------- base -- */
-html{ -webkit-text-size-adjust:100%; }
+html{
+  -webkit-text-size-adjust:100%;
+  /* Reserve the scrollbar gutter on both edges, always. Without it a classic scrollbar appears
+     only on screens tall enough to need one, and on those screens the viewport grows 20px wider
+     than the content box — so anything centred on the viewport (this app's tab bar, its sheets,
+     its modals) sits ten pixels right of everything laid out in flow, and only on some screens.
+     `both-edges` keeps the content centred inside the viewport so the two agree. A no-op on
+     phones and anywhere else with overlay scrollbars. */
+  scrollbar-gutter: stable both-edges;
+}
 body{
   font-feature-settings:"kern" 1,"liga" 1,"calt" 1;
   text-rendering:optimizeLegibility;
