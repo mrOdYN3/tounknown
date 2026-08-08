@@ -34,6 +34,10 @@ function AuthCard() {
         {state==="sending"?"Sending…":"Send link"}</Btn>
     </form>}
     {state==="error" && <p style={{margin:"8px 0 0",fontSize:12.5,color:"#a33"}}>{TR("profile.error","Could not send — try again in a minute.")}</p>}
+    {/* Written in the words someone scans for. "No password to lose" is true and still sends
+        people hunting for a reset link, because every other site has one. */}
+    {state!=="sent" && <p style={{margin:"10px 2px 0",font:"400 12px/1.55 var(--font-sans)",color:"var(--text-tertiary)"}}>
+      {TR("profile.nopassword","Forgotten your password? There isn't one — sending yourself a link is how you get back in, every time.")}</p>}
     <Social compact/>
   </div>;
 }
