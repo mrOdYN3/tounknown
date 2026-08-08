@@ -1,23 +1,30 @@
--- toUnknown migration 04 — somewhere to reach a member who has lost their inbox.
---
--- Passwordless auth makes the sign-in address the account, so losing the inbox is the one
--- failure no automatic flow can repair. A second address, given voluntarily and long before it
--- is needed, is the whole fix.
---
--- Deliberately not a nickname or a date of birth. Those are guessable by anyone who knows the
--- person, and collecting a birthday would tell us which of our readers are children — which
--- brings GDPR consent duties we do not have while we simply don't know.
+-- toUnknown migration 04 — recovery address, and what people want to be called.
 --
 -- Run it in the Supabase SQL editor: Dashboard → SQL Editor → New query → Run.
--- Safe to run twice. Nothing in the app breaks before or after — the recovery card checks
--- whether this column exists and stays hidden until it does.
+-- Safe to run twice. Nothing breaks before or after: the cards check for their columns and stay
+-- hidden until these exist.
+--
+-- If you already ran the earlier version of this file, run it again — the GRANT below is the
+-- part that was missing, and without it saving fails with "permission denied for table members".
+
+begin;
 
 alter table public.members
-  add column if not exists recovery_email text;
+  add column if not exists recovery_email text,
+  add column if not exists born_on        date;
 
 comment on column public.members.recovery_email is
   'Optional second address, used only to verify identity if the member loses their sign-in inbox. Never emailed for anything else.';
+comment on column public.members.born_on is
+  'Date of birth, given by the member. Used to tell two people of the same name apart when one writes in having lost their inbox.';
 
--- The existing row-level policy already lets a member update their own row — the same one that
--- carries display_name — so no policy change is needed. Verify with:
---   select id, email, recovery_email from public.members;
+-- This is the part that is easy to miss. UPDATE was granted column by column when the table was
+-- made, so a member could write display_name but not any column added afterwards — the write
+-- failed with 42501 while the read succeeded, which looks like a bug in the app rather than a
+-- missing privilege. Row-level security still decides *which* row; this decides which columns.
+grant update (display_name, recovery_email, born_on) on public.members to authenticated;
+
+commit;
+
+-- Check it took:
+--   select id, email, display_name, recovery_email, born_on from public.members;

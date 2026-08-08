@@ -13,6 +13,10 @@ const { Button: SIButton } = window.ToUnknownDesignSystem_9d38c1;
 const SIIcon = window.TUIcon;
 const SI_PAYPAL = "https://www.paypal.com/donate?hosted_button_id=H5VQT3VLQBUBJ";
 const SI_PENDING = "tu.pending-plan";
+/* Keyed by user id. A single "tu.asked-name" flag meant the second person to sign in on the
+   same browser was never asked — which is exactly what happened signing in with Google after
+   having answered once already. */
+const askedKey = (uid) => "tu.asked-name:" + (uid || "anon");
 
 /* The disc above the message. Gold while it is asking, sage once it has done the thing —
    the same green the gate counter uses for "that is enough". */
@@ -80,11 +84,14 @@ function SignInPanel({ plan, onDone }) {
 /* Asked once, when someone lands back from the emailed link and we still have no name for them.
    Skippable — the practice does not need one — and never asked twice. */
 function NamePanel({ onClose }) {
+  const uid = (window.TULive && window.TULive.session() || {}).user
+    ? window.TULive.session().user.id : null;
   const [name, setName] = React.useState("");
+  const [born, setBorn] = React.useState("");
   // "confirmed" first: arriving from the emailed link, the first thing to say is that it worked.
   // It stands on its own for a moment and then gives way to the question.
   const [state, setState] = React.useState("confirmed");
-  const done = () => { try { localStorage.setItem("tu.asked-name","1"); } catch {} onClose(); };
+  const done = () => { try { localStorage.setItem(askedKey(uid),"1"); } catch {} onClose(); };
 
   React.useEffect(() => {
     if (state !== "confirmed") return;
@@ -113,16 +120,30 @@ function NamePanel({ onClose }) {
       {TR("welcome.title","You are in. What should we call you?")}</p>
     <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
       {TR("welcome.sub","Only your teacher and the circle see this. You can skip it and stay anonymous.")}</p>
-    <form onSubmit={(e)=>{ e.preventDefault(); if(!name.trim()) return done(); setState("saving");
-        window.TULive.saveProfile({ display_name: name.trim() })
+    <form onSubmit={(e)=>{ e.preventDefault(); if(!name.trim()) return; setState("saving");
+        const fields = { display_name: name.trim() };
+        if (born) fields.born_on = born;
+        window.TULive.saveProfile(fields)
           .then(()=>setState("saved")).catch(()=>setState("error"))
-          .finally(()=>{ try { localStorage.setItem("tu.asked-name","1"); } catch {} }); }}
+          .finally(()=>{ try { localStorage.setItem(askedKey(uid),"1"); } catch {} }); }}
       style={{marginTop:18,display:"flex",flexDirection:"column",gap:8}}>
-      <input autoFocus value={name} onChange={(e)=>setName(e.target.value)} maxLength={48}
+      <input autoFocus required value={name} onChange={(e)=>setName(e.target.value)} maxLength={48}
         placeholder={TR("profile.name.ph","Your name")} aria-label="Your name"
         style={{padding:"0 16px",minHeight:46,font:"400 15px var(--font-sans)",borderRadius:"var(--r-full)",
           textAlign:"center",border:"0.5px solid rgba(24,22,16,0.12)",background:"rgba(255,255,255,0.9)",
           color:"var(--ink)",outline:"none"}}/>
+      {/* Two people called Denis will one day both lose their inbox. This is what tells them
+          apart. Bounded to real human dates so a stray keystroke cannot store the year 0202. */}
+      <label style={{font:"400 11.5px/1.4 var(--font-sans)",color:"var(--text-tertiary)",marginTop:2}}>
+        {TR("welcome.born","Date of birth")}
+        <input type="date" value={born} onChange={(e)=>setBorn(e.target.value)}
+          min="1900-01-01" max={new Date(Date.now()-4*365*864e5).toISOString().slice(0,10)}
+          aria-label="Date of birth"
+          style={{display:"block",width:"100%",boxSizing:"border-box",marginTop:5,padding:"0 16px",
+            minHeight:46,font:"400 15px var(--font-sans)",borderRadius:"var(--r-full)",textAlign:"center",
+            border:"0.5px solid rgba(24,22,16,0.12)",background:"rgba(255,255,255,0.9)",
+            color:"var(--ink)",outline:"none"}}/>
+      </label>
       <SIButton type="submit" wide disabled={state==="saving"} style={{opacity:state==="saving"?0.6:1}}>
         {state==="saving" ? TR("profile.name.saving","Saving…") : TR("welcome.cta","That is me")}</SIButton>
     </form>

@@ -80,7 +80,7 @@ function App(){
       // Once open, only the panel closes it.
       if (asking.current) return;
       let asked = false;
-      try { asked = localStorage.getItem("tu.asked-name") === "1"; } catch {}
+      try { asked = localStorage.getItem("tu.asked-name:" + (sn && sn.user ? sn.user.id : "anon")) === "1"; } catch {}
       const should = !!sn && !!m && !m.display_name && !asked;
       asking.current = should;
       setAskName(should);
@@ -108,7 +108,7 @@ function App(){
     <PathSheet path={path} onClose={()=>setPath(null)}/>
     <StartHere open={startOpen} onClose={()=>setStartOpen(false)} onOpenPath={setPath} go={go}/>
     {window.TUNotice && askName ? <window.TUNotice note={{kind:"name"}} onClose={()=>{
-      try { localStorage.setItem("tu.asked-name","1"); } catch {}
+      try { localStorage.setItem("tu.asked-name:" + (window.TULive.session()||{user:{}}).user.id, "1"); } catch {}
       asking.current = false; setAskName(false); }}/> : null}
     {toastMsg && <Toast fixed show message={toastMsg}/>}
   </div>;
