@@ -165,12 +165,23 @@ main .rv.in{ opacity:1; transform:none; }
 
 /* ---------------------------------------------------------------- frame -- */
 /* On a phone the app is the whole screen; on a desktop it floats as a device. */
+/* The app scrolls inside this; the document never does.
+   Chrome on Android hides and re-shows its URL bar as the document scrolls, and every change
+   moves the visual viewport out from under each position:fixed element. Navigating resets the
+   scroll, which triggers that animation — which is why the tab bar drops and springs back when
+   you tap a tab, and why its labels end up below the glass on a screen too short for the URL bar
+   ever to settle. With the document itself immovable, the URL bar has nothing to react to. */
 .tu-frame{
-  max-width:440px; margin:0 auto; min-height:100vh; min-height:100dvh; position:relative;
+  max-width:440px; margin:0 auto; position:relative;
+  height:100vh; height:100dvh; overflow-y:auto; overflow-x:hidden;
+  -webkit-overflow-scrolling:touch; overscroll-behavior-y:contain;
   background:linear-gradient(180deg,var(--paper-1) 0%,var(--paper-2) 100%);
 }
+html,body{ height:100%; overflow:hidden; }
 @media (min-width:520px){
-  .tu-frame{ box-shadow:var(--shadow-frame); border-radius:var(--r-xl); overflow:clip; margin:0 auto; }
+  /* was overflow:clip — which turns the scroll container back off. clip-path rounds the
+     corners without touching how the frame scrolls. */
+  .tu-frame{ box-shadow:var(--shadow-frame); border-radius:var(--r-xl); margin:0 auto; }
 }
 
 /* ambient light — a warm dawn behind the glass, never noticed, always felt */
@@ -280,7 +291,7 @@ main .rv.in{ opacity:1; transform:none; filter:blur(0); }
   .tu-frame{
     max-width: none; width: 100%;
     padding-left: var(--rail-w);
-    margin: 0; box-shadow: none; border-radius: 0; overflow: visible;
+    margin: 0; box-shadow: none; border-radius: 0;
     background: transparent;
   }
   .tu-frame > main{ padding-bottom: 88px !important; }
