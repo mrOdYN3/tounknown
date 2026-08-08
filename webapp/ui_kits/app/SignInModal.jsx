@@ -203,6 +203,55 @@ function OAuthRow({ compact }) {
   </div>;
 }
 
+/* Lost the inbox. There is no password to reset, so recovery is us recognising you from what we
+   already hold — the name and birthday you gave when you joined, and, if you ever paid, the
+   Stripe record. None of that is shown here: the reader supplies what they remember, we do the
+   matching privately. Asking them for a second email up front was the alternative and it is a
+   lot to ask of someone who has not lost anything yet. */
+function RecoverPanel({ onClose }) {
+  const [old, setOld] = React.useState("");
+  const [name, setName] = React.useState("");
+  const [born, setBorn] = React.useState("");
+  const body = [
+    TR("recover.mail.intro","I have lost access to the inbox I used to sign in to toUnknown."),
+    "",
+    TR("recover.mail.old","Address I used to sign in with:") + " " + (old || "—"),
+    TR("recover.mail.name","Name on the account:") + " " + (name || "—"),
+    TR("recover.mail.born","Date of birth:") + " " + (born || "—"),
+    "",
+    TR("recover.mail.tail","Anything else that might help you find me — roughly when I started, which Paths I had opened, or the date of a payment:"),
+    "",
+  ].join("\n");
+  const href = "mailto:tounknown.com@gmail.com?subject=" +
+    encodeURIComponent(TR("recover.mail.subject","Lost access to my email")) +
+    "&body=" + encodeURIComponent(body);
+
+  const field = {padding:"0 16px",minHeight:44,font:"400 14.5px var(--font-sans)",
+    borderRadius:"var(--r-full)",textAlign:"center",border:"0.5px solid rgba(24,22,16,0.12)",
+    background:"rgba(255,255,255,0.9)",color:"var(--ink)",outline:"none",width:"100%",
+    boxSizing:"border-box"};
+
+  return <React.Fragment>
+    <Disc name="lock"/>
+    <p style={{margin:0,font:"400 19px/1.35 var(--font-serif)",color:"var(--ink)"}}>
+      {TR("recover.title","Lost the inbox you signed in with?")}</p>
+    <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>
+      {TR("recover.sub","There is no password to reset — the address is the account. So we do it the old way: tell us what you remember, and we will match it against what we already hold and move you to a new address by hand.")}</p>
+    <div style={{marginTop:18,display:"flex",flexDirection:"column",gap:8}}>
+      <input type="email" value={old} onChange={(e)=>setOld(e.target.value)}
+        placeholder={TR("recover.old","The address you used before")} aria-label="Previous email address" style={field}/>
+      <input value={name} onChange={(e)=>setName(e.target.value)} maxLength={48}
+        placeholder={TR("profile.name.ph","Your name")} aria-label="Your name" style={field}/>
+      <input type="date" value={born} onChange={(e)=>setBorn(e.target.value)}
+        min="1900-01-01" aria-label="Date of birth" style={field}/>
+      <SIButton wide style={{marginTop:6}} onClick={()=>{ window.location.href = href; }}>
+        {TR("recover.cta","Send this to a person")}</SIButton>
+    </div>
+    <p style={{margin:"12px 0 0",font:"400 11.5px/1.55 var(--font-sans)",color:"var(--text-tertiary)"}}>
+      {TR("recover.fine","This opens an email to us with what you typed. Nothing is checked automatically — a person reads it, and we answer.")}</p>
+  </React.Fragment>;
+}
+
 function Notice({ note, onClose }) {
   if (!note) return null;
   // Portalled to <body>. The Path sheet carries a transform and a backdrop-filter, either of
@@ -217,10 +266,11 @@ function Notice({ note, onClose }) {
     <div onClick={(e)=>e.stopPropagation()} className="tu-glass"
       style={{width:"min(392px,100%)",borderRadius:"var(--r-xl)",padding:"28px 24px 20px",
         textAlign:"center",boxShadow:"var(--lift-2)",animation:"tu-rise .32s var(--ease-spring)"}}>
-      {note.kind!=="signin" && note.kind!=="name" && <Disc name={note.icon||"spark"}/>}
+      {note.kind!=="signin" && note.kind!=="name" && note.kind!=="recover" && <Disc name={note.icon||"spark"}/>}
 
       {note.kind==="signin" ? <SignInPanel plan={note.plan} onDone={onClose}/>
         : note.kind==="name" ? <NamePanel onClose={onClose}/>
+        : note.kind==="recover" ? <RecoverPanel onClose={onClose}/>
         : <React.Fragment>
             <p style={{margin:0,font:"400 19px/1.35 var(--font-serif)",letterSpacing:"-0.01em",color:"var(--ink)"}}>{note.text}</p>
             {note.sub && <p style={{margin:"10px 0 0",font:"400 13.5px/1.6 var(--font-sans)",color:"var(--text-secondary)"}}>{note.sub}</p>}

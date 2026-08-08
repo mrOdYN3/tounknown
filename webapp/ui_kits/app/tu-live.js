@@ -108,27 +108,6 @@
       return true;
     },
 
-    /* The recovery address lives behind a probe rather than in loadMember's select: if the
-       column is not there yet, a bad select would 400 the whole member load and break sign-in.
-       This way the feature simply stays hidden until the migration is run. */
-    async recoveryEmail() {
-      if (!session) return null;
-      const r = await fetch(cfg.url + "/rest/v1/members?select=recovery_email&id=eq." + session.user.id,
-        { headers: authHeaders() });
-      if (!r.ok) return null;                       // column absent — card hides itself
-      const rows = await r.json().catch(() => null);
-      return rows ? { value: (rows[0] && rows[0].recovery_email) || "" } : null;
-    },
-    async saveRecoveryEmail(value) {
-      if (!session) throw new Error("Sign in first.");
-      const r = await fetch(cfg.url + "/rest/v1/members?id=eq." + session.user.id, {
-        method: "PATCH", headers: authHeaders(),
-        body: JSON.stringify({ recovery_email: value ? value.trim() : null }),
-      });
-      if (!r.ok) throw new Error("Could not save.");
-      return true;
-    },
-
     async signIn(email) {
       const { error } = await client.auth.signInWithOtp({
         email,
